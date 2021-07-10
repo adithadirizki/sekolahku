@@ -19,17 +19,19 @@
          </select>
       </div>
    </div>
-   <table class="table table-hover table-striped table-bordered" id="tb_question_list">
-      <thead class="text-center">
-         <tr>
-            <th>No</th>
-            <th>Tipe Soal</th>
-            <th>Pertanyaan</th>
-            <th>Dibuat Oleh</th>
-            <th>Aksi</th>
-         </tr>
-      </thead>
-   </table>
+   <div class="card-datatable table-responsive">
+      <table class="table table-hover table-striped table-bordered" id="tb_question_list">
+         <thead class="text-center">
+            <tr>
+               <th>No</th>
+               <th>Tipe Soal</th>
+               <th>Pertanyaan</th>
+               <th>Dibuat Oleh</th>
+               <th>Aksi</th>
+            </tr>
+         </thead>
+      </table>
+   </div>
 </div>
 <?= $this->endSection() ?>
 <?= $this->section('vendorJS') ?>
@@ -42,7 +44,7 @@
    $(document).ready(function() {
       var csrf_token = "<?= csrf_hash() ?>";
       var tb_question_list = $('#tb_question_list').DataTable({
-         dom: '<"card-header py-0"<"dt-action-buttons"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+         dom: '<"card-header py-0"<"dt-action-buttons"B>><"d-flex justify-content-between align-items-center mx-1 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-1 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
          order: [
             [0, 'desc']
          ],

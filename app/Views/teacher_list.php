@@ -29,19 +29,21 @@
                </select>
             </div>
          </div>
-         <table class="table table-hover table-bordered" id="tb_teacher_list">
-            <thead>
-               <tr>
-                  <th>No</th>
-                  <th>Nama</th>
-                  <th>NIP</th>
-                  <th>L/P</th>
-                  <th>Agama</th>
-                  <th>No Telp</th>
-                  <th>Aksi</th>
-               </tr>
-            </thead>
-         </table>
+         <div class="card-datatable table-responsive">
+            <table class="table table-hover table-bordered" id="tb_teacher_list">
+               <thead>
+                  <tr>
+                     <th>No</th>
+                     <th>Nama</th>
+                     <th>NIP</th>
+                     <th>L/P</th>
+                     <th>Agama</th>
+                     <th>No Telp</th>
+                     <th>Aksi</th>
+                  </tr>
+               </thead>
+            </table>
+         </div>
       </div>
    </div>
 </div>
@@ -63,7 +65,7 @@
    $(document).ready(function() {
       var csrf_token = "<?= csrf_hash() ?>";
       var tb_teacher_list = $('#tb_teacher_list').DataTable({
-         dom: '<"card-header py-0"<"dt-action-buttons"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+         dom: '<"card-header py-0"<"dt-action-buttons"B>><"d-flex justify-content-between align-items-center mx-1 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-1 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
          order: [
             [0, 'desc']
          ],
