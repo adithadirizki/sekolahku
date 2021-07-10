@@ -5,7 +5,6 @@ namespace App\Controllers\API;
 use App\Controllers\BaseController;
 use App\Models\M_Subject;
 use CodeIgniter\API\ResponseTrait;
-use Firebase\JWT\JWT;
 
 class Subject extends BaseController
 {

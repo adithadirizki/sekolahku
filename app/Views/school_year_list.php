@@ -89,22 +89,24 @@
    </div>
 </div>
 <div class="alert alert-primary" role="alert">
-   <div class="alert-body"><strong>Penting!</strong> Tahun Pelajaran <code class="text-success">Aktif</code> tidak bisa dihapus atau diubah menjadi  <code>Tidak Aktif</code>.</div>
+   <div class="alert-body"><strong>Penting!</strong> Tahun Pelajaran <code class="text-success">Aktif</code> tidak bisa dihapus atau diubah menjadi <code>Tidak Aktif</code>.</div>
 </div>
 <div class="card">
    <div class="card-header">
       <div class="card-title">Daftar Tahun Pelajaran</div>
    </div>
-   <table class="table table-hover table-striped table-bordered" id="tb_school_year_list">
-      <thead class="text-center">
-         <tr>
-            <th>No</th>
-            <th>Tahun Pelajaran</th>
-            <th>Status</th>
-            <th>Aksi</th>
-         </tr>
-      </thead>
-   </table>
+   <div class="card-datatable table-responsive">
+      <table class="table table-hover table-striped table-bordered" id="tb_school_year_list">
+         <thead class="text-center">
+            <tr>
+               <th>No</th>
+               <th>Tahun Pelajaran</th>
+               <th>Status</th>
+               <th>Aksi</th>
+            </tr>
+         </thead>
+      </table>
+   </div>
 </div>
 <?= $this->endSection() ?>
 <?= $this->section('vendorJS') ?>

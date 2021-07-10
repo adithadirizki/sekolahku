@@ -5,7 +5,6 @@ namespace App\Controllers\API;
 use App\Controllers\BaseController;
 use App\Models\M_School_Year;
 use CodeIgniter\API\ResponseTrait;
-use Firebase\JWT\JWT;
 
 class Schoolyear extends BaseController
 {

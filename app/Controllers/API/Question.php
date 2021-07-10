@@ -11,15 +11,11 @@ class Question extends BaseController
    use ResponseTrait;
    protected $m_question;
    protected $rules = [
-      "question_type" => "required|in_list[mc,essay]",
-      "question_text" => "required"
+      "question_type" => "required|in_list[mc,essay]"
    ];
    protected $errors = [
       "question_type" => [
          "required" => "Tipe Soal harus diisi."
-      ],
-      "question_text" => [
-         "required" => "Pertanyaan harus diisi."
       ]
    ];
 
@@ -40,6 +36,8 @@ class Question extends BaseController
             "errors" => $validation->getErrors()
          ]);
       }
+      // Validate question_text
+      $validation->setError("question_text", "Pertanyaan harus diisi.");
       $question_type = htmlentities($input['question_type'], ENT_QUOTES, 'UTF-8');
       $choices = [];
       if ($question_type == 'mc') {
@@ -102,6 +100,8 @@ class Question extends BaseController
             "errors" => $validation->getErrors()
          ]);
       }
+      // Validate question_text
+      $validation->setError("question_text", "Pertanyaan harus diisi.");
       $question_type = htmlentities($input['question_type'], ENT_QUOTES, 'UTF-8');
       $choices = [];
       if ($question_type == 'mc') {

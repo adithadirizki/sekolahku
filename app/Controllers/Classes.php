@@ -5,11 +5,9 @@ namespace App\Controllers;
 use App\Models\M_Class;
 use App\Models\M_Class_Group;
 use App\Models\M_Major;
-use CodeIgniter\API\ResponseTrait;
 
 class Classes extends BaseController
 {
-	use ResponseTrait;
 	protected $m_class;
 	protected $m_major;
 	protected $m_class_group;
