@@ -36,12 +36,14 @@ $routes->get('/', 'Home::index');
 $routes->resource('question');
 $routes->group('api', ['namespace' => 'App\Controllers\API'], function($routes)
 {
+	// $routes->post('auth/login', 'Auth::login'); // for webserver
 	$routes->resource('classgroup');
 	$routes->resource('classes');
 	$routes->resource('major');
 	$routes->resource('schoolyear');
 	$routes->resource('subject');
 	$routes->resource('question');
+	$routes->resource('bankquestion');
 });
 // $routes->resource('api/classes', ['controller' => 'API\Classes']);
 

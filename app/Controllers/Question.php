@@ -50,6 +50,22 @@ class Question extends BaseController
 		return json_encode($data);
 	}
 
+	public function show($question_id)
+	{
+		$where = [
+			"question_id" => $question_id
+		];
+		if (!$result = $this->m_question->question($where)) {
+			throw new PageNotFoundException();
+		}
+		$data = [
+			"title" => "Detail Soal",
+			"url_active" => "question",
+			"data" => $result
+		];
+		return view('detail_question', $data);
+	}
+
 	public function new()
 	{
 		$data = [

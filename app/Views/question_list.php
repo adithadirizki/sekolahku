@@ -93,11 +93,15 @@
             {
                "data": "question_id",
                "mRender": function(question_id, row, data) {
-                  return '<div class="btn-actions" data-question_id="' + question_id + '"><a href="<?= base_url('question') ?>/' + question_id + '/edit" class="btn btn-flat-info btn-icon rounded-circle edit-question" title="Edit">' + feather.icons['edit'].toSvg({
+                  return '<div class="dropdown" data-question_id="' + question_id + '"><button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">' + feather.icons['more-vertical'].toSvg({
                      class: 'font-medium-2'
-                  }) + '</a><button class="btn btn-flat-danger btn-icon rounded-circle delete-question" title="Hapus">' + feather.icons['trash'].toSvg({
+                  }) + '</button><div class="dropdown-menu"><a class="dropdown-item show-question text-primary" href="<?= base_url('question') ?>/' + question_id + '">' + feather.icons['search'].toSvg({
                      class: 'font-medium-2'
-                  }) + '</button></div>';
+                  }) + ' <span>Lihat</span></a><a class="dropdown-item edit-question text-info" href="<?= base_url('question') ?>/' + question_id + '/edit">' + feather.icons['edit'].toSvg({
+                     class: 'font-medium-2'
+                  }) + ' <span>Edit</span></a><a class="dropdown-item delete-question text-danger" href="javascript:void(0);">' + feather.icons['trash'].toSvg({
+                     class: 'font-medium-2'
+                  }) + ' <span>Hapus</span></a></div></div>';
                },
                "className": "text-center",
                "orderable": false
@@ -114,131 +118,8 @@
       $(document).on('change', '[name=question_type]', function() {
          tb_question_list.ajax.reload();
       })
-      $(document).on('click', '.edit-question', function() {
-         var data = tb_question_list.row($(this).parents('tbody tr')).data();
-         $('#edit-question [name=question_id]').val(data.question_id);
-         $('#edit-question [name=question_name]').val(data.question_name);
-         $('#edit-question [name=question_code]').val(data.question_code);
-      })
-      $(document).on('submit', '#add-question', function(e) {
-         e.preventDefault();
-         $(this).find('.is-invalid').removeClass('is-invalid');
-         $(this).find('.invalid-feedback').text(null);
-         var form = $(this);
-         var data = $(this).serialize();
-         $.ajax({
-            url: "<?= base_url('api/question') ?>",
-            type: "post",
-            dataType: "json",
-            data: data,
-            headers: {
-               Authorization: "<?= session()->token ?>"
-            },
-            beforeSend: function() {
-               $.blockUI(set_blockUI);
-            },
-            success: function(result) {
-               $.unblockUI();
-               if (result.error == false) {
-                  $('#modal-add-question').modal('hide');
-                  Swal.fire({
-                     title: "Success!",
-                     text: result.message,
-                     icon: "success",
-                     showConfirmButton: false,
-                     timer: 3000
-                  }).then(function() {
-                     tb_question_list.ajax.reload();
-                  })
-               } else if (result.error == true) {
-                  Swal.fire({
-                     title: "Failed!",
-                     text: result.message,
-                     icon: "error",
-                     showConfirmButton: false,
-                     timer: 3000
-                  })
-               } else {
-                  Object.entries(result.errors).forEach(function(key, value) {
-                     form.find('[name=' + key[0] + ']').addClass('is-invalid');
-                     form.find('[name=' + key[0] + ']').closest('.form-group').find('.invalid-feedback').text(key[1]);
-                  })
-               }
-            },
-            error: function() {
-               $.unblockUI();
-               Swal.fire({
-                  title: "Error!",
-                  text: "An error occurred on the server.",
-                  icon: "error",
-                  showConfirmButton: false,
-                  timer: 3000
-               })
-            }
-         })
-         return false;
-      })
-      $(document).on('submit', '#edit-question', function(e) {
-         e.preventDefault();
-         $(this).find('.is-invalid').removeClass('is-invalid');
-         $(this).find('.invalid-feedback').text(null);
-         var form = $(this);
-         var data = $(this).serialize();
-         var question_id = $(this).find('[name=question_id]').val();
-         $.ajax({
-            url: "<?= base_url('api/question') ?>/" + question_id,
-            type: "put",
-            dataType: "json",
-            data: data,
-            headers: {
-               Authorization: "<?= session()->token ?>"
-            },
-            beforeSend: function() {
-               $.blockUI(set_blockUI);
-            },
-            success: function(result) {
-               $.unblockUI();
-               if (result.error == false) {
-                  $('#modal-edit-question').modal('hide');
-                  Swal.fire({
-                     title: "Success!",
-                     text: result.message,
-                     icon: "success",
-                     showConfirmButton: false,
-                     timer: 3000
-                  }).then(function() {
-                     tb_question_list.ajax.reload();
-                  })
-               } else if (result.error == true) {
-                  Swal.fire({
-                     title: "Failed!",
-                     text: result.message,
-                     icon: "error",
-                     showConfirmButton: false,
-                     timer: 3000
-                  })
-               } else {
-                  Object.entries(result.errors).forEach(function(key, value) {
-                     form.find('[name=' + key[0] + ']').addClass('is-invalid');
-                     form.find('[name=' + key[0] + ']').closest('.form-group').find('.invalid-feedback').text(key[1]);
-                  })
-               }
-            },
-            error: function() {
-               $.unblockUI();
-               Swal.fire({
-                  title: "Error!",
-                  text: "An error occurred on the server.",
-                  icon: "error",
-                  showConfirmButton: false,
-                  timer: 3000
-               })
-            }
-         })
-         return false;
-      })
       $(document).on('click', '.delete-question', function() {
-         var question_id = $(this).parents('.btn-actions').data('question_id');
+         var question_id = $(this).parents('.dropdown').data('question_id');
          Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",

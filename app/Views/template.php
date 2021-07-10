@@ -409,7 +409,7 @@
             </li>
             <li class=" navigation-header"><span data-i18n="E-Learning">E-Learning</span><i data-feather="more-horizontal"></i>
             </li>
-            <li class="<?= $url_active == 'bank_question' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('bank_question') ?>"><i data-feather="align-justify"></i><span class="menu-title text-truncate" data-i18n="Bank Soal">Bank Soal</span></a>
+            <li class="<?= $url_active == 'bankquestion' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('bankquestion') ?>"><i data-feather="align-justify"></i><span class="menu-title text-truncate" data-i18n="Bank Soal">Bank Soal</span></a>
             </li>
             <li class="<?= $url_active == 'question' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('question') ?>"><i data-feather="list"></i><span class="menu-title text-truncate" data-i18n="Daftar Soal">Daftar Soal</span></a>
             </li>

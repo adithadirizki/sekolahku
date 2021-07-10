@@ -538,6 +538,9 @@
             url: "<?= base_url('api/classgroup') ?>/" + class_group_code,
             type: "get",
             dataType: "json",
+            headers: {
+               Authorization: "<?= session()->token ?>"
+            },
             success: function(result) {
                if (result.error === false) {
                   $('#edit-class-group [name=class_group_code]').val(result.data.class_group_code);

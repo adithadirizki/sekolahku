@@ -5,27 +5,22 @@
 <link rel="stylesheet" href="<?= base_url('app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css') ?>">
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
-<div class="modal fade" id="modal-add-major" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modal-add-bank-question" role="dialog" aria-hidden="true">
    <div class="modal-dialog" role="document">
       <div class="modal-content">
          <div class="modal-header">
             <h2 class="modal-title">
-               Tambah Jurusan
+               Tambah Bank Soal
             </h2>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
             </button>
          </div>
-         <form id="add-major" enctype="multipart/form-data" onsubmit="return false;">
+         <form id="add-bank-question" enctype="multipart/form-data" onsubmit="return false;">
             <div class="modal-body">
                <div class="form-group">
-                  <label>Nama Jurusan <span class="text-danger font-small-4">*</span></label>
-                  <input type="text" class="form-control" name="major_name" placeholder="Nama Jurusan" required>
-                  <div class="invalid-feedback"></div>
-               </div>
-               <div class="form-group">
-                  <label>Kode Jurusan <span class="text-danger font-small-4">*</span></label>
-                  <input type="text" class="form-control" name="major_code" placeholder="Kode Jurusan" required>
+                  <label>Nama Bank Soal <span class="text-danger font-small-4">*</span></label>
+                  <input type="text" class="form-control" name="bank_question_title" placeholder="Nama Bank Soal">
                   <div class="invalid-feedback"></div>
                </div>
             </div>
@@ -37,28 +32,23 @@
       </div>
    </div>
 </div>
-<div class="modal fade" id="modal-edit-major" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modal-edit-bank-question" role="dialog" aria-hidden="true">
    <div class="modal-dialog" role="document">
       <div class="modal-content">
          <div class="modal-header">
             <h2 class="modal-title">
-               Edit Jurusan
+               Edit Bank Soal
             </h2>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
             </button>
          </div>
-         <form id="edit-major" enctype="multipart/form-data" onsubmit="return false;">
+         <form id="edit-bank-question" enctype="multipart/form-data" onsubmit="return false;">
             <div class="modal-body">
                <div class="form-group">
-                  <label>Nama Jurusan <span class="text-danger font-small-4">*</span></label>
-                  <input type="hidden" class="form-control" name="major_id" disabled>
-                  <input type="text" class="form-control" name="major_name" placeholder="Nama Jurusan" required>
-                  <div class="invalid-feedback"></div>
-               </div>
-               <div class="form-group">
-                  <label>Kode Jurusan <span class="text-danger font-small-4">*</span></label>
-                  <input type="text" class="form-control" name="major_code" placeholder="Kode Jurusan" required>
+                  <label>Nama Bank Soal <span class="text-danger font-small-4">*</span></label>
+                  <input type="hidden" class="form-control" name="bank_question_id" disabled>
+                  <input type="text" class="form-control" name="bank_question_title" placeholder="Nama Bank Soal" required>
                   <div class="invalid-feedback"></div>
                </div>
             </div>
@@ -72,15 +62,16 @@
 </div>
 <div class="card">
    <div class="card-header">
-      <div class="card-title">Daftar Jurusan</div>
+      <div class="card-title">Daftar Bank Soal</div>
    </div>
    <div class="card-datatable table-responsive">
-      <table class="table table-hover table-striped table-bordered" id="tb_major_list">
+      <table class="table table-hover table-striped table-bordered" id="tb_bank_question_list">
          <thead class="text-center">
             <tr>
                <th>No</th>
-               <th>Nama Jurusan</th>
-               <th>Kode Jurusan</th>
+               <th>Nama Bank Soal</th>
+               <th>Jumlah Soal</th>
+               <th>Dibuat Oleh</th>
                <th>Aksi</th>
             </tr>
          </thead>
@@ -97,15 +88,15 @@
 <script>
    $(document).ready(function() {
       var csrf_token = "<?= csrf_hash() ?>";
-      var tb_major_list = $('#tb_major_list').DataTable({
+      var tb_bank_question_list = $('#tb_bank_question_list').DataTable({
          dom: '<"card-header py-0"<"dt-action-buttons"B>><"d-flex justify-content-between align-items-center mx-1 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-1 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
          order: [
-            [1, 'asc']
+            [0, 'desc']
          ],
          serverSide: true,
          processing: true,
          ajax: {
-            url: "<?= base_url('major/get_majors') ?>",
+            url: "<?= base_url('bankquestion/get_bank_questions') ?>",
             type: "post",
             dataType: "json",
             data: function(data) {
@@ -117,27 +108,34 @@
             }
          },
          columns: [{
-               "data": "major_id",
+               "data": "bank_question_id",
                "mRender": function(data, row, type, meta) {
                   return meta.row + meta.settings._iDisplayStart + 1;
                },
                "className": "text-center"
             },
             {
-               "data": "major_name"
+               "data": "bank_question_title"
             },
             {
-               "data": "major_code",
+               "data": "total_question",
                "className": "text-center"
             },
             {
-               "data": "major_id",
-               "mRender": function(major_id, row, data) {
-                  return '<div class="btn-actions" data-major_id="' + major_id + '"><button class="btn btn-flat-info btn-icon rounded-circle edit-major" title="Edit" data-toggle="modal" data-target="#modal-edit-major">' + feather.icons['edit'].toSvg({
+               "data": "created"
+            },
+            {
+               "data": "bank_question_id",
+               "mRender": function(bank_question_id, row, data) {
+                  return '<div class="dropdown" data-bank_question_id="' + bank_question_id + '"><button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">' + feather.icons['more-vertical'].toSvg({
                      class: 'font-medium-2'
-                  }) + '</button><button class="btn btn-flat-danger btn-icon rounded-circle delete-major" title="Hapus">' + feather.icons['trash'].toSvg({
+                  }) + '</button><div class="dropdown-menu"><a class="dropdown-item show-bank-question text-primary" href="<?= base_url('bankquestion') ?>/' + bank_question_id + '">' + feather.icons['search'].toSvg({
                      class: 'font-medium-2'
-                  }) + '</button></div>';
+                  }) + ' <span>Lihat</span></a><a class="dropdown-item edit-bank-question text-info" data-toggle="modal" data-target="#modal-edit-bank-question">' + feather.icons['edit'].toSvg({
+                     class: 'font-medium-2'
+                  }) + ' <span>Edit</span></a><a class="dropdown-item delete-bank-question text-danger" href="javascript:void(0);">' + feather.icons['trash'].toSvg({
+                     class: 'font-medium-2'
+                  }) + ' <span>Hapus</span></a></div></div>';
                },
                "className": "text-center",
                "orderable": false
@@ -145,27 +143,27 @@
          ],
          buttons: [{
             className: 'btn btn-primary',
-            text: 'Tambah Jurusan',
+            text: 'Tambah Bank Soal',
             attr: {
                "data-toggle": "modal",
-               "data-target": "#modal-add-major"
+               "data-target": "#modal-add-bank-question"
             }
          }]
       })
-      $(document).on('click', '.edit-major', function() {
-         var data = tb_major_list.row($(this).parents('tbody tr')).data();
-         $('#edit-major [name=major_id]').val(data.major_id);
-         $('#edit-major [name=major_name]').val(data.major_name);
-         $('#edit-major [name=major_code]').val(data.major_code);
+      $(document).on('click', '.edit-bank-question', function() {
+         var data = tb_bank_question_list.row($(this).parents('tbody tr')).data();
+         console.log($.parseHTML(data.bank_question_title)[0])
+         $('#edit-bank-question [name=bank_question_id]').val(data.bank_question_id);
+         $('#edit-bank-question [name=bank_question_title]').val($.parseHTML(data.bank_question_title)[0].data);
       })
-      $(document).on('submit', '#add-major', function(e) {
+      $(document).on('submit', '#add-bank-question', function(e) {
          e.preventDefault();
          $(this).find('.is-invalid').removeClass('is-invalid');
          $(this).find('.invalid-feedback').text(null);
          var form = $(this);
          var data = $(this).serialize();
          $.ajax({
-            url: "<?= base_url('api/major') ?>",
+            url: "<?= base_url('api/bankquestion') ?>",
             type: "post",
             dataType: "json",
             data: data,
@@ -178,7 +176,7 @@
             success: function(result) {
                $.unblockUI();
                if (result.error == false) {
-                  $('#modal-add-major').modal('hide');
+                  $('#modal-add-bank-question').modal('hide');
                   Swal.fire({
                      title: "Success!",
                      text: result.message,
@@ -186,7 +184,7 @@
                      showConfirmButton: false,
                      timer: 3000
                   }).then(function() {
-                     tb_major_list.ajax.reload();
+                     tb_bank_question_list.ajax.reload();
                   })
                } else if (result.error == true) {
                   Swal.fire({
@@ -216,15 +214,15 @@
          })
          return false;
       })
-      $(document).on('submit', '#edit-major', function(e) {
+      $(document).on('submit', '#edit-bank-question', function(e) {
          e.preventDefault();
          $(this).find('.is-invalid').removeClass('is-invalid');
          $(this).find('.invalid-feedback').text(null);
          var form = $(this);
          var data = $(this).serialize();
-         var major_id = $(this).find('[name=major_id]').val();
+         var bank_question_id = $(this).find('[name=bank_question_id]').val();
          $.ajax({
-            url: "<?= base_url('api/major') ?>/" + major_id,
+            url: "<?= base_url('api/bankquestion') ?>/" + bank_question_id,
             type: "put",
             dataType: "json",
             data: data,
@@ -237,7 +235,7 @@
             success: function(result) {
                $.unblockUI();
                if (result.error == false) {
-                  $('#modal-edit-major').modal('hide');
+                  $('#modal-edit-bank-question').modal('hide');
                   Swal.fire({
                      title: "Success!",
                      text: result.message,
@@ -245,7 +243,7 @@
                      showConfirmButton: false,
                      timer: 3000
                   }).then(function() {
-                     tb_major_list.ajax.reload();
+                     tb_bank_question_list.ajax.reload();
                   })
                } else if (result.error == true) {
                   Swal.fire({
@@ -275,8 +273,8 @@
          })
          return false;
       })
-      $(document).on('click', '.delete-major', function() {
-         var major_id = $(this).parents('.btn-actions').data('major_id');
+      $(document).on('click', '.delete-bank-question', function() {
+         var bank_question_id = $(this).parents('.dropdown').data('bank_question_id');
          Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -292,7 +290,7 @@
          }).then((result) => {
             if (result.value) {
                $.ajax({
-                  url: "<?= base_url('api/major') ?>/" + major_id,
+                  url: "<?= base_url('api/bankquestion') ?>/" + bank_question_id,
                   type: "delete",
                   dataType: "json",
                   headers: {
@@ -311,7 +309,7 @@
                            showConfirmButton: false,
                            timer: 3000
                         }).then(function() {
-                           tb_major_list.ajax.reload();
+                           tb_bank_question_list.ajax.reload();
                         })
                      } else {
                         Swal.fire({

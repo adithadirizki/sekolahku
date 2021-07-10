@@ -5,7 +5,6 @@ namespace App\Controllers\API;
 use App\Controllers\BaseController;
 use App\Models\M_Question;
 use CodeIgniter\API\ResponseTrait;
-use Firebase\JWT\JWT;
 
 class Question extends BaseController
 {
@@ -17,10 +16,10 @@ class Question extends BaseController
    ];
    protected $errors = [
       "question_type" => [
-         "required" => "Nama Jurusan harus diisi."
+         "required" => "Tipe Soal harus diisi."
       ],
       "question_text" => [
-         "required" => "Kode Jurusan harus diisi."
+         "required" => "Pertanyaan harus diisi."
       ]
    ];
 
@@ -34,6 +33,13 @@ class Question extends BaseController
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       parse_str(file_get_contents('php://input'), $input);
+      if ($validation->withRequest($this->request)->run() == false) {
+         return $this->respond([
+            "message" => "Failed to save changes.",
+            "status" => 400,
+            "errors" => $validation->getErrors()
+         ]);
+      }
       $question_type = htmlentities($input['question_type'], ENT_QUOTES, 'UTF-8');
       $choices = [];
       if ($question_type == 'mc') {
@@ -60,15 +66,15 @@ class Question extends BaseController
             "errors" => $validation->getErrors()
          ]);
       }
-      $answer_key = $input['answer_key'] ? htmlentities($input['answer_key'], ENT_QUOTES, 'UTF-8') : null;
       $question_text = htmlentities($input['question_text'], ENT_QUOTES, 'UTF-8');
+      $answer_key = $input['answer_key'] ? htmlentities($input['answer_key'], ENT_QUOTES, 'UTF-8') : null;
       $data = [
          "question_type" => $question_type,
          "question_text" => $question_text,
          "choice" => json_encode($choices),
-         "answer_key" => $answer_key
+         "answer_key" => $answer_key,
+         "created_by" => $this->username
       ];
-      die;
       $result = $this->m_question->create_question($data);
       if ($result) {
          return $this->respond([
@@ -89,6 +95,13 @@ class Question extends BaseController
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       parse_str(file_get_contents('php://input'), $input);
+      if ($validation->withRequest($this->request)->run() == false) {
+         return $this->respond([
+            "message" => "Failed to save changes.",
+            "status" => 400,
+            "errors" => $validation->getErrors()
+         ]);
+      }
       $question_type = htmlentities($input['question_type'], ENT_QUOTES, 'UTF-8');
       $choices = [];
       if ($question_type == 'mc') {
@@ -115,8 +128,8 @@ class Question extends BaseController
             "errors" => $validation->getErrors()
          ]);
       }
-      $answer_key = $input['answer_key'] ? htmlentities($input['answer_key'], ENT_QUOTES, 'UTF-8') : null;
       $question_text = htmlentities($input['question_text'], ENT_QUOTES, 'UTF-8');
+      $answer_key = $input['answer_key'] ? htmlentities($input['answer_key'], ENT_QUOTES, 'UTF-8') : null;
       $data = [
          "question_text" => $question_text,
          "choice" => json_encode($choices),

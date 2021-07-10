@@ -49,7 +49,7 @@ class M_Question extends Model
    {
       $this->select("question_id,question_type,question_text,answer_key,created_by");
       $this->where($where);
-      $this->orderBy('question_type ASC');
+      $this->orderBy('question_id DESC');
       return $this->get()->getResultObject();
    }
 

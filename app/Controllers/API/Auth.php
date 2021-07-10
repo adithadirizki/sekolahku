@@ -6,7 +6,6 @@ use App\Controllers\BaseController;
 use App\Models\M_Auth;
 use App\Models\M_User;
 use CodeIgniter\API\ResponseTrait;
-use Firebase\JWT\JWT;
 
 class Auth extends BaseController
 {
@@ -39,7 +38,7 @@ class Auth extends BaseController
 					"role" => $result->data->role
 				]
 			];
-			$token = JWT::encode($payload, $this->m_auth->private_key_jwt());
+			$token = $this->jwt::encode($payload, $this->private_key_jwt);
 			$result->response['token'] = $token;
 
 			// Cookie Remember me for 6 hours

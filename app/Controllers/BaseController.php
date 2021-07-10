@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 /**
@@ -14,6 +15,7 @@ namespace App\Controllers;
  * @package CodeIgniter
  */
 
+use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\Controller;
 
 class BaseController extends Controller
@@ -26,7 +28,12 @@ class BaseController extends Controller
 	 *
 	 * @var array
 	 */
+	use ResponseTrait;
 	protected $helpers = [];
+	protected $jwt;
+	protected $private_key_jwt;
+	protected $username;
+	protected $role;
 
 	/**
 	 * Constructor.
@@ -41,6 +48,22 @@ class BaseController extends Controller
 		//--------------------------------------------------------------------
 		// E.g.:
 		// $this->session = \Config\Services::session();
+		if ($request->uri->getSegment(1) === 'api') {
+			$this->private_key_jwt = "adithadirizki";
+			$this->jwt = new \Firebase\JWT\JWT;
+			try {
+				$this->token = $this->jwt::decode($_SERVER['HTTP_AUTHORIZATION'], $this->private_key_jwt, ['HS256']);
+				$this->username = $this->token->data->username;
+				$this->role = $this->token->data->role;
+			} catch (\Exception $e) {
+				if ($e->getMessage() == 'Expired token') {
+					session()->destroy();
+				}
+				return $this->failUnauthorized($e->getMessage());
+			}
+		} else {
+			$this->username = session()->username;
+			$this->role = session()->role;
+		}
 	}
-
 }

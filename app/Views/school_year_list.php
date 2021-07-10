@@ -189,7 +189,6 @@
             }
          }]
       })
-      // Class
       $(document).on('click', '.edit-school-year', function() {
          var data = tb_school_year_list.row($(this).parents('tbody tr')).data();
          $('#edit-school-year [name=school_year_id]').val(data.school_year_id);

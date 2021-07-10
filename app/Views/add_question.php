@@ -14,9 +14,12 @@
 </style>
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
-<?php if (isset($bank_question_id)) $url = base_url('api/bank_question/' . $bank_question_id . '/question');
+<?php
+if (isset($bank_question_id)) $url = base_url('api/bank_question/' . $bank_question_id . '/question');
 elseif (isset($quiz_code)) $url = base_url('api/quiz/' . $quiz_code . '/question');
-else $url = base_url('api/question'); ?>
+else $url = base_url('api/question');
+$abcde = range('A', 'E');
+?>
 <div class="card">
    <div class="card-header">
       <h4 class="card-title">Tambah Soal</h4>
@@ -34,20 +37,31 @@ else $url = base_url('api/question'); ?>
          <div role="tabpanel" class="tab-pane active" id="mc" aria-labelledby="mc-tab" aria-expanded="true">
             <form class="add-question" enctype="multipart/form-data" onsubmit="return false;">
                <div class="form-group">
-                  <label class="m-0">Pertanyaan</label>
+                  <label class="m-0">Pertanyaan <span class="text-danger font-small-4">*</span></label>
                   <input type="hidden" name="question_type" value="mc">
                   <textarea name="question_text" class="form-control" hidden></textarea>
                   <div class="invalid-feedback my-25"></div>
-                  <div class="quill-editor-question"></div>
+                  <div class="all-editor quill-editor"></div>
                </div>
-               <div class="choices">
+
+               <div id="choices" data-columns="5">
                   <?php for ($i = 0; $i < 5; $i++) { ?>
-                     <div class="form-group">
+                     <div class="form-group" data-index="<?= $i ?>">
+                        <div class="custom-control custom-radio mb-50">
+                           <input type="radio" id="choice-<?= $i ?>" name="answer_key" class="custom-control-input" value="<?= $i ?>" required>
+                           <label class="custom-control-label" for="choice-<?= $i ?>"><strong><?= $abcde[$i] ?></strong>. Jadikan Kunci Jawaban</label>
+                           <div class="invalid-feedback my-25"></div>
+                        </div>
+                        <textarea name="choice[<?= $i ?>]" class="form-control" hidden></textarea>
+                        <div class="invalid-feedback my-25"></div>
+                        <div class="all-editor quill-editor"></div>
+                     </div>
+                     <!-- <div class="form-group">
                         <div class="custom-control custom-radio">
                            <span>
                               <input type="radio" name="answer_key" id="choice-<?= $i ?>" value="<?= $i ?>" class="custom-control-input" required>
                               <label class="custom-control-label w-100" for="choice-<?= $i ?>">
-                                 Jadikan kunci jawaban
+                                 <strong><?= $abcde[$i] ?></strong>. Jadikan kunci jawaban
                               </label>
                               <div class="invalid-feedback my-25"></div>
                            </span>
@@ -55,26 +69,30 @@ else $url = base_url('api/question'); ?>
                            <div class="invalid-feedback my-25"></div>
                            <div class="quill-editor-<?= $i ?>"></div>
                         </div>
-                     </div>
+                     </div> -->
                   <?php } ?>
                </div>
-               <div class="mt-50 float-right">
+               <div class="text-right">
                   <button type="button" class="btn btn-sm btn-primary btn-minus" title="Minimal 2"><i data-feather="minus"></i></button>
-                  <div class="d-inline-block font-weight-bold total-choices h4 px-3 py-1 m-0">5</div>
+                  <div class="d-inline-block font-weight-bold total-choice h4 px-3 py-1 m-0">5</div>
                   <button type="button" class="btn btn-sm btn-primary btn-plus" title="Maksimal 5"><i data-feather="plus"></i></button>
                </div>
-               <div class="clearfix"></div>
                <button type="submit" class="btn btn-primary float-right mt-2">Tambahkan</button>
             </form>
          </div>
          <div class="tab-pane" id="essay" role="tabpanel" aria-labelledby="essay-tab" aria-expanded="false">
             <form class="add-question" enctype="multipart/form-data" onsubmit="return false;">
                <div class="form-group">
-                  <label class="m-0">Pertanyaan</label>
+                  <label class="m-0">Pertanyaan <span class="text-danger font-small-4">*</span></label>
                   <input type="hidden" name="question_type" value="essay">
                   <textarea name="question_text" class="form-control" hidden></textarea>
                   <div class="invalid-feedback my-25"></div>
-                  <div class="quill-editor-question"></div>
+                  <div class="all-editor quill-editor"></div>
+               </div>
+               <div class="form-group">
+                  <label class="m-0">Kunci Jawaban <small>(boleh kosong)</small></label>
+                  <textarea name="answer_key" class="form-control" rows="2"></textarea>
+                  <div class="invalid-feedback my-25"></div>
                </div>
                <button type="submit" class="btn btn-primary float-right mt-2">Tambahkan</button>
             </form>
@@ -82,20 +100,16 @@ else $url = base_url('api/question'); ?>
       </div>
    </div>
 </div>
-<div class="d-none">
-   <div id="tmp-choice" class="form-group">
-      <div class="custom-control custom-radio">
-         <span>
-            <input type="radio" name="key" id="" value="" class="custom-control-input" required>
-            <label class="custom-control-label w-100 mb-50" for="">
-               Jadikan kunci jawaban
-            </label>
-            <div class="invalid-feedback my-25"></div>
-         </span>
-         <textarea name="choices[]" class="form-control" hidden></textarea>
+<div id="tmp-choice" class="d-none">
+   <div class="form-group" data-index="">
+      <div class="custom-control custom-radio mb-50">
+         <input type="radio" id="" name="answer_key" class="custom-control-input" value="" required>
+         <label class="custom-control-label" for=""><strong></strong>. Jadikan Kunci Jawaban</label>
          <div class="invalid-feedback my-25"></div>
-         <div class="quill-editor"></div>
       </div>
+      <textarea name="choice" class="form-control" hidden disabled></textarea>
+      <div class="invalid-feedback my-25"></div>
+      <div class="all-editor quill-editor"></div>
    </div>
 </div>
 <?= $this->endSection() ?>
@@ -108,7 +122,9 @@ else $url = base_url('api/question'); ?>
 <?= $this->section('customJS') ?>
 <script src="<?= base_url('assets/js/quill-editor.js') ?>" type="text/javascript"></script>
 <script>
+   var abcde = <?= json_encode(range('A', 'E')) ?>;
    var icons = Quill.import('ui/icons');
+   var all_editor = [];
    icons['undo'] = feather.icons['corner-up-left'].toSvg();
    icons['redo'] = feather.icons['corner-up-right'].toSvg();
    var set_editor = {
@@ -221,55 +237,14 @@ else $url = base_url('api/question'); ?>
          }
       }
    };
-   var editor_choices = [];
-   var editor_mc_question = new Quill('#mc .quill-editor-question', set_editor);
-   var editor_essay_question = new Quill('#essay .quill-editor-question', set_editor);
-   editor_mc_question.focus();
-   editor_mc_question.setContents(editor_mc_question.clipboard.convert($('#mc [name=question]').val())); // Set default value
-   editor_essay_question.setContents(editor_essay_question.clipboard.convert($('#essay [name=question]').val())); // Set default value
-   for (let index = 0; index < 5; index++) {
-      if ($('.quill-editor-' + index).attr('class') === undefined) {
-         continue;
-      }
-      editor_choices.push(new Quill('.quill-editor-' + index, set_editor));
-      editor_choices[index].setContents(editor_choices[index].clipboard.convert($('.choices textarea').eq(index).val())); // Set default value
-   }
-   editor_mc_question.on('text-change', function() {
-      // Update value question every text change
-      $('#mc [name=question]').val(editor_mc_question.root.innerHTML);
-   })
-   editor_essay_question.on('text-change', function() {
-      // Update value question every text change
-      $('#essay [name=question]').val(editor_essay_question.root.innerHTML);
-   })
-   editor_choices.forEach(function(val, index) {
-      editor_choices[index].on('text-change', function() {
+   $('.add-question .all-editor').each(function(index, obj) {
+      var this_editor = $(this);
+      all_editor.push(new Quill(obj, set_editor));
+      all_editor[index].setContents(all_editor[index].clipboard.convert(this_editor.siblings('textarea').val())); // Set default value
+      all_editor[index].on('text-change', function(delta) {
          // Update value choices every text change
-         $('.choices textarea').eq(index).val(editor_choices[index].root.innerHTML);
+         this_editor.siblings('textarea').val(all_editor[index].root.innerHTML);
       })
-   })
-   $(document).on('click', '.btn-plus', function() {
-      var total_index = $('.choices').find('.form-group').length;
-      if (total_index == 5) {
-         return false;
-      }
-      var tmp_choice = $('#tmp-choice').clone();
-      tmp_choice.removeAttr('id');
-      tmp_choice.find('textarea').attr('name', 'choices[' + total_index + ']');
-      tmp_choice.find('.quill-editor').attr('class', 'quill-editor-' + total_index);
-      tmp_choice.find('[name=key]').val(total_index).attr('id', 'choice-' + total_index);
-      tmp_choice.find('.custom-control-label').attr('for', 'choice-' + total_index);
-      $('.choices').append(tmp_choice);
-      $('.total-choices').text(total_index + 1);
-      new Quill('.quill-editor-' + total_index, set_editor);
-   })
-   $(document).on('click', '.btn-minus', function() {
-      var total_index = $('.choices').find('.form-group').length;
-      if (total_index == 2) {
-         return false;
-      }
-      $('.total-choices').text(total_index - 1);
-      $('.choices > .form-group').eq(total_index - 1).remove();
    })
    $(document).on('submit', '.add-question', function(e) {
       e.preventDefault();
@@ -278,7 +253,7 @@ else $url = base_url('api/question'); ?>
       var form = $(this);
       var data = $(this).serialize();
       $.ajax({
-         url: "<?= $url ?>",
+         url: "<?= base_url('api/question') ?>",
          type: "post",
          dataType: "json",
          data: data,
@@ -327,6 +302,36 @@ else $url = base_url('api/question'); ?>
          }
       })
       return false;
+   })
+   $(document).on('click', '.btn-plus', function() {
+      var tmp_choice = $('#tmp-choice').clone();
+      var columns = $('#choices').data('columns');
+      if (columns >= 5) {
+         // Maximun choices
+         return false;
+      }
+      tmp_choice.find('.form-group').data('index', columns);
+      tmp_choice.find('textarea').attr('name', 'choice[' + columns + ']');
+      tmp_choice.find('textarea').prop('disabled', false);
+      tmp_choice.find('strong').text(abcde[columns]);
+      tmp_choice.find('input').val(columns);
+      tmp_choice.find('input').attr('id', 'choice-' + columns);
+      tmp_choice.find('label').attr('for', 'choice-' + columns);
+      $('#choices').append(tmp_choice.html());
+      $('#choices').data('columns', columns + 1);
+      $('.total-choice').text(columns + 1);
+      console.log($('#choices').find('.all-editor')[columns])
+      all_editor[columns] = new Quill($('#choices').find('.all-editor')[columns], set_editor);
+   })
+   $(document).on('click', '.btn-minus', function() {
+      var columns = $('#choices').data('columns');
+      if (columns <= 2) {
+         // Minimum choices
+         return false;
+      }
+      $('#choices').find('.form-group').last().remove();
+      $('#choices').data('columns', columns - 1);
+      $('.total-choice').text(columns - 1);
    })
    $('body').tooltip({
       selector: ".btn-minus, .btn-plus",
