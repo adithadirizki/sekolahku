@@ -30,10 +30,10 @@ class BaseController extends Controller
 	 */
 	use ResponseTrait;
 	protected $helpers = [];
-	protected $jwt;
-	protected $private_key_jwt;
-	protected $username;
-	protected $role;
+	public $jwt;
+	public $private_key_jwt;
+	public $username;
+	public $role;
 
 	/**
 	 * Constructor.

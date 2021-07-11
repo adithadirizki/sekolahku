@@ -34,8 +34,10 @@ $routes->setAutoRoute(true);
 $routes->get('/', 'Home::index');
 // $routes->post('api/user/account/create', 'API\User::create_account');
 $routes->resource('question');
-$routes->group('api', ['namespace' => 'App\Controllers\API'], function($routes)
-{
+$routes->get('bankquestion/(:num)/question/add', 'Bankquestion::add_question/$1');
+$routes->get('bankquestion/(:num)/question/new', 'Bankquestion::new_question/$1');
+$routes->resource('bankquestion', ['only' => ['show']]);
+$routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes) {
 	// $routes->post('auth/login', 'Auth::login'); // for webserver
 	$routes->resource('classgroup');
 	$routes->resource('classes');
@@ -43,6 +45,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function($routes)
 	$routes->resource('schoolyear');
 	$routes->resource('subject');
 	$routes->resource('question');
+	$routes->post('bankquestion/(:num)/question', 'Bankquestion::create_question/$1');
+	$routes->post('bankquestion/(:num)/question/(:num)', 'Bankquestion::show_question/$1/$2');
+	$routes->delete('bankquestion/(:num)/question/(:num)', 'Bankquestion::delete_question/$1/$2');
 	$routes->resource('bankquestion');
 });
 // $routes->resource('api/classes', ['controller' => 'API\Classes']);

@@ -11,11 +11,17 @@ class Question extends BaseController
    use ResponseTrait;
    protected $m_question;
    protected $rules = [
-      "question_type" => "required|in_list[mc,essay]"
+      "question_type" => "required|in_list[mc,essay]",
+      "question_text" => "required|striptags"
    ];
    protected $errors = [
       "question_type" => [
-         "required" => "Tipe Soal harus diisi."
+         "required" => "Tipe Soal harus diisi.",
+         "in_list" => "Tipe Soal tidak valid."
+      ],
+      "question_text" => [
+         "required" => "Pertanyaan harus diisi.",
+         "striptags" => "Pertanyaan harus diisi."
       ]
    ];
 
@@ -26,45 +32,22 @@ class Question extends BaseController
 
    public function create()
    {
-      $validation = \Config\Services::validation();
-      $validation->setRules($this->rules, $this->errors);
       parse_str(file_get_contents('php://input'), $input);
-      if ($validation->withRequest($this->request)->run() == false) {
+      if ($errors = $this->question_validation($input, $this->request)) {
          return $this->respond([
-            "message" => "Failed to save changes.",
+            "message" => "Failed to added.",
             "status" => 400,
-            "errors" => $validation->getErrors()
+            "errors" => $errors
          ]);
       }
-      // Validate question_text
-      $validation->setError("question_text", "Pertanyaan harus diisi.");
       $question_type = htmlentities($input['question_type'], ENT_QUOTES, 'UTF-8');
+      $question_text = htmlentities($input['question_text'], ENT_QUOTES, 'UTF-8');
       $choices = [];
       if ($question_type == 'mc') {
-         // Add more validation
-         $num_choice = count($input['choice']);
-         if ($num_choice < 2) {
-            $validation->setError("choice", "Pilihan harus lebih dari 1.");
-         }
          foreach ($input['choice'] as $key => $value) {
             $choices[] = htmlentities($value, ENT_QUOTES, 'UTF-8');
-            if (strip_tags($value) == '') {
-               $validation->setError("choice[$key]", "Pilihan harus diisi.");
-            }
          }
-         $validation->setRule('answer_key', null, "required|regex_match[/^[0-" . ($num_choice - 1) . "]/]", [
-            "required" => "Kunci Jawaban harus diisi.",
-            "regex_match" => "Kunci Jawaban tidak valid."
-         ]);
       }
-      if ($validation->withRequest($this->request)->run() == false) {
-         return $this->respond([
-            "message" => "Failed to save changes.",
-            "status" => 400,
-            "errors" => $validation->getErrors()
-         ]);
-      }
-      $question_text = htmlentities($input['question_text'], ENT_QUOTES, 'UTF-8');
       $answer_key = $input['answer_key'] ? htmlentities($input['answer_key'], ENT_QUOTES, 'UTF-8') : null;
       $data = [
          "question_type" => $question_type,
@@ -90,45 +73,22 @@ class Question extends BaseController
 
    public function update($question_id)
    {
-      $validation = \Config\Services::validation();
-      $validation->setRules($this->rules, $this->errors);
       parse_str(file_get_contents('php://input'), $input);
-      if ($validation->withRequest($this->request)->run() == false) {
+      if ($errors = $this->question_validation($input, $this->request)) {
          return $this->respond([
             "message" => "Failed to save changes.",
             "status" => 400,
-            "errors" => $validation->getErrors()
+            "errors" => $errors
          ]);
       }
-      // Validate question_text
-      $validation->setError("question_text", "Pertanyaan harus diisi.");
       $question_type = htmlentities($input['question_type'], ENT_QUOTES, 'UTF-8');
+      $question_text = htmlentities($input['question_text'], ENT_QUOTES, 'UTF-8');
       $choices = [];
       if ($question_type == 'mc') {
-         // Add more validation
-         $num_choice = count($input['choice']);
-         if ($num_choice < 2) {
-            $validation->setError("choice", "Pilihan harus lebih dari 1.");
-         }
          foreach ($input['choice'] as $key => $value) {
             $choices[] = htmlentities($value, ENT_QUOTES, 'UTF-8');
-            if (strip_tags($value) == '') {
-               $validation->setError("choice[$key]", "Pilihan harus diisi.");
-            }
          }
-         $validation->setRule('answer_key', null, "required|regex_match[/^[0-" . ($num_choice - 1) . "]/]", [
-            "required" => "Kunci Jawaban harus diisi.",
-            "regex_match" => "Kunci Jawaban tidak valid."
-         ]);
       }
-      if ($validation->withRequest($this->request)->run() == false) {
-         return $this->respond([
-            "message" => "Failed to save changes.",
-            "status" => 400,
-            "errors" => $validation->getErrors()
-         ]);
-      }
-      $question_text = htmlentities($input['question_text'], ENT_QUOTES, 'UTF-8');
       $answer_key = $input['answer_key'] ? htmlentities($input['answer_key'], ENT_QUOTES, 'UTF-8') : null;
       $data = [
          "question_text" => $question_text,
@@ -173,5 +133,41 @@ class Question extends BaseController
             "error" => true
          ]);
       }
+   }
+
+   public function question_validation($input, $request)
+   {
+      $rules = [
+         "question_type" => "required|in_list[mc,essay]",
+         "question_text" => "required|striptags"
+      ];
+      $errors = [
+         "question_type" => [
+            "required" => "Tipe Soal harus diisi.",
+            "in_list" => "Tipe Soal tidak valid."
+         ],
+         "question_text" => [
+            "required" => "Pertanyaan harus diisi.",
+            "striptags" => "Pertanyaan harus diisi."
+         ]
+      ];
+      $validation = \Config\Services::validation();
+      $validation->setRules($rules, $errors);
+      if (isset($input['question_type']) && $input['question_type'] == 'mc') {
+         // Add more validation
+         $validation->setRule('choice', null, "required|striptags", [
+            "required" => "Pilihan harus diisi.",
+            "striptags" => "Pilihan harus diisi.",
+            "choicelength" => "Pilihan harus lebih dari 1."
+         ]);
+         $validation->setRule('answer_key', null, "required|anskey", [
+            "required" => "Kunci Jawaban harus diisi.",
+            "anskey" => "Kunci Jawaban tidak valid."
+         ]);
+      }
+      if ($validation->withRequest($request)->run() == false) {
+         return $validation->getErrors();
+      }
+      return false;
    }
 }

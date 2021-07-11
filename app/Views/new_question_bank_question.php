@@ -248,7 +248,7 @@
       var form = $(this);
       var data = $(this).serialize();
       $.ajax({
-         url: "<?= base_url('api/question') ?>",
+         url: "<?= base_url('api/bankquestion/' . $data->bank_question_id . '/question') ?>",
          type: "post",
          dataType: "json",
          data: data,

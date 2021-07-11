@@ -38,8 +38,8 @@ class Auth extends BaseController
 					"role" => $result->data->role
 				]
 			];
-			$token = $this->jwt::encode($payload, $this->private_key_jwt);
-			$result->response['token'] = $token;
+			$jwt_token = $this->jwt::encode($payload, $this->private_key_jwt);
+			$result->response['token'] = $jwt_token;
 
 			// Cookie Remember me for 6 hours
 			if (isset($_POST['remember_me'])) {
@@ -68,7 +68,7 @@ class Auth extends BaseController
 				"fullname" => $result->data->fullname,
 				"email" => $result->data->email,
 				"role" => $result->data->role,
-				"token" => $token,
+				"token" => $jwt_token,
 				"hasLogin" => true
 			]);
 		}

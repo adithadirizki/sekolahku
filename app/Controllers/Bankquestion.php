@@ -59,7 +59,7 @@ class Bankquestion extends BaseController
 		}
 		$data = [
 			"title" => "Detail Bank Soal",
-			"url_active" => "bank_question",
+			"url_active" => "bankquestion",
 			"data" => $result
 		];
 		return view('detail_bank_question', $data);
@@ -88,5 +88,31 @@ class Bankquestion extends BaseController
 			"data" => $result
 		];
 		return view('edit_bank_question', $data);
+	}
+
+	public function add_question($bank_question_id)
+	{
+		$questions = $this->m_bank_question->questions($bank_question_id);
+		$data = [
+			"title" => "Tambah Soal",
+			"url_active" => "question",
+			"data" => (object) [
+				"bank_question_id" => $bank_question_id,
+				"questions" => json_decode($questions)
+			]
+		];
+		return view('add_question_bank_question', $data);
+	}
+
+	public function new_question($bank_question_id)
+	{
+		$data = [
+			"title" => "Tambah Soal",
+			"url_active" => "question",
+			"data" => (object) [
+				"bank_question_id" => $bank_question_id
+			]
+		];
+		return view('new_question_bank_question', $data);
 	}
 }

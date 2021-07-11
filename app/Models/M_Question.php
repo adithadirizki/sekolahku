@@ -9,6 +9,13 @@ class M_Question extends Model
    protected $table = 'tb_question';
 	protected $primaryKey = 'question_id';
    protected $allowedFields = ['question_type', 'question_text', 'choice', 'answer_key', 'created_by'];
+
+   public function last_question_id()
+   {
+      $this->select('question_id');
+      $this->orderBy('question_id DESC');
+      return $this->get()->getFirstRow('object')->question_id;
+   }
    
    public function total_question()
    {

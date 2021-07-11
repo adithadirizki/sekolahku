@@ -2,12 +2,11 @@
 
 namespace App\Filters;
 
+use App\Controllers\BaseController;
 use App\Models\M_Auth;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Filters\FilterInterface;
-use DateTime;
-use Firebase\JWT\JWT;
 
 class Cookie implements FilterInterface
 {
@@ -48,12 +47,13 @@ class Cookie implements FilterInterface
                   "role" => $result->role
                ]
             ];
-            $token = JWT::encode($payload, $this->m_auth->private_key_jwt());
+            $baseController = new BaseController;
+            $jwt_token = $baseController->jwt::encode($payload, $baseController->private_key_jwt);
             session()->set([
                "username" => $result->username,
                "fullname" => $result->fullname,
                "email" => $result->email,
-               "token" => $token,
+               "token" => $jwt_token,
                "role" => $result->role,
                "photo" => $result->photo,
                "hasLogin" => true

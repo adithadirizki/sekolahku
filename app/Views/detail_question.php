@@ -23,7 +23,7 @@
                <div class="d-flex">
                   <h5 class="mr-75"><strong><?= $abcde[$key] ?></strong>.</h5>
                   <div class="ql-snow mb-1">
-                     <div class="question-text ql-editor p-0"><?= html_entity_decode($value, ENT_QUOTES, 'UTF-8') ?></div>
+                     <div class="choice-text ql-editor p-0"><?= html_entity_decode($value, ENT_QUOTES, 'UTF-8') ?></div>
                   </div>
                </div>
             <?php } ?>
