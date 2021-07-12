@@ -45,6 +45,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->resource('schoolyear');
 	$routes->resource('subject');
 	$routes->resource('question');
+	$routes->put('bankquestion/(:num)/question', 'Bankquestion::add_question/$1');
 	$routes->post('bankquestion/(:num)/question', 'Bankquestion::create_question/$1');
 	$routes->post('bankquestion/(:num)/question/(:num)', 'Bankquestion::show_question/$1/$2');
 	$routes->delete('bankquestion/(:num)/question/(:num)', 'Bankquestion::delete_question/$1/$2');

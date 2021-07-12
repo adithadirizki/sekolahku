@@ -23,8 +23,8 @@
    <div class="col-lg-8 m-auto">
       <div class="card">
          <div id="question" class="card-body" data-question_type="" data-number_question="">
-            <div class="btn btn-sm btn-outline-primary question-type"></div>
-            <div class="btn btn-sm btn-primary font-weight-bold number-question"></div>
+            <div class="btn btn-sm btn-outline-primary question-type">Tipe Soal</div>
+            <div class="btn btn-sm btn-primary font-weight-bold">No. <span class="number-question"></span></div>
             <a href="javascript:void(0)" class="btn btn-sm btn-info edit-question">
                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -38,12 +38,14 @@
                </svg>
             </button>
             <div class="mb-2"></div>
-            <div class="question-text">
-               <center><em>Tidak ada soal</em></center>
+            <div class="ql-snow">
+               <div class="question-text ql-editor p-0">
+                  <center><em>Tidak ada soal</em></center>
+               </div>
             </div>
             <div id="choices" class="my-2"></div>
             <span class="h5">Kunci Jawaban : </span>
-            <span class="answer-key"></span>
+            <span class="answer-key"><em>Tidak ada</em></span>
             <div class="d-flex justify-content-between mt-3">
                <button type="button" class="btn btn-primary btn-prev">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left">
@@ -59,9 +61,9 @@
          </div>
       </div>
       <div id="tmp-choice" class="d-none">
-         <div class="d-flex">
+         <div class="d-flex mb-50">
             <h5 class="mr-75"><strong></strong>.</h5>
-            <div class="ql-snow mb-1">
+            <div class="ql-snow">
                <div class="choice-text ql-editor p-0"></div>
             </div>
          </div>
@@ -80,9 +82,12 @@
                </div>
             </div>
             <h4 class="mb-50">Daftar Soal</h4>
-            <div class="d-flex flex-wrap question-list">
+            <div class="question-list">
                <?php
                $questions = json_decode($data->questions);
+               if (count($questions) === 0) {
+                  echo '<center><em>Tidak ada soal</em></center>';
+               }
                foreach ($questions as $key => $value) {
                ?>
                   <button class="btn btn-outline-success mb-50 mr-25"><?= $key + 1 ?></button>
@@ -167,9 +172,7 @@
                   if (data.question_type == 'mc') {
                      $('#question').find('.answer-key').text(abcde[data.answer_key]);
                   } else if (data.question_type == 'essay') {
-                     if (data.answer_key == null) {
-                        $('#question').find('.answer-key').html('<em>Tidak ada</em>');
-                     } else {
+                     if (data.answer_key) {
                         $('#question').find('.answer-key').html('<br/>' + $.parseHTML(data.answer_key)[0].data);
                      }
                   }

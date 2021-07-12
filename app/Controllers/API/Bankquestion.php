@@ -136,6 +136,29 @@ class Bankquestion extends BaseController
 
    public function add_question($bank_question_id)
    {
+      parse_str(file_get_contents('php://input'), $input);
+      $question_ids = isset($input['question_id']) ? $input['question_id'] : [];
+      $question_ids = array_map(function ($v) {
+         return htmlentities($v, ENT_QUOTES, 'UTF-8');
+      }, $question_ids);
+      $questions = json_decode($this->m_bank_question->questions($bank_question_id));
+      $questions = array_merge($questions, $question_ids);
+      $questions = array_reverse($questions);
+      $questions = array_unique($questions);
+      $questions = array_reverse($questions);
+      $result = $this->m_bank_question->update_question($bank_question_id, $questions);
+      if ($result) {
+         return $this->respond([
+            "message" => "Changes saved successfully.",
+            "status" => 200,
+            "error" => false
+         ]);
+      }
+      return $this->respond([
+         "message" => "Failed to save changes.",
+         "status" => 400,
+         "error" => true
+      ]);
    }
 
    public function create_question($bank_question_id)

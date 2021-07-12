@@ -32,7 +32,7 @@ class M_Bank_Question extends Model
 
    public function bank_question_data($where, $keyword, $limit, $offset, $orderby)
    {
-      $this->select("bank_question_id,bank_question_title,JSON_LENGTH(questions) total_question,fullname created");
+      $this->select("bank_question_id,bank_question_title,questions,JSON_LENGTH(questions) total_question,fullname created");
       $this->join('tb_user', 'username = created_by');
       $this->groupStart();
       $this->like('bank_question_title', $keyword);
@@ -96,9 +96,10 @@ class M_Bank_Question extends Model
    {
       if (is_array($question_id)) {
          // Replace all
-         $this->set('questions', json_encode($question_id));
+         $this->set('questions', json_encode($question_id, JSON_NUMERIC_CHECK));
       } else {
          // Append
+         $question_id = (int) $question_id;
          $this->set('questions', "JSON_ARRAY_APPEND(questions, '$', $question_id)", false);
       }
       $this->where('bank_question_id', $bank_question_id);

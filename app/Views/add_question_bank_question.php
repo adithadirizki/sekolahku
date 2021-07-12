@@ -4,9 +4,6 @@
 <link rel="stylesheet" href="<?= base_url('app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css') ?>">
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
-<div class="alert alert-primary" role="alert">
-   <div class="alert-body"><strong>Penting!</strong> Soal yang bertanda <div class="badge badge-pill badge-light-danger"><i data-feather="x"></i></div> soal yang sudah digunakan dan tidak dapat dipilih kembali.</div>
-</div>
 <div class="card">
    <div class="card-header">
       <div class="card-title">Pilih Soal</div>
@@ -23,13 +20,16 @@
    </div>
    <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="question-list" aria-labelledby="question-list-tab" aria-expanded="true">
-         <div class="form-group px-2">
-            <label for="question_type">Tipe Soal</label>
-            <select name="question_type" id="question_type" class="form-control w-auto">
-               <option value=""> -- Pilih Tipe Soal -- </option>
-               <option value="mc">Pilihan Ganda</option>
-               <option value="essay">Essai</option>
-            </select>
+         <div class="d-flex align-items-center justify-content-between px-1">
+            <div class="form-group">
+               <label for="question_type">Tipe Soal</label>
+               <select name="question_type" id="question_type" class="form-control w-auto">
+                  <option value=""> -- Pilih Tipe Soal -- </option>
+                  <option value="mc">Pilihan Ganda</option>
+                  <option value="essay">Essai</option>
+               </select>
+            </div>
+            <button class="btn btn-success btn-add-question ml-1"><i data-feather="check-circle"></i>&nbsp; Simpan Soal</button>
          </div>
          <div class="card-datatable table-responsive">
             <table class="table table-hover table-striped table-bordered" id="tb_question_list">
@@ -39,13 +39,15 @@
                      <th>Tipe Soal</th>
                      <th>Pertanyaan</th>
                      <th>Dibuat Oleh</th>
-                     <th>Status</th>
                   </tr>
                </thead>
             </table>
          </div>
       </div>
       <div class="tab-pane" id="bank-question-list" role="tabpanel" aria-labelledby="bank-question-list-tab" aria-expanded="false">
+         <div class="text-right px-1">
+            <button class="btn btn-success btn-add-question ml-1"><i data-feather="check-circle"></i>&nbsp; Simpan Soal</button>
+         </div>
          <div class="card-datatable table-responsive">
             <table class="table table-hover table-striped table-bordered" id="tb_bank_question_list">
                <thead class="text-center">
@@ -54,7 +56,6 @@
                      <th>Nama Bank Soal</th>
                      <th>Jumlah Soal</th>
                      <th>Dibuat Oleh</th>
-                     <th>Status</th>
                   </tr>
                </thead>
             </table>
@@ -71,7 +72,9 @@
 <?= $this->section('customJS') ?>
 <script>
    $(document).ready(function() {
-      var question_ids = <?= json_encode((array) $data->questions) ?>;
+      var question_ids = [];
+      var bank_question_ids = [];
+      var checkbox_disabled = <?= json_encode((array) $data->questions) ?>;
       var csrf_token = "<?= csrf_hash() ?>";
       var tb_question_list = $('#tb_question_list').DataTable({
          dom: '<"card-header py-0"<"dt-action-buttons"B>><"d-flex justify-content-between align-items-center mx-1 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-1 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
@@ -96,20 +99,13 @@
          columns: [{
                "data": "question_id",
                "mRender": function(question_id, row, data, meta) {
-                  if ($.inArray(parseInt(question_id), question_ids) == -1) {
-                     return '<div class="custom-control custom-checkbox">' +
-                        '<input type="checkbox" class="custom-control-input dt-checkboxes" id="checkbox' + question_id + '">' +
-                        '<label class="custom-control-label" for="checkbox' + question_id + '"></label>' +
-                        '</div>';
-                  } else {
-                     return '<div class="custom-control custom-checkbox">' +
-                        '<input type="checkbox" class="custom-control-input dt-checkboxes" id="checkbox' + question_id + '" disabled>' +
-                        '<label class="custom-control-label" for="checkbox' + question_id + '"></label>' +
-                        '</div>';
-                  }
+                  return '<div class="custom-control custom-checkbox">' +
+                     '<input type="checkbox" class="custom-control-input dt-checkboxes" id="checkbox' + question_id + '" value="' + question_id + '">' +
+                     '<label class="custom-control-label" for="checkbox' + question_id + '"></label>' +
+                     '</div>';
                },
                "checkboxes": {
-                  selectAllRender: '<div class="custom-control custom-checkbox"> <input class="custom-control-input" type="checkbox" value="" id="checkboxSelectAll" /><label class="custom-control-label" for="checkboxSelectAll"></label></div>'
+                  selectAllRender: '<div class="custom-control custom-checkbox"> <input class="custom-control-input" type="checkbox" value="" id="checkboxSelectAll1" /><label class="custom-control-label" for="checkboxSelectAll1"></label></div>'
                },
                "className": "text-center"
             },
@@ -132,24 +128,16 @@
             },
             {
                "data": "created"
-            },
-            {
-               "data": "question_id",
-               "mRender": function(question_id, row, data) {
-                  if ($.inArray(parseInt(question_id), question_ids) == -1) {
-                     return '<div class="badge badge-pill badge-light-success">' + feather.icons['check'].toSvg({
-                        class: 'font-medium-2'
-                     }) + '</div>';
-                  } else {
-                     return '<div class="badge badge-pill badge-light-danger">' + feather.icons['x'].toSvg({
-                        class: 'font-medium-2'
-                     }) + '</div>';
-                  }
-               },
-               "className": "text-center",
-               "orderable": false
             }
-         ]
+         ],
+         initComplete: function(settings) {
+            var api = this.api();
+            api.cells(
+               api.rows(function(idx, data, node) {
+                  return $.inArray(parseInt(data.question_id), checkbox_disabled) > -1 ? true : false;
+               }).indexes(), 0
+            ).checkboxes.disable();
+         }
       })
       var tb_bank_question_list = $('#tb_bank_question_list').DataTable({
          dom: '<"card-header py-0"<"dt-action-buttons"B>><"d-flex justify-content-between align-items-center mx-1 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-1 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
@@ -173,7 +161,13 @@
          columns: [{
                "data": "bank_question_id",
                "mRender": function(data, row, type, meta) {
-                  return meta.row + meta.settings._iDisplayStart + 1;
+                  return '<div class="custom-control custom-checkbox">' +
+                     '<input type="checkbox" class="custom-control-input dt-checkboxes" id="checkbox' + data + '">' +
+                     '<label class="custom-control-label" for="checkbox' + data + '"></label>' +
+                     '</div>';
+               },
+               "checkboxes": {
+                  selectAllRender: '<div class="custom-control custom-checkbox"> <input class="custom-control-input" type="checkbox" value="" id="checkboxSelectAll2" /><label class="custom-control-label" for="checkboxSelectAll2"></label></div>'
                },
                "className": "text-center"
             },
@@ -186,88 +180,120 @@
             },
             {
                "data": "created"
-            },
-            {
-               "data": "bank_question_id",
-               "mRender": function(bank_question_id, row, data) {
-                  if ($.inArray(parseInt(bank_question_id), question_ids) == -1) {
-                     return '<div class="badge badge-pill badge-light-success p-75">' + feather.icons['check-circle'].toSvg() + ' Pilih</div>';
-                  } else {
-                     return '<div class="badge badge-pill badge-light-danger">' + feather.icons['x'].toSvg({
-                        class: 'font-medium-2'
-                     }) + '</div>';
-                  }
-               },
-               "className": "text-center",
-               "orderable": false
             }
          ]
       })
-      $(document).on('change', '[name=question_type]', function() {
-         tb_question_list.ajax.reload();
-      })
-      $(document).on('click', '.delete-question', function() {
-         var question_id = $(this).parents('.dropdown').data('question_id');
-         Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "Cancel",
-            customClass: {
-               confirmButton: "btn btn-primary",
-               cancelButton: "btn btn-outline-danger ml-1"
+
+      function submit_changes(data) {
+         data = Array.from(new Set(data));
+         $.ajax({
+            url: "<?= base_url('api/bankquestion/' . $data->bank_question_id . '/question') ?>",
+            type: "put",
+            dataType: "json",
+            data: {
+               question_id: data
             },
-            buttonsStyling: false
-         }).then((result) => {
-            if (result.value) {
-               $.ajax({
-                  url: "<?= base_url('api/question') ?>/" + question_id,
-                  type: "delete",
-                  dataType: "json",
-                  headers: {
-                     Authorization: "<?= session()->token ?>"
-                  },
-                  beforeSend: function() {
-                     $.blockUI(set_blockUI);
-                  },
-                  success: function(result) {
-                     $.unblockUI();
-                     if (result.error == false) {
-                        Swal.fire({
-                           title: "Success!",
-                           text: result.message,
-                           icon: "success",
-                           showConfirmButton: false,
-                           timer: 3000
-                        }).then(function() {
-                           tb_question_list.ajax.reload();
-                        })
-                     } else {
-                        Swal.fire({
-                           title: "Failed!",
-                           text: result.message,
-                           icon: "error",
-                           showConfirmButton: false,
-                           timer: 3000
-                        })
-                     }
-                  },
-                  error: function() {
-                     $.unblockUI();
-                     Swal.fire({
-                        title: "Error!",
-                        text: "An error occurred on the server.",
-                        icon: "error",
-                        showConfirmButton: false,
-                        timer: 3000
-                     })
-                  }
+            headers: {
+               Authorization: "<?= session()->token ?>"
+            },
+            beforeSend: function() {
+               $.blockUI(set_blockUI);
+            },
+            success: function(result) {
+               $.unblockUI();
+               if (result.error == false) {
+                  Swal.fire({
+                     title: "Success!",
+                     text: result.message,
+                     icon: "success",
+                     showConfirmButton: false,
+                     timer: 3000
+                  }).then(function() {
+                     window.history.back();
+                  })
+               } else {
+                  Swal.fire({
+                     title: "Failed!",
+                     text: result.message,
+                     icon: "error",
+                     showConfirmButton: false,
+                     timer: 3000
+                  })
+               }
+            },
+            error: function() {
+               $.unblockUI();
+               Swal.fire({
+                  title: "Error!",
+                  text: "An error occurred on the server.",
+                  icon: "error",
+                  showConfirmButton: false,
+                  timer: 3000
                })
             }
          })
+      }
+
+      $(document).on('change', '[name=question_type]', function() {
+         tb_question_list.ajax.reload();
       })
+
+      // Question List
+      $(document).on('change', '#checkboxSelectAll1', function() {
+         var checkboxAll = $(this);
+         var nodes = tb_question_list.column(0).nodes();
+         var data = $(nodes).find('input[type=checkbox]:enabled');
+         // console.log($(data).find('input[type=checkbox]').val());
+         // return false;
+         $.each(data, function(index, value) {
+            if (checkboxAll.is(':checked')) {
+               question_ids.push(parseInt($(this).val()));
+            } else {
+               question_ids.splice(question_ids.indexOf($(this).val()), 1);
+            }
+         })
+      })
+      $(document).on('change', '#tb_question_list .dt-checkboxes', function() {
+         var value = parseInt($(this).val());
+         if ($(this).is(':checked')) {
+            question_ids.push(value);
+         } else {
+            question_ids.splice(question_ids.indexOf(value), 1);
+         }
+      })
+      $(document).on('click', '#question-list .btn-add-question', function() {
+         submit_changes(question_ids);
+      })
+      // End Question List
+
+      // Bank Question List
+      $(document).on('change', '#checkboxSelectAll2', function() {
+         var checkboxAll = $(this);
+         var data = tb_bank_question_list.rows().data();
+         $.each(data, function(index, value) {
+            if (checkboxAll.is(':checked')) {
+               $.merge(bank_question_ids, JSON.parse(value.questions));
+            } else {
+               bank_question_ids = bank_question_ids.filter(function(x) {
+                  return JSON.parse(value.questions).indexOf(x) < 0;
+               });
+            }
+         })
+      })
+      $(document).on('change', '#tb_bank_question_list .dt-checkboxes', function() {
+         var data = tb_bank_question_list.row($(this).closest('tr')).data();
+         if ($(this).is(':checked')) {
+            $.merge(bank_question_ids, JSON.parse(data.questions));
+         } else {
+            bank_question_ids = bank_question_ids.filter(function(x) {
+               return JSON.parse(data.questions).indexOf(x) < 0;
+            });
+         }
+      })
+      $(document).on('click', '#bank-question-list .btn-add-question', function() {
+         submit_changes(bank_question_ids);
+      })
+      // End Bank Question List
    })
 </script>
 <?= $this->endSection() ?>
