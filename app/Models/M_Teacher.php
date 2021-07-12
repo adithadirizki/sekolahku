@@ -48,4 +48,18 @@ class M_Teacher extends Model
       $this->limit($limit, $offset);
       return $this->get()->getResultObject();
    }
+
+   public function teacher($username)
+   {
+      $this->where('teacher_username', $username);
+      return $this->get()->getFirstRow('object');
+   }
+
+   public function teacher_account($username)
+   {
+      $this->select('tb_teacher.*,photo,fullname,email,password,is_active');
+      $this->join('tb_user', 'username = teacher_username');
+      $this->where('teacher_username', $username);
+      return $this->get()->getFirstRow('object');
+   }
 }

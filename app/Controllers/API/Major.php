@@ -4,11 +4,9 @@ namespace App\Controllers\API;
 
 use App\Controllers\BaseController;
 use App\Models\M_Major;
-use CodeIgniter\API\ResponseTrait;
 
 class Major extends BaseController
 {
-	use ResponseTrait;
 	protected $m_major;
    protected $rules = [
       "major_name" => "required",

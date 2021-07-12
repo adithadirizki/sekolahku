@@ -4,11 +4,9 @@ namespace App\Controllers\API;
 
 use App\Controllers\BaseController;
 use App\Models\M_Question;
-use CodeIgniter\API\ResponseTrait;
 
 class Question extends BaseController
 {
-   use ResponseTrait;
    protected $m_question;
    protected $rules = [
       "question_type" => "required|in_list[mc,essay]",

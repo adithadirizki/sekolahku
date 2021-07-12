@@ -4,11 +4,9 @@ namespace App\Controllers\API;
 
 use App\Controllers\BaseController;
 use App\Models\M_School_Year;
-use CodeIgniter\API\ResponseTrait;
 
 class Schoolyear extends BaseController
 {
-	use ResponseTrait;
 	protected $m_school_year;
    protected $rules = [
       "school_year_title" => "required",

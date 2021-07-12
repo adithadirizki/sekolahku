@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\M_Teacher;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Teacher extends BaseController
 {
@@ -56,5 +57,19 @@ class Teacher extends BaseController
 			"url_active" => "teacher"
 		];
 		return view('add_teacher', $data);
+	}
+
+	public function edit($username)
+	{
+		$result = $this->m_teacher->teacher_account($username);
+		if (!$result) {
+			throw new PageNotFoundException();
+		}
+		$data = [
+			"title" => "Edit Guru",
+			"url_active" => "teacher",
+			"data" => $result
+		];
+		return view('edit_teacher', $data);
 	}
 }

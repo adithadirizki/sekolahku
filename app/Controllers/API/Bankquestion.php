@@ -5,11 +5,9 @@ namespace App\Controllers\API;
 use App\Controllers\BaseController;
 use App\Models\M_Bank_Question;
 use App\Models\M_Question;
-use CodeIgniter\API\ResponseTrait;
 
 class Bankquestion extends BaseController
 {
-   use ResponseTrait;
    protected $m_question;
    protected $m_bank_question;
    protected $rules = [

@@ -134,7 +134,7 @@
                      </div>
                   </div>
                </div>
-               <button type="submit" class="btn btn-primary waves-effect waves-float waves-light float-right">Tambahkan</button>
+               <button type="submit" class="btn btn-primary float-right">Tambahkan</button>
             </div>
          </div>
       </form>

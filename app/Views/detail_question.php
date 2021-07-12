@@ -37,7 +37,7 @@
 
       <?php } elseif ($data->question_type == 'essay') { ?>
          <h5>Kunci Jawaban :</h5>
-         <div class="answer-key"><?= $data->answer_key ? html_entity_decode($data->answer_key, ENT_QUOTES, 'UTF-8') : '<small><em>Tidak ada</em></small>' ?></div>
+         <div class="answer-key"><?= $data->answer_key ? $data->answer_key : '<small><em>Tidak ada</em></small>' ?></div>
       <?php } ?>
 
    </div>

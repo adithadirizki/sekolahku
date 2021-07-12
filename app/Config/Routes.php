@@ -36,6 +36,7 @@ $routes->get('/', 'Home::index');
 $routes->resource('question');
 $routes->get('bankquestion/(:num)/question/add', 'Bankquestion::add_question/$1');
 $routes->get('bankquestion/(:num)/question/new', 'Bankquestion::new_question/$1');
+$routes->resource('teacher', ['only' => ['show', 'edit']]);
 $routes->resource('bankquestion', ['only' => ['show']]);
 $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes) {
 	// $routes->post('auth/login', 'Auth::login'); // for webserver

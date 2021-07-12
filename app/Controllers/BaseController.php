@@ -31,7 +31,6 @@ class BaseController extends Controller
 	use ResponseTrait;
 	protected $helpers = [];
 	public $jwt;
-	public $private_key_jwt;
 	public $username;
 	public $role;
 
@@ -48,11 +47,11 @@ class BaseController extends Controller
 		//--------------------------------------------------------------------
 		// E.g.:
 		// $this->session = \Config\Services::session();
+		
+		$this->jwt = new \Firebase\JWT\JWT;
 		if ($request->uri->getSegment(1) === 'api') {
-			$this->private_key_jwt = "adithadirizki";
-			$this->jwt = new \Firebase\JWT\JWT;
 			try {
-				$this->token = $this->jwt::decode($_SERVER['HTTP_AUTHORIZATION'], $this->private_key_jwt, ['HS256']);
+				$this->token = $this->jwt::decode($_SERVER['HTTP_AUTHORIZATION'], $_ENV['JWT_PRIVATE_KEY'], ['HS256']);
 				$this->username = $this->token->data->username;
 				$this->role = $this->token->data->role;
 			} catch (\Exception $e) {

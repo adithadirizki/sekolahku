@@ -4,11 +4,9 @@ namespace App\Controllers\API;
 
 use App\Controllers\BaseController;
 use App\Models\M_Class_Group;
-use CodeIgniter\API\ResponseTrait;
 
 class Classgroup extends BaseController
 {
-   use ResponseTrait;
    protected $m_class_group;
    protected $rules = [
       "class" => "required|is_not_unique[tb_class.class_id]",

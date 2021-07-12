@@ -49,7 +49,7 @@ class Validation
 
 	public function multiple_class_group($data)
 	{
-		$m_class = new \App\Models\M_ClassGroup();
+		$m_class = new \App\Models\M_Class_Group();
 		return $m_class->validation_multiple_class_group($data);
 	}
 

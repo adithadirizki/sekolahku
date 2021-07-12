@@ -1,27 +1,8 @@
 <?= $this->extend('template') ?>
-<?= $this->section('vendorCSS') ?>
-<link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/forms/select/select2.min.css') ?>">
-<?= $this->endSection() ?>
-<?= $this->section('customCSS') ?>
-<style>
-   .is-invalid~.select2 .select2-selection {
-      border-color: #ea5455;
-   }
-
-   .form-control.is-invalid~.select2 .select2-selection {
-      border-color: #ea5455;
-      padding-right: calc(1.45em + 0.876rem);
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23ea5455' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23ea5455' stroke='none'/%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right calc(0.3625em + 0.219rem) center;
-      background-size: calc(0.725em + 0.438rem) calc(0.725em + 0.438rem);
-   }
-</style>
-<?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="card">
    <div class="card-body">
-      <form id="add-user" enctype="multipart/form-data" onsubmit="return false;">
+      <form id="edit-user" enctype="multipart/form-data" onsubmit="return false;">
          <div class="row">
             <div class="col-md-6 mb-2">
                <div class="row">
@@ -33,28 +14,28 @@
                   </div>
                   <div class="col-12 text-center">
                      <label for="photo">
-                        <img src="<?= base_url('assets/upload/avatar-default.jpg') ?>" class="img-fluid user-avatar rounded" alt="Photo" width="120" height="120">
+                        <img src="<?= base_url('assets/upload/' . $data->photo) ?>" class="img-fluid user-avatar rounded" alt="Photo" width="120" height="120">
                         <input type="file" name="photo" id="photo" hidden accept="image/jpeg,image/png">
                      </label>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" id="username" class="form-control" name="username" placeholder="Username" required>
+                        <input type="text" id="username" class="form-control" name="username" value="<?= $data->teacher_username ?>" placeholder="Username" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
                         <label for="fullname">Nama Lengkap</label>
-                        <input type="text" id="fullname" class="form-control" name="fullname" placeholder="Nama Lengkap" required>
+                        <input type="text" id="fullname" class="form-control" name="fullname" value="<?= $data->fullname ?>" placeholder="Nama Lengkap" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
                         <label for="email">E-mail</label>
-                        <input type="email" id="email" class="form-control" name="email" placeholder="E-mail" required>
+                        <input type="email" id="email" class="form-control" name="email" value="<?= $data->email ?>" placeholder="E-mail" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
@@ -91,21 +72,28 @@
                   <div class="col-12">
                      <div class="form-group">
                         <label for="nip">NIP</label>
-                        <input type="text" id="nip" class="form-control" name="nip" placeholder="NIP" required>
+                        <input type="text" id="nip" class="form-control" name="nip" placeholder="NIP" value="<?= $data->nip ?>" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
                         <label for="birth_in">Tempat Lahir</label>
-                        <input type="text" id="birth_in" class="form-control" name="birth_in" placeholder="Tempat Lahir">
+                        <input type="text" id="birth_in" class="form-control" name="birth_in" value="<?= $data->pob ?>" placeholder="Tempat Lahir">
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
                         <label for="birth_at">Tanggal Lahir</label>
-                        <input type="date" id="birth_at" class="form-control" name="birth_at">
+                        <input type="date" id="birth_at" class="form-control" name="birth_at" value="<?= $data->dob ?>">
+                        <div class="invalid-feedback"></div>
+                     </div>
+                  </div>
+                  <div class="col-12">
+                     <div class="form-group">
+                        <label for="phone">No telp</label>
+                        <input id="phone" type="number" name="phone" class="form-control" value="<?= $data->phone ?>" placeholder="No Telp">
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
@@ -128,11 +116,11 @@
                      <div class="form-group">
                         <label class="d-block">Jenis kelamin</label>
                         <div class="custom-control custom-radio custom-control-inline">
-                           <input type="radio" id="male" name="gender" class="custom-control-input" value="male" checked required>
+                           <input type="radio" id="male" name="gender" class="custom-control-input" value="male" <?= $data->gender == 'male' ? 'checked' : null ?> required>
                            <label class="custom-control-label" for="male">Laki - laki</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                           <input type="radio" id="female" name="gender" class="custom-control-input" value="female">
+                           <input type="radio" id="female" name="gender" class="custom-control-input" value="female" <?= $data->gender == 'female' ? 'checked' : null ?>>
                            <label class="custom-control-label" for="female">Perempuan</label>
                         </div>
                         <div class="invalid-feedback"></div>
@@ -140,41 +128,25 @@
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="class_group">Kelas</label>
-                        <select id="class_group" class="form-control" name="class_group"></select>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="phone">No telp</label>
-                        <input id="phone" type="number" name="phone" class="form-control" placeholder="No Telp">
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
                         <label for="address-1">Alamat</label>
-                        <textarea class="form-control" name="address" id="address" cols="10" rows="4" placeholder="Alamat"></textarea>
+                        <textarea class="form-control" name="address" id="address" cols="10" rows="4" value="<?= $data->address ?>" placeholder="Alamat"></textarea>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                </div>
-               <button type="submit" class="btn btn-primary float-right">Tambahkan</button>
+               <button type="submit" class="btn btn-primary float-right">Simpan Perubahan</button>
             </div>
          </div>
       </form>
    </div>
 </div>
 <?= $this->endSection() ?>
-<?= $this->section('vendorJS') ?>
-<script src="<?= base_url('app-assets/vendors/js/forms/select/select2.full.min.js') ?>"></script>
-<?= $this->endSection() ?>
 <?= $this->section('customJS') ?>
 <script>
    $(document).ready(function() {
-      var csrf_token = "<?= csrf_hash() ?>";
       const photo = "<?= base_url('assets/upload/avatar-default.jpg') ?>";
+      $('#is_active').val("<?= $data->is_active ?>").trigger('change');
+      $('#religion').val("<?= $data->religion ?>").trigger('change');
       $(document).on('change', '#photo', function(e) {
          if (this.files && this.files[0]) {
             if (this.files[0].size / 1024 / 1024 > 2) {
@@ -197,15 +169,15 @@
             $('.user-avatar').attr('src', photo);
          }
       });
-      $(document).on('submit', '#add-user', function(e) {
+      $(document).on('submit', '#edit-user', function(e) {
          e.preventDefault();
          $(this).find('.is-invalid').removeClass('is-invalid');
          $(this).find('.invalid-feedback').removeClass('d-block').text(null);
          var form = $(this);
          var data = new FormData($(this)[0]);
          $.ajax({
-            url: "<?= base_url('api/user/account/create') ?>",
-            type: "post",
+            url: "<?= base_url('api/user/account/' . $data->teacher_username) ?>",
+            type: "put",
             cache: false,
             dataType: "json",
             processData: false,
@@ -227,7 +199,7 @@
                      showConfirmButton: false,
                      timer: 3000
                   }).then(function() {
-                     window.location.href = "<?= base_url('administrator/teacher') ?>";
+                     window.location.href = "<?= base_url('teacher') ?>";
                   })
                } else if (result.error == true) {
                   Swal.fire({
@@ -257,55 +229,6 @@
          })
          return false;
       })
-      var class_group = $('#class_group');
-      class_group.wrap('<div class="position-relative"></div>');
-      class_group.select2({
-         placeholder: ' -- Pilih Kelas -- ',
-         dropdownAutoWidth: true,
-         width: '100%',
-         dropdownParent: class_group.parent(),
-         ajax: {
-            url: "<?= base_url('class_group/get_class_groups') ?>",
-            type: "post",
-            dataType: "json",
-            delay: 250,
-            data: function(params) {
-               // Select2 styling DataTables
-               var page = params.page || 0;
-               return {
-                  search: {
-                     value: params.term || ''
-                  },
-                  page: page + 1,
-                  length: 10,
-                  start: page * 10,
-                  columns: [{
-                     data: 'class_group_name'
-                  }],
-                  order: [{
-                     column: 0,
-                     dir: 'ASC'
-                  }],
-                  <?= csrf_token() ?>: csrf_token
-               }
-            },
-            processResults: function(result, params) {
-               var page = params.page || 0;
-               csrf_token = result.<?= csrf_token() ?>;
-               return {
-                  results: $.map(result.data, function(item) {
-                     return {
-                        id: item.class_group_code,
-                        text: item.class_group_name
-                     }
-                  }),
-                  pagination: {
-                     more: (page * 10) < result.recordsFiltered
-                  }
-               }
-            }
-         }
-      });
    })
 </script>
 <?= $this->endSection() ?>

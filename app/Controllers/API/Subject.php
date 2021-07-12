@@ -4,11 +4,9 @@ namespace App\Controllers\API;
 
 use App\Controllers\BaseController;
 use App\Models\M_Subject;
-use CodeIgniter\API\ResponseTrait;
 
 class Subject extends BaseController
 {
-	use ResponseTrait;
 	protected $m_subject;
    protected $rules = [
       "subject_name" => "required",

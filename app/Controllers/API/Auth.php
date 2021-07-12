@@ -5,11 +5,9 @@ namespace App\Controllers\API;
 use App\Controllers\BaseController;
 use App\Models\M_Auth;
 use App\Models\M_User;
-use CodeIgniter\API\ResponseTrait;
 
 class Auth extends BaseController
 {
-	use ResponseTrait;
 	protected $m_auth;
 	protected $m_user;
 
@@ -32,13 +30,13 @@ class Auth extends BaseController
 				"aud" => "http://localhost/",
 				"iat" => time(),
 				"nbf" => time(),
-				"exp" => time() + (60 * 60 * 6), // for 6 hours
+				"exp" => time() + $_ENV['JWT_EXPIRE'], // for 6 hours
 				"data" => [
 					"username" => $result->data->username,
 					"role" => $result->data->role
 				]
 			];
-			$jwt_token = $this->jwt::encode($payload, $this->private_key_jwt);
+			$jwt_token = $this->jwt::encode($payload, $_ENV['JWT_PRIVATE_KEY']);
 			$result->response['token'] = $jwt_token;
 
 			// Cookie Remember me for 6 hours

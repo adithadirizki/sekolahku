@@ -2,7 +2,6 @@
 
 namespace App\Filters;
 
-use App\Controllers\BaseController;
 use App\Models\M_Auth;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -41,14 +40,13 @@ class Cookie implements FilterInterface
                "aud" => "http://localhost/",
                "iat" => time(),
                "nbf" => time(),
-               "exp" => time() + (60 * 60 * 6), // for 6 hours
+               "exp" => time() + $_ENV['JWT_EXPIRE'], // for 6 hours
                "data" => [
                   "username" => $result->username,
                   "role" => $result->role
                ]
             ];
-            $baseController = new BaseController;
-            $jwt_token = $baseController->jwt::encode($payload, $baseController->private_key_jwt);
+            $jwt_token = \Firebase\JWT\Jwt::encode($payload, $_ENV['JWT_PRIVATE_KEY']);
             session()->set([
                "username" => $result->username,
                "fullname" => $result->fullname,

@@ -4,11 +4,9 @@ namespace App\Controllers\API;
 
 use App\Controllers\BaseController;
 use App\Models\M_Auth;
-use CodeIgniter\API\ResponseTrait;
 
 class User extends BaseController
 {
-	use ResponseTrait;
 	protected $m_auth;
 
 	public function __construct()

@@ -4,11 +4,9 @@ namespace App\Controllers\API;
 
 use App\Controllers\BaseController;
 use App\Models\M_Class;
-use CodeIgniter\API\ResponseTrait;
 
 class Classes extends BaseController
 {
-	use ResponseTrait;
 	protected $m_class;
    protected $rules = [
       "class_name" => "required"
