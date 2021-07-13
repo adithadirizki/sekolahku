@@ -36,11 +36,17 @@ $routes->get('/', 'Home::index');
 $routes->resource('question');
 $routes->get('bankquestion/(:num)/question/add', 'Bankquestion::add_question/$1');
 $routes->get('bankquestion/(:num)/question/new', 'Bankquestion::new_question/$1');
-$routes->resource('teacher', ['only' => ['show', 'edit']]);
+$routes->resource('teacher', ['only' => ['show', 'new', 'edit']]);
+$routes->resource('student', ['only' => ['show', 'new', 'edit']]);
+$routes->resource('assignment', ['only' => ['show', 'new', 'edit']]);
 $routes->resource('bankquestion', ['only' => ['show']]);
 $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes) {
 	// $routes->post('auth/login', 'Auth::login'); // for webserver
+	$routes->post('teacher', 'User::create_teacher');
+	$routes->post('student', 'User::create_student');
 	$routes->post('teacher/(:alphanum)', 'User::update_teacher/$1');
+	$routes->post('student/(:alphanum)', 'User::update_student/$1');
+	$routes->delete('user/(:alphanum)', 'User::delete/$1');
 	$routes->resource('classgroup');
 	$routes->resource('classes');
 	$routes->resource('major');
@@ -52,6 +58,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->post('bankquestion/(:num)/question/(:num)', 'Bankquestion::show_question/$1/$2');
 	$routes->delete('bankquestion/(:num)/question/(:num)', 'Bankquestion::delete_question/$1/$2');
 	$routes->resource('bankquestion');
+	$routes->resource('assignment');
 });
 // $routes->resource('api/classes', ['controller' => 'API\Classes']);
 

@@ -59,6 +59,20 @@ class Teacher extends BaseController
 		return view('add_teacher', $data);
 	}
 
+	public function show($username)
+	{
+		$result = $this->m_teacher->teacher_account($username);
+		if (!$result) {
+			throw new PageNotFoundException();
+		}
+		$data = [
+			"title" => "Detail Guru",
+			"url_active" => "teacher",
+			"data" => $result
+		];
+		return view('detail_teacher', $data);
+	}
+
 	public function edit($username)
 	{
 		$result = $this->m_teacher->teacher_account($username);

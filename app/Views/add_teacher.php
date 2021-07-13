@@ -20,28 +20,28 @@
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="username">Username</label>
+                        <label for="username">Username <span class="text-danger font-small-4">*</span></label>
                         <input type="text" id="username" class="form-control" name="username" placeholder="Username" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="fullname">Nama Lengkap</label>
+                        <label for="fullname">Nama Lengkap <span class="text-danger font-small-4">*</span></label>
                         <input type="text" id="fullname" class="form-control" name="fullname" placeholder="Nama Lengkap" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="email">E-mail</label>
+                        <label for="email">E-mail <span class="text-danger font-small-4">*</span></label>
                         <input type="email" id="email" class="form-control" name="email" placeholder="E-mail" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="password">Password</label>
+                        <label for="password">Password <span class="text-danger font-small-4">*</span></label>
                         <input type="text" id="password" class="form-control" name="password" minlength="6" placeholder="Password" required>
                         <input type="hidden" id="role" class="form-control" name="role" value="teacher" required>
                         <div class="invalid-feedback"></div>
@@ -49,7 +49,7 @@
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="is_active">Status</label>
+                        <label for="is_active">Status <span class="text-danger font-small-4">*</span></label>
                         <select name="is_active" id="is_active" class="form-control" required>
                            <option value="" selected disabled> -- Pilih Status -- </option>
                            <option value="0">Menunggu Konfirmasi</option>
@@ -71,29 +71,22 @@
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="nip">NIP</label>
+                        <label for="nip">NIP <span class="text-danger font-small-4">*</span></label>
                         <input type="text" id="nip" class="form-control" name="nip" placeholder="NIP" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="birth_in">Tempat Lahir</label>
-                        <input type="text" id="birth_in" class="form-control" name="birth_in" placeholder="Tempat Lahir">
+                        <label for="pob">Tempat Lahir</label>
+                        <input type="text" id="pob" class="form-control" name="pob" placeholder="Tempat Lahir">
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="birth_at">Tanggal Lahir</label>
-                        <input type="date" id="birth_at" class="form-control" name="birth_at">
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="phone">No telp</label>
-                        <input id="phone" type="number" name="phone" class="form-control" placeholder="No Telp">
+                        <label for="dob">Tanggal Lahir</label>
+                        <input type="date" id="dob" class="form-control" name="dob" placeholder="Tanggal Lahir">
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
@@ -114,7 +107,7 @@
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label class="d-block">Jenis kelamin</label>
+                        <label class="d-block">Jenis Kelamin <span class="text-danger font-small-4">*</span></label>
                         <div class="custom-control custom-radio custom-control-inline">
                            <input type="radio" id="male" name="gender" class="custom-control-input" value="male" checked required>
                            <label class="custom-control-label" for="male">Laki - laki</label>
@@ -123,6 +116,13 @@
                            <input type="radio" id="female" name="gender" class="custom-control-input" value="female">
                            <label class="custom-control-label" for="female">Perempuan</label>
                         </div>
+                        <div class="invalid-feedback"></div>
+                     </div>
+                  </div>
+                  <div class="col-12">
+                     <div class="form-group">
+                        <label for="phone">No Telp</label>
+                        <input id="phone" type="number" name="phone" class="form-control" placeholder="No Telp">
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
@@ -174,7 +174,7 @@
          var form = $(this);
          var data = new FormData($(this)[0]);
          $.ajax({
-            url: "<?= base_url('api/user/account/create') ?>",
+            url: "<?= base_url('api/teacher') ?>",
             type: "post",
             cache: false,
             dataType: "json",
@@ -197,7 +197,7 @@
                      showConfirmButton: false,
                      timer: 3000
                   }).then(function() {
-                     window.location.href = "<?= base_url('administrator/teacher') ?>";
+                     window.location.href = "<?= base_url('teacher') ?>";
                   })
                } else if (result.error == true) {
                   Swal.fire({

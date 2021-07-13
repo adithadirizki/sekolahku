@@ -63,6 +63,11 @@ class M_Teacher extends Model
       return $this->get()->getFirstRow('object');
    }
 
+   public function create_teacher($data)
+   {
+      return $this->insert($data);
+   }
+
    public function update_teacher($data, $where)
    {
       $this->set($data);

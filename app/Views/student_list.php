@@ -35,7 +35,7 @@
                   <tr>
                      <th>No</th>
                      <th>Nama</th>
-                     <th>NIP</th>
+                     <th>NIS</th>
                      <th>Kelas</th>
                      <th>L/P</th>
                      <th>Agama</th>
@@ -68,7 +68,7 @@
       var tb_student_list = $('#tb_student_list').DataTable({
          dom: '<"card-header py-0"<"dt-action-buttons"B>><"d-flex justify-content-between align-items-center mx-1 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-1 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
          order: [
-            [0, 'desc']
+            [1, 'asc']
          ],
          serverSide: true,
          processing: true,

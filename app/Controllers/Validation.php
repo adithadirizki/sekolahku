@@ -50,7 +50,7 @@ class Validation
 	public function multiple_class_group($data)
 	{
 		$m_class = new \App\Models\M_Class_Group();
-		return $m_class->validation_multiple_class_group($data);
+		return $m_class->validation_multiple_class_groups($data);
 	}
 
 	public function required_files($data = null, $fieldname)

@@ -65,4 +65,13 @@ class M_Major extends Model
       $this->where($where);
       return $this->delete();
    }
+
+   public function validation_multiple_majors($whereIn)
+   {
+      $this->whereIn('major_id', $whereIn);
+      if ($this->countAllResults() != count($whereIn)) {
+         return false;
+      }
+      return true;
+   }
 }

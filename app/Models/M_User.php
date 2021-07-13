@@ -50,10 +50,21 @@ class M_User extends Model
       return $this->get()->getFirstRow('object');
    }
 
-   public function update_user($data, $where)
+   public function create_user($data)
+   {
+      return $this->insert($data);
+   }
+
+   public function update_user($data, $where) 
    {
       $this->set($data);
       $this->where($where);
       return $this->update();
+   }
+
+   public function delete_user($where)
+   {
+      $this->where($where);
+      return $this->delete();
    }
 }

@@ -21,7 +21,7 @@
 <?= $this->section('content') ?>
 <div class="card">
    <div class="card-body">
-      <form id="add-user" enctype="multipart/form-data" onsubmit="return false;">
+      <form id="edit-user" enctype="multipart/form-data" onsubmit="return false;">
          <div class="row">
             <div class="col-md-6 mb-2">
                <div class="row">
@@ -33,36 +33,35 @@
                   </div>
                   <div class="col-12 text-center">
                      <label for="photo">
-                        <img src="<?= base_url('assets/upload/avatar-default.jpg') ?>" class="img-fluid user-avatar rounded" alt="Photo" width="120" height="120">
+                        <img src="<?= base_url('assets/upload/' . $data->photo) ?>" class="img-fluid user-avatar rounded" alt="Photo" width="120" height="120">
                         <input type="file" name="photo" id="photo" hidden accept="image/jpeg,image/png">
                      </label>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="username">Username <span class="text-danger font-small-4">*</span></label>
-                        <input type="text" id="username" class="form-control" name="username" placeholder="Username" required>
+                        <label for="username">Username</label>
+                        <input type="text" id="username" class="form-control" value="<?= $data->student_username ?>" placeholder="Username" disabled>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
                         <label for="fullname">Nama Lengkap <span class="text-danger font-small-4">*</span></label>
-                        <input type="text" id="fullname" class="form-control" name="fullname" placeholder="Nama Lengkap" required>
+                        <input type="text" id="fullname" class="form-control" name="fullname" value="<?= $data->fullname ?>" placeholder="Nama Lengkap" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
                         <label for="email">E-mail <span class="text-danger font-small-4">*</span></label>
-                        <input type="email" id="email" class="form-control" name="email" placeholder="E-mail" required>
+                        <input type="email" id="email" class="form-control" name="email" value="<?= $data->email ?>" placeholder="E-mail" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="password">Password <span class="text-danger font-small-4">*</span></label>
-                        <input type="text" id="password" class="form-control" name="password" minlength="6" placeholder="Password" required>
-                        <input type="hidden" id="role" class="form-control" name="role" value="student" required>
+                        <label for="password">Password</label>
+                        <input type="text" id="password" class="form-control" name="password" minlength="6" placeholder="Password">
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
@@ -91,21 +90,21 @@
                   <div class="col-12">
                      <div class="form-group">
                         <label for="nis">NIS <span class="text-danger font-small-4">*</span></label>
-                        <input type="text" id="nis" class="form-control" name="nis" placeholder="NIS" required>
+                        <input type="text" id="nis" class="form-control" name="nis" placeholder="NIS" value="<?= $data->nis ?>" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
                         <label for="pob">Tempat Lahir</label>
-                        <input type="text" id="pob" class="form-control" name="pob" placeholder="Tempat Lahir">
+                        <input type="text" id="pob" class="form-control" name="pob" value="<?= $data->pob ?>" placeholder="Tempat Lahir">
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
                         <label for="dob">Tanggal Lahir</label>
-                        <input type="date" id="dob" class="form-control" name="dob" placeholder="Tanggal Lahir">
+                        <input type="date" id="dob" class="form-control" name="dob" value="<?= $data->dob ?>" placeholder="Tanggal Lahir">
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
@@ -128,11 +127,11 @@
                      <div class="form-group">
                         <label class="d-block">Jenis Kelamin <span class="text-danger font-small-4">*</span></label>
                         <div class="custom-control custom-radio custom-control-inline">
-                           <input type="radio" id="male" name="gender" class="custom-control-input" value="male" checked required>
+                           <input type="radio" id="male" name="gender" class="custom-control-input" value="male" <?= $data->gender == 'male' ? 'checked' : null ?> required>
                            <label class="custom-control-label" for="male">Laki - laki</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                           <input type="radio" id="female" name="gender" class="custom-control-input" value="female">
+                           <input type="radio" id="female" name="gender" class="custom-control-input" value="female" <?= $data->gender == 'female' ? 'checked' : null ?>>
                            <label class="custom-control-label" for="female">Perempuan</label>
                         </div>
                         <div class="invalid-feedback"></div>
@@ -141,26 +140,30 @@
                   <div class="col-12">
                      <div class="form-group">
                         <label for="phone">No Telp</label>
-                        <input id="phone" type="number" name="phone" class="form-control" placeholder="No Telp">
+                        <input id="phone" type="number" name="phone" class="form-control" value="<?= $data->phone ?>" placeholder="No Telp">
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
                         <label for="address-1">Alamat</label>
-                        <textarea class="form-control" name="address" id="address" cols="10" rows="4" placeholder="Alamat"></textarea>
+                        <textarea class="form-control" name="address" id="address" cols="10" rows="4" value="<?= $data->address ?>" placeholder="Alamat"></textarea>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-12">
                      <div class="form-group">
                         <label for="curr_class_group">Kelas <span class="text-danger font-small-4">*</span></label>
-                        <select name="curr_class_group" id="curr_class_group" class="form-control" required></select>
+                        <select name="curr_class_group" id="curr_class_group" class="form-control" required>
+                           <?php foreach ($class_group as $v) { ?>
+                              <option value="<?= $v->class_group_code ?>" selected><?= $v->class_group_name ?></option>
+                           <?php } ?>
+                        </select>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                </div>
-               <button type="submit" class="btn btn-primary float-right">Tambahkan</button>
+               <button type="submit" class="btn btn-primary float-right">Simpan Perubahan</button>
             </div>
          </div>
       </form>
@@ -175,6 +178,8 @@
    $(document).ready(function() {
       var csrf_token = "<?= csrf_hash() ?>";
       const photo = "<?= base_url('assets/upload/avatar-default.jpg') ?>";
+      $('#is_active').val("<?= $data->is_active ?>").trigger('change');
+      $('#religion').val("<?= $data->religion ?>").trigger('change');
       $(document).on('change', '#photo', function(e) {
          if (this.files && this.files[0]) {
             if (this.files[0].size / 1024 / 1024 > 2) {
@@ -264,14 +269,14 @@
             }
          }
       });
-      $(document).on('submit', '#add-user', function(e) {
+      $(document).on('submit', '#edit-user', function(e) {
          e.preventDefault();
          $(this).find('.is-invalid').removeClass('is-invalid');
          $(this).find('.invalid-feedback').removeClass('d-block').text(null);
          var form = $(this);
          var data = new FormData($(this)[0]);
          $.ajax({
-            url: "<?= base_url('api/student') ?>",
+            url: "<?= base_url('api/student/' . $data->student_username) ?>",
             type: "post",
             cache: false,
             dataType: "json",

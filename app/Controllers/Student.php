@@ -2,15 +2,22 @@
 
 namespace App\Controllers;
 
+use App\Models\M_Class_Group;
+use App\Models\M_School_Year;
 use App\Models\M_Student;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Student extends BaseController
 {
 	protected $m_student;
+	protected $m_class_group;
+	protected $m_school_year;
 
 	public function __construct()
 	{
 		$this->m_student = new M_Student();
+		$this->m_class_group = new M_Class_Group();
+		$this->m_school_year = new M_School_Year();
 	}
 
 	public function index()
@@ -56,5 +63,49 @@ class Student extends BaseController
 			"url_active" => "student"
 		];
 		return view('add_student', $data);
+	}
+
+	public function show($username)
+	{
+		$result = $this->m_student->student_account($username);
+		if (!$result) {
+			throw new PageNotFoundException();
+		}
+		$whereIn = ['class' => [], 'year' => []];
+		$history = json_decode($result->class_history);
+		// dd(array_column($history, 'class'));
+		foreach ($history as $v) {
+			$whereIn['class'][] = "class_group_code = '$v->class'";
+			$whereIn['year'][] = "school_year_id = '$v->year'";
+		}
+		$whereIn['class'] = implode(' OR ', $whereIn['class']);
+		$whereIn['year'] = implode(' OR ', $whereIn['year']);
+
+		$classgroup_history = $whereIn['class'] == null ? [] : $this->m_class_group->class_groups($whereIn['class']);
+		$schoolyear_history = $whereIn['year'] == null ? [] : $this->m_school_year->school_years($whereIn['year']);
+
+		$data = [
+			"title" => "Detail Guru",
+			"url_active" => "student",
+			"data" => $result,
+			"classgroup_history" => $classgroup_history,
+			"schoolyear_history" => $schoolyear_history
+		];
+		return view('detail_student', $data);
+	}
+
+	public function edit($username)
+	{
+		$result = $this->m_student->student_account($username);
+		if (!$result) {
+			throw new PageNotFoundException();
+		}
+		$data = [
+			"title" => "Edit Guru",
+			"url_active" => "student",
+			"data" => $result,
+			"class_group" => $this->m_class_group->class_group_data(['class_group_code' => $result->curr_class_group], '', 1, 0, 'class_name ASC, major_code ASC, unit_major ASC')
+		];
+		return view('edit_student', $data);
 	}
 }

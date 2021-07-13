@@ -99,4 +99,13 @@ class M_Class_Group extends Model
       $this->where($where);
       return $this->delete();
    }
+
+   public function validation_multiple_class_groups($whereIn)
+   {
+      $this->whereIn('class_group_code', $whereIn);
+      if ($this->countAllResults() != count($whereIn)) {
+         return false;
+      }
+      return true;
+   }
 }

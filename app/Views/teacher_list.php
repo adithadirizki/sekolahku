@@ -67,7 +67,7 @@
       var tb_teacher_list = $('#tb_teacher_list').DataTable({
          dom: '<"card-header py-0"<"dt-action-buttons"B>><"d-flex justify-content-between align-items-center mx-1 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-1 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
          order: [
-            [0, 'desc']
+            [1, 'asc']
          ],
          serverSide: true,
          processing: true,

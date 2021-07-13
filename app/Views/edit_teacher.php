@@ -85,7 +85,7 @@
                   <div class="col-12">
                      <div class="form-group">
                         <label for="dob">Tanggal Lahir</label>
-                        <input type="date" id="dob" class="form-control" name="dob" value="<?= $data->dob ?>">
+                        <input type="date" id="dob" class="form-control" name="dob" value="<?= $data->dob ?>" placeholder="Tanggal Lahir">
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
@@ -106,7 +106,7 @@
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label class="d-block">Jenis kelamin <span class="text-danger font-small-4">*</span></label>
+                        <label class="d-block">Jenis Kelamin <span class="text-danger font-small-4">*</span></label>
                         <div class="custom-control custom-radio custom-control-inline">
                            <input type="radio" id="male" name="gender" class="custom-control-input" value="male" <?= $data->gender == 'male' ? 'checked' : null ?> required>
                            <label class="custom-control-label" for="male">Laki - laki</label>
@@ -120,7 +120,7 @@
                   </div>
                   <div class="col-12">
                      <div class="form-group">
-                        <label for="phone">No telp</label>
+                        <label for="phone">No Telp</label>
                         <input id="phone" type="number" name="phone" class="form-control" value="<?= $data->phone ?>" placeholder="No Telp">
                         <div class="invalid-feedback"></div>
                      </div>

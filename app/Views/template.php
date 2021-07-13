@@ -415,9 +415,9 @@
             </li>
             <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="file-text"></i><span class="menu-title text-truncate" data-i18n="Tugas">Tugas</span></a>
                <ul class="menu-content">
-                  <li class="<?= $url_active == 'e-learning/assignment' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Instruksi">Instruksi</span></a>
+                  <li class="<?= $url_active == 'assignment' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Instruksi">Instruksi</span></a>
                   </li>
-                  <li class="<?= $url_active == 'e-learning/assignment_result' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment_result') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Hasil Instruksi">Hasil Instruksi</span></a>
+                  <li class="<?= $url_active == 'assignment_result' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment_result') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Hasil Instruksi">Hasil Instruksi</span></a>
                   </li>
                   <li class="<?= $url_active == 'quiz' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('quiz') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Quiz">Quiz</span></a>
                   </li>

@@ -57,4 +57,33 @@ class M_Student extends Model
       $this->limit($limit, $offset);
       return $this->get()->getResultObject();
    }
+
+   public function student($username)
+   {
+      $this->where('student_username', $username);
+      return $this->get()->getFirstRow('object');
+   }
+
+   public function student_account($username)
+   {
+      $this->select("tb_student.*,photo,fullname,email,password,is_active,class_group_code,CONCAT_WS(' ',class_name,major_code,unit_major) class_group_name");
+      $this->join('tb_user', 'username = student_username');
+      $this->join('tb_class_group', 'class_group_code = curr_class_group');
+      $this->join('tb_class', 'class_id = class');
+      $this->join('tb_major', 'major_id = major');
+      $this->where('student_username', $username);
+      return $this->get()->getFirstRow('object');
+   }
+
+   public function create_student($data)
+   {
+      return $this->insert($data);
+   }
+
+   public function update_student($data, $where)
+   {
+      $this->set($data);
+      $this->where($where);
+      return $this->update();
+   }
 }
