@@ -62,4 +62,11 @@ class M_Teacher extends Model
       $this->where('teacher_username', $username);
       return $this->get()->getFirstRow('object');
    }
+
+   public function update_teacher($data, $where)
+   {
+      $this->set($data);
+      $this->where($where);
+      return $this->update();
+   }
 }

@@ -40,6 +40,7 @@ $routes->resource('teacher', ['only' => ['show', 'edit']]);
 $routes->resource('bankquestion', ['only' => ['show']]);
 $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes) {
 	// $routes->post('auth/login', 'Auth::login'); // for webserver
+	$routes->post('teacher/(:alphanum)', 'User::update_teacher/$1');
 	$routes->resource('classgroup');
 	$routes->resource('classes');
 	$routes->resource('major');

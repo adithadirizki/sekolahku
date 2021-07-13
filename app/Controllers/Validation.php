@@ -33,7 +33,7 @@ class Validation
 
 	public function anskey($data)
 	{
-      parse_str(file_get_contents('php://input'), $input);
+		parse_str(file_get_contents('php://input'), $input);
 		if (!isset($input['choice'])) return false;
 		if (!in_array($data, range(0, count($input['choice']) - 1))) {
 			return false;
@@ -62,61 +62,65 @@ class Validation
 		return true;
 	}
 
-	public function mime_files_in($data = null, $params)
+	public function file_mime($data = null, $params)
 	{
 		$params = explode(',', $params);
-		$fieldname = array_shift($params);
+		$name   = array_shift($params);
+		$type   = array_shift($params);
+		
+		if ($type == 'image') {
+			$allowedMimeType = ['image/jpeg', 'image/png'];
+		} elseif ($type == 'any') {
+			$allowedMimeType = ['image/jpeg', 'image/png', 'audio/mpeg', 'video/mp4', 'text/csv', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+		}
+
 		$this->request = Services::request();
-		if (!$files = $this->request->getFileMultiple($fieldname)) {
-			$files[] = $this->request->getFile($fieldname);
+
+		if (!($files = $this->request->getFileMultiple($name))) {
+			$files = [$this->request->getFile($name)];
 		}
 		foreach ($files as $file) {
-			$filename = $file->getName();
-			$filesize = $file->getSize();
-			if ($filename == null || $filesize == 0) {
-				continue;
+			if (is_null($file))
+			{
+				return false;
 			}
-			if (!in_array($file->getMimeType(), $params)) {
+			if ($file->getError() === UPLOAD_ERR_NO_FILE)
+			{
+				return true;
+			}
+			if (! in_array($file->getMimeType(), $allowedMimeType))
+			{
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public function ext_files_in($data = null, $params)
+	public function file_ext($data = null, $params)
 	{
 		$params = explode(',', $params);
-		$fieldname = array_shift($params);
-		$this->request = Services::request();
-		if (!$files = $this->request->getFileMultiple($fieldname)) {
-			$files[] = $this->request->getFile($fieldname);
-		}
-		foreach ($files as $file) {
-			$filename = $file->getName();
-			$filesize = $file->getSize();
-			if ($filename == null || $filesize == 0) {
-				continue;
-			}
-			if (!in_array($file->getClientExtension(), $params)) {
-				return false;
-			}
-		}
-		return true;
-	}
+		$name   = array_shift($params);
+		$type   = array_shift($params);
 
-	public function max_files_size($data = null, $params)
-	{
-		$params = explode(',', $params);
-		$fieldname = array_shift($params);
+		if ($type == 'image') {
+			$allowedExtensions = ['jpeg', 'jpg', 'png'];
+		} elseif ($type == 'any') {
+			$allowedExtensions = ['jpeg', 'jpg', 'png', 'mp3', 'mp4', 'csv', 'pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'];
+		}
+
 		$this->request = Services::request();
-		if (!$files = $this->request->getFileMultiple($fieldname)) {
-			$files[] = $this->request->getFile($fieldname);
+
+		if (!($files = $this->request->getFileMultiple($name))) {
+			$files = [$this->request->getFile($name)];
 		}
 		foreach ($files as $file) {
-			if ($file->getError() === UPLOAD_ERR_INI_SIZE) {
+			if (is_null($file)) {
 				return false;
 			}
-			if ($file->getSize() / 1024 > $params[0]) {
+			if ($file->getError() === UPLOAD_ERR_NO_FILE) {
+				return true;
+			}
+			if (!in_array($file->getClientExtension(), $allowedExtensions)) {
 				return false;
 			}
 		}
