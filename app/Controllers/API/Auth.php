@@ -26,8 +26,8 @@ class Auth extends BaseController
 		if ($result->data) {
 			// Set JWT Token
 			$payload = [
-				"iss" => $this->request->config->baseUR,
-				"aud" => $this->request->config->baseUR,
+				"iss" => $this->request->config->baseURL,
+				"aud" => $this->request->config->baseURL,
 				"iat" => time(),
 				"nbf" => time(),
 				"exp" => time() + $_ENV['JWT_EXPIRE'], // for 6 hours
