@@ -1,18 +1,9 @@
 <?= $this->extend('template') ?>
 <?= $this->section('vendorCSS') ?>
-<link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/katex.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/monokai-sublime.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/quill.snow.css') ?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/forms/select/select2.min.css') ?>">
 <?= $this->endSection() ?>
 <?= $this->section('customCSS') ?>
 <style>
-   .ql-container {
-      resize: vertical;
-      overflow-y: auto;
-      min-height: 100px !important;
-   }
-
    .is-invalid~.select2 .select2-selection {
       border-color: #ea5455;
    }
@@ -33,16 +24,11 @@
       <div class="card">
          <div class="card-body">
             <div class="card-title"><?= $title ?></div>
-            <form id="edit-assignment" enctype="multipart/form-data" onsubmit="return false;">
+            <form id="edit-quiz" enctype="multipart/form-data" onsubmit="return false;">
                <div class="form-group">
-                  <label for="assignment_title">Judul Tugas <span class="text-danger font-small-4">*</span></label>
-                  <input type="text" class="form-control" name="assignment_title" id="assignment_title" value="<?= $data->assignment_title ?>" placeholder="Judul Tugas" required>
+                  <label for="quiz_title">Judul Quiz <span class="text-danger font-small-4">*</span></label>
+                  <input type="text" class="form-control" name="quiz_title" id="quiz_title" value="<?= $data->quiz_title ?>" placeholder="Judul Quiz" required>
                   <div class="invalid-feedback"></div>
-               </div>
-               <div class="form-group">
-                  <label for="assignment_desc">Deskripsi Tugas</label>
-                  <textarea name="assignment_desc" id="assignment_desc" hidden><?= $data->assignment_desc ?></textarea>
-                  <div class="all-editor"><?= html_entity_decode($data->assignment_desc, ENT_QUOTES, 'UTF-8') ?></div>
                </div>
                <div class="row">
                   <div class="col-md-6">
@@ -67,10 +53,38 @@
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label class="d-block">Model Pertanyaan <span class="text-danger font-small-4">*</span></label>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input type="radio" id="normal" name="question_model" class="custom-control-input" value="0" <?= $data->question_model == 0 ? 'checked' : null ?> required>
+                           <label class="custom-control-label" for="normal">Berurutan</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input type="radio" id="random" name="question_model" class="custom-control-input" value="1" <?= $data->question_model == 1 ? 'checked' : null ?>>
+                           <label class="custom-control-label" for="random">Acak</label>
+                        </div>
+                        <div class="invalid-feedback"></div>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label class="d-block ">Perlihatkan Kunci Jawaban <span class="text-danger font-small-4">*</span> (jika siswa sudah selesai mengerjakan quiz)</label>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input type="radio" id="yes" name="show_ans_key" class="custom-control-input" value="1" <?= $data->question_model == 1 ? 'checked' : null ?> required>
+                           <label class="custom-control-label" for="yes">YA</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input type="radio" id="no" name="show_ans_key" class="custom-control-input" value="0" <?= $data->question_model == 0 ? 'checked' : null ?>>
+                           <label class="custom-control-label" for="no">TIDAK</label>
+                        </div>
+                        <div class="invalid-feedback"></div>
+                     </div>
+                  </div>
                   <div class="col-md-4">
                      <div class="form-group">
-                        <label for="point">Poin Tugas <span class="text-danger font-small-4">*</span></label>
-                        <input type="number" class="form-control" name="point" id="point" value="<?= $data->point ?>" placeholder="Poin Tugas" required>
+                        <label for="time">Waktu Quiz <span class="text-danger font-small-4">*</span></label>
+                        <input type="number" class="form-control" name="time" id="time" value="<?= $data->time ?>" placeholder="Waktu Quiz" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
@@ -99,140 +113,12 @@
 </div>
 <?= $this->endSection() ?>
 <?= $this->section('vendorJS') ?>
-<script src="<?= base_url('app-assets/vendors/js/editors/quill/katex.min.js') ?>"></script>
-<script src="<?= base_url('app-assets/vendors/js/editors/quill/highlight.min.js') ?>"></script>
-<script src="<?= base_url('app-assets/vendors/js/editors/quill/quill.min.js') ?>"></script>
-<script src="<?= base_url('app-assets/vendors/js/editors/quill/image-resize.min.js') ?>"></script>
 <script src="<?= base_url('app-assets/vendors/js/forms/select/select2.full.min.js') ?>"></script>
 <?= $this->endSection() ?>
 <?= $this->section('customJS') ?>
-<script src="<?= base_url('assets/js/quill-editor.js') ?>" type="text/javascript"></script>
 <script>
    $(document).ready(function() {
       var csrf_token = "<?= csrf_hash() ?>";
-      var icons = Quill.import('ui/icons');
-      var all_editor = [];
-      icons['undo'] = feather.icons['corner-up-left'].toSvg();
-      icons['redo'] = feather.icons['corner-up-right'].toSvg();
-      var set_editor = {
-         theme: 'snow',
-         modules: {
-            formula: true,
-            syntax: true,
-            imageResize: {
-               displaySize: true
-            },
-            toolbar: {
-               container: [
-                  [{
-                     font: []
-                  }],
-                  [{
-                     header: [1, 2, 3, 4, 5, 6, false]
-                  }],
-                  ['bold', 'italic', 'underline', 'strike'],
-                  [{
-                        color: []
-                     },
-                     {
-                        background: []
-                     }
-                  ],
-                  [{
-                        script: 'super'
-                     },
-                     {
-                        script: 'sub'
-                     }
-                  ],
-                  [
-                     'blockquote',
-                     'code-block'
-                  ],
-                  [{
-                        list: 'ordered'
-                     },
-                     {
-                        list: 'bullet'
-                     },
-                     {
-                        indent: '-1'
-                     },
-                     {
-                        indent: '+1'
-                     }
-                  ],
-                  [
-                     'direction',
-                     {
-                        align: []
-                     }
-                  ],
-                  ['link', 'image', 'file', 'video', 'formula'],
-                  ['undo', 'redo', 'clean']
-               ],
-               handlers: {
-                  file: function() {
-                     const quill_editor = this.quill;
-                     const range = this.quill.getSelection();
-                     const input = document.createElement('input');
-                     input.setAttribute('type', 'file');
-                     input.setAttribute('accept', listMimeImg.concat(listMimeAudio, listMimeVideo, listOtherMime));
-                     input.click();
-                     input.onchange = () => {
-                        var formData = new FormData();
-                        var file = input.files[0];
-                        formData.append('file', file);
-                        $.ajax({
-                           url: "<?= base_url('api/upload/file') ?>",
-                           type: "post",
-                           dataType: "json",
-                           data: formData,
-                           headers: {
-                              Authorization: "<?= session()->token ?>"
-                           },
-                           cache: false,
-                           contentType: false,
-                           processData: false,
-                           success: function(result) {
-                              if (result.error == false) {
-                                 if (listMimeImg.indexOf(file.type) > -1) {
-                                    //Picture
-                                    quill_editor.insertEmbed(range.index, 'image', result.url);
-                                 } else if (listMimeAudio.indexOf(file.type) > -1) {
-                                    //Audio
-                                    quill_editor.insertEmbed(range.index, 'audio', result.url);
-                                 } else if (listMimeVideo.indexOf(file.type) > -1) {
-                                    //Video
-                                    quill_editor.insertEmbed(range.index, 'video', result.url);
-                                 } else if (listOtherMime.indexOf(file.type) > -1) {
-                                    //Other file type
-                                    quill_editor.insertText(range.index, file.name, 'link', result.url);
-                                 }
-                              }
-                           }
-                        })
-                     };
-                  },
-                  undo: function() {
-                     this.quill.history.undo();
-                  },
-                  redo: function() {
-                     this.quill.history.redo();
-                  }
-               }
-            }
-         }
-      };
-      $('.all-editor').each(function(index, obj) {
-         var this_editor = $(this);
-         all_editor.push(new Quill(obj, set_editor));
-         all_editor[index].setContents(all_editor[index].clipboard.convert(this_editor.siblings('textarea').val())); // Set default value
-         all_editor[index].on('text-change', function(delta) {
-            // Update value choices every text change
-            this_editor.siblings('textarea').val(all_editor[index].root.innerHTML);
-         })
-      })
       var class_group = $('#class_group');
       class_group.wrap('<div class="position-relative"></div>');
       $(class_group).select2({
@@ -309,14 +195,14 @@
          dropdownAutoWidth: true,
          dropdownParent: subject.parent(),
       })
-      $(document).on('submit', '#edit-assignment', function(e) {
+      $(document).on('submit', '#edit-quiz', function(e) {
          e.preventDefault();
          $(this).find('.is-invalid').removeClass('is-invalid');
          $(this).find('.invalid-feedback').text(null);
          var form = $(this);
          var data = $(this).serialize();
          $.ajax({
-            url: "<?= base_url('api/assignment/' . $data->assignment_code) ?>",
+            url: "<?= base_url('api/quiz/' . $data->quiz_code) ?>",
             type: "put",
             dataType: "json",
             data: data,
@@ -336,7 +222,7 @@
                      showConfirmButton: false,
                      timer: 3000
                   }).then(function() {
-                     window.location.href = "<?= base_url('assignment/' . $data->assignment_code) ?>";
+                     window.location.href = "<?= base_url('quiz/' . $data->quiz_code) ?>";
                   })
                } else if (result.error == true) {
                   Swal.fire({

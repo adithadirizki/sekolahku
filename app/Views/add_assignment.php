@@ -33,24 +33,26 @@
       <div class="card">
          <div class="card-body">
             <div class="card-title"><?= $title ?></div>
-            <form id="edit-assignment" enctype="multipart/form-data" onsubmit="return false;">
+            <form id="add-assignment" enctype="multipart/form-data" onsubmit="return false;">
                <div class="form-group">
                   <label for="assignment_title">Judul Tugas <span class="text-danger font-small-4">*</span></label>
-                  <input type="text" class="form-control" name="assignment_title" id="assignment_title" value="<?= $data->assignment_title ?>" placeholder="Judul Tugas" required>
+                  <input type="text" class="form-control" name="assignment_title" id="assignment_title" placeholder="Judul Tugas" required>
                   <div class="invalid-feedback"></div>
                </div>
                <div class="form-group">
                   <label for="assignment_desc">Deskripsi Tugas</label>
-                  <textarea name="assignment_desc" id="assignment_desc" hidden><?= $data->assignment_desc ?></textarea>
-                  <div class="all-editor"><?= html_entity_decode($data->assignment_desc, ENT_QUOTES, 'UTF-8') ?></div>
+                  <textarea name="assignment_desc" id="assignment_desc" hidden></textarea>
+                  <div class="invalid-feedback"></div>
+                  <div class="all-editor"></div>
                </div>
                <div class="row">
                   <div class="col-md-6">
                      <div class="form-group">
                         <label for="subject">Mata Pelajaran <span class="text-danger font-small-4">*</span></label>
                         <select name="subject" id="subject" class="form-control" required>
+                           <option selected disabled></option>
                            <?php foreach ($subject as $v) { ?>
-                              <option value="<?= $v->subject_id ?>" <?= $data->subject_id == $v->subject_id ? 'selected' : null ?>><?= $v->subject_name ?></option>
+                              <option value="<?= $v->subject_id ?>"><?= $v->subject_name ?></option>
                            <?php } ?>
                         </select>
                         <div class="invalid-feedback"></div>
@@ -59,38 +61,34 @@
                   <div class="col-md-6">
                      <div class="form-group">
                         <label for="class_group">Kelas <span class="text-danger font-small-4">*</span></label>
-                        <select name="class_group[]" id="class_group" class="form-control" multiple required>
-                           <?php foreach ($class_group as $v) { ?>
-                              <option value="<?= $v->class_group_code ?>" selected><?= $v->class_group_name ?></option>
-                           <?php } ?>
-                        </select>
+                        <select name="class_group[]" id="class_group" class="form-control" multiple required></select>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label for="point">Poin Tugas <span class="text-danger font-small-4">*</span></label>
-                        <input type="number" class="form-control" name="point" id="point" value="<?= $data->point ?>" placeholder="Poin Tugas" required>
+                        <input type="number" class="form-control" name="point" id="point" placeholder="Poin Tugas" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label for="start_at">Ditugaskan pada <span class="text-danger font-small-4">*</span></label>
-                        <input type="datetime-local" class="form-control" name="start_at" id="start_at" value="<?= (new DateTime($data->start_at))->format('Y-m-d\TH:i') ?>" required>
+                        <input type="datetime-local" class="form-control" name="start_at" id="start_at" value="<?= (new DateTime())->format('Y-m-d\TH:i') ?>" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label for="due_at">Berakhir pada <span class="text-danger font-small-4">*</span></label>
-                        <input type="datetime-local" class="form-control" name="due_at" id="due_at" value="<?= (new DateTime($data->due_at))->format('Y-m-d\TH:i') ?>" required>
+                        <input type="datetime-local" class="form-control" name="due_at" id="due_at" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                </div>
                <div class="text-right mt-2">
-                  <button type="submit" class="btn btn-primary">Simpan perubahan</button>
+                  <button type="submit" class="btn btn-primary">Tambahkan</button>
                </div>
             </form>
          </div>
@@ -309,15 +307,15 @@
          dropdownAutoWidth: true,
          dropdownParent: subject.parent(),
       })
-      $(document).on('submit', '#edit-assignment', function(e) {
+      $(document).on('submit', '#add-assignment', function(e) {
          e.preventDefault();
          $(this).find('.is-invalid').removeClass('is-invalid');
          $(this).find('.invalid-feedback').text(null);
          var form = $(this);
          var data = $(this).serialize();
          $.ajax({
-            url: "<?= base_url('api/assignment/' . $data->assignment_code) ?>",
-            type: "put",
+            url: "<?= base_url('api/assignment') ?>",
+            type: "post",
             dataType: "json",
             data: data,
             headers: {
@@ -336,7 +334,7 @@
                      showConfirmButton: false,
                      timer: 3000
                   }).then(function() {
-                     window.location.href = "<?= base_url('assignment/' . $data->assignment_code) ?>";
+                     window.location.href = "<?= base_url('assignment') ?>";
                   })
                } else if (result.error == true) {
                   Swal.fire({

@@ -4,59 +4,73 @@
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/monokai-sublime.min.css') ?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/quill.snow.css') ?>">
 <?= $this->endSection() ?>
-<?= $this->section('customCSS') ?>
-<style>
-   .question-list button.active,
-   .question-list button.active {
-      background-color: '#007bff';
-      color: '#fff';
-   }
-
-   #question p {
-      margin: 0;
-      margin-bottom: 0.25rem;
-   }
-</style>
-<?= $this->endSection() ?>
 <?= $this->section('content') ?>
-<div class="row ">
-   <div class="col-lg-8">
-      <div class="card">
-         <div id="question" class="card-body" data-question_type="" data-number_question="">
-            <div class="btn btn-sm btn-outline-primary question-type">Tipe Soal</div>
-            <div class="btn btn-sm btn-primary font-weight-bold">No. <span class="number-question"></span></div>
-            <a href="javascript:void(0)" class="btn btn-sm btn-info edit-question" title="Edit">
-               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-               </svg>
-            </a>
-            <button type="button" class="btn btn-sm btn-danger delete-question" title="Hapus">
-               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash">
-                  <polyline points="3 6 5 6 21 6"></polyline>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-               </svg>
-            </button>
-            <div class="mb-2"></div>
-            <div class="ql-snow">
-               <div class="question-text ql-editor p-0">
-                  <center><em>Tidak ada soal</em></center>
-               </div>
+<div class="row">
+   <div class="col-md-6 col-xl-3 order-xl-first">
+      <div class="card border-primary">
+         <div class="card-body">
+            <?= strtotime('now') > strtotime($data->due_at) ? '<div class="badge badge-light-danger font-medium-2 d-block p-75 mb-1">BERAKHIR</div>' : '' ?>
+            <h4 class="font-weight-bolder">
+               Kode Quiz :
+            </h4>
+            <div class="mb-2">
+               <?= $data->quiz_code ?>
             </div>
-            <div id="choices" class="my-2"></div>
-            <span class="h5">Kunci Jawaban : </span>
-            <span class="answer-key"><em>Tidak ada</em></span>
-            <div class="d-flex justify-content-between mt-3">
-               <button type="button" class="btn btn-primary btn-prev">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left">
-                     <polyline points="15 18 9 12 15 6"></polyline>
-                  </svg> Sebelumnya
-               </button>
-               <button type="button" class="btn btn-primary btn-next">
-                  Selanjutnya <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                     <polyline points="9 18 15 12 9 6"></polyline>
+            <h4 class="font-weight-bolder">
+               Mata Pelajaran :
+            </h4>
+            <div class="mb-2">
+               <?= $data->subject_name ?>
+            </div>
+            <h4 class="font-weight-bolder">
+               Kelas :
+            </h4>
+            <div>
+               <?= $data->class_group_name ?> (<?= $data->school_year_title ?>)
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="col-md-12 order-md-first col-xl-6 ">
+      <div class="card">
+         <div class="card-body">
+            <div class="card-title"><?= $data->quiz_title ?></div>
+            <div id="question" data-question_type="" data-number_question="">
+               <div class="btn btn-sm btn-outline-primary question-type">Tipe Soal</div>
+               <div class="btn btn-sm btn-primary font-weight-bold">No. <span class="number-question"></span></div>
+               <a href="javascript:void(0)" class="btn btn-sm btn-info edit-question" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
+                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+               </a>
+               <button type="button" class="btn btn-sm btn-danger delete-question" title="Hapus">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash">
+                     <polyline points="3 6 5 6 21 6"></polyline>
+                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                   </svg>
                </button>
+               <div class="mb-2"></div>
+               <div class="ql-snow">
+                  <div class="question-text ql-editor p-0">
+                     <center><em>Tidak ada soal</em></center>
+                  </div>
+               </div>
+               <div id="choices" class="my-2"></div>
+               <span class="h5">Kunci Jawaban : </span>
+               <span class="answer-key"><em>Tidak ada</em></span>
+               <div class="d-flex justify-content-between mt-3">
+                  <button type="button" class="btn btn-primary btn-prev">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                     </svg> Sebelumnya
+                  </button>
+                  <button type="button" class="btn btn-primary btn-next">
+                     Selanjutnya <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                     </svg>
+                  </button>
+               </div>
             </div>
          </div>
       </div>
@@ -69,7 +83,7 @@
          </div>
       </div>
    </div>
-   <div class="col-lg-4">
+   <div class="col-md-6 col-xl-3">
       <div class="card">
          <div class="card-body">
             <div class="btn-group">
@@ -77,12 +91,12 @@
                   Tambah Soal
                </button>
                <div class="dropdown-menu" aria-labelledby="add-question">
-                  <a class="dropdown-item" href="<?= base_url('bankquestion/' . $data->bank_question_id . '/question/new') ?>"><i class="align-middle mr-25" data-feather="plus"></i> <span class="align-middle">Buat baru</span></a>
-                  <a class="dropdown-item" href="<?= base_url('bankquestion/' . $data->bank_question_id . '/question/add') ?>"><i class="align-middle mr-25" data-feather="file-text"></i> <span class="align-middle">Ambil soal</span></a>
+                  <a class="dropdown-item" href="<?= base_url('quiz/' . $data->quiz_code . '/question/new') ?>"><i class="align-middle mr-25" data-feather="plus"></i> <span class="align-middle">Buat baru</span></a>
+                  <a class="dropdown-item" href="<?= base_url('quiz/' . $data->quiz_code . '/question/add') ?>"><i class="align-middle mr-25" data-feather="file-text"></i> <span class="align-middle">Ambil soal</span></a>
                </div>
             </div>
             <h4 class="mb-50">Daftar Soal</h4>
-            <div class="question-list">
+            <div class="question-list row px-1">
                <?php
                $questions = json_decode($data->questions);
                if (count($questions) === 0) {
@@ -90,7 +104,7 @@
                }
                foreach ($questions as $key => $value) {
                ?>
-                  <button class="btn btn-outline-success mb-50 mr-25"><?= $key + 1 ?></button>
+                  <button class="btn btn-outline-success mb-50 mx-25"><?= $key + 1 ?></button>
                <?php
                }
                ?>
@@ -109,6 +123,30 @@
                   </svg>
                </button>
             </div>
+         </div>
+      </div>
+      <div class="card">
+         <div class="card-body">
+            <h4 class="font-weight-bolder">
+               Ditugaskan pada :
+            </h4>
+            <div class="mb-2">
+               <?= (new DateTime($data->start_at))->format('d F Y H:i') ?> WIB
+            </div>
+            <h4 class="font-weight-bolder">
+               Sampai :
+            </h4>
+            <div class="mb-2">
+               <?= (new DateTime($data->due_at))->format('d F Y H:i') ?> WIB
+            </div>
+            <h4 class="font-weight-bolder">
+               Dibuat oleh :
+            </h4>
+            <div class="mb-2">
+               <?= $data->created ?>
+            </div>
+            <a href="<?= base_url('/quiz/' . $data->quiz_code) ?>/edit" class="btn btn-primary btn-block">Edit quiz</a>
+            <button id="delete-quiz" class="btn btn-danger btn-block">Hapus</button>
          </div>
       </div>
    </div>
@@ -135,7 +173,7 @@
          $('.question-list button').removeClass('active');
          $('.question-list button').eq(number_question).addClass('active');
          $.ajax({
-            url: "<?= base_url('api/bankquestion/' . $data->bank_question_id) ?>/question/" + number_question,
+            url: "<?= base_url('api/quiz/' . $data->quiz_code) ?>/question/" + number_question,
             type: "post",
             dataType: "json",
             headers: {
@@ -222,7 +260,7 @@
          }).then((result) => {
             if (result.value) {
                $.ajax({
-                  url: "<?= base_url('api/bankquestion/' . $data->bank_question_id . '/question') ?>/" + number_question,
+                  url: "<?= base_url('api/quiz/' . $data->quiz_code . '/question') ?>/" + number_question,
                   type: "delete",
                   dataType: "json",
                   headers: {
@@ -244,6 +282,67 @@
                            question_ids.splice(number_question, 1);
                            $('.question-list button').last().remove();
                            get_question();
+                        })
+                     } else {
+                        Swal.fire({
+                           title: "Failed!",
+                           text: result.message,
+                           icon: "error",
+                           showConfirmButton: false,
+                           timer: 3000
+                        })
+                     }
+                  },
+                  error: function() {
+                     $.unblockUI();
+                     Swal.fire({
+                        title: "Error!",
+                        text: "An error occurred on the server.",
+                        icon: "error",
+                        showConfirmButton: false,
+                        timer: 3000
+                     })
+                  }
+               })
+            }
+         })
+      })
+      $(document).on('click', '#delete-quiz', function() {
+         Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "Cancel",
+            customClass: {
+               confirmButton: "btn btn-primary",
+               cancelButton: "btn btn-outline-danger ml-1"
+            },
+            buttonsStyling: false
+         }).then((result) => {
+            if (result.value) {
+               $.ajax({
+                  url: "<?= base_url('api/quiz/' . $data->quiz_code) ?>",
+                  type: "delete",
+                  dataType: "json",
+                  headers: {
+                     Authorization: "<?= session()->token ?>"
+                  },
+                  beforeSend: function() {
+                     $.blockUI(set_blockUI);
+                  },
+                  success: function(result) {
+                     $.unblockUI();
+                     if (result.error == false) {
+                        Swal.fire({
+                           title: "Success!",
+                           text: result.message,
+                           icon: "success",
+                           showConfirmButton: false,
+                           timer: 3000
+                        }).then(function() {
+                           window.location.href = "<?= base_url('quiz') ?>";
                         })
                      } else {
                         Swal.fire({
