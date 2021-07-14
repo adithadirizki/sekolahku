@@ -55,6 +55,16 @@ class Assignment extends BaseController
 		return json_encode($data);
 	}
 
+	public function new()
+	{
+		$data = [
+			"title" => "Tambah Tugas",
+			"url_active" => "assignment",
+			"subject" => $this->m_subject->subjects(),
+		];
+		return view('add_assignment', $data);
+	}
+
 	public function show($assignment_code)
 	{
 		$result = $this->m_assignment->assignment($assignment_code);

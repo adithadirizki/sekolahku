@@ -9,6 +9,7 @@
    <div class="col-md-6 col-xl-3 order-xl-first">
       <div class="card border-primary">
          <div class="card-body">
+            <?= strtotime('now') > strtotime($data->due_at) ? '<div class="badge badge-light-danger font-medium-2 d-block p-75 mb-1">BERAKHIR</div>' : '' ?>
             <h4 class="font-weight-bolder">
                Kode Tugas :
             </h4>
@@ -75,7 +76,7 @@
    </div>
 </div>
 <?= $this->endSection() ?>
-<?= $this->section('customJSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX') ?>
+<?= $this->section('customJS') ?>
 <script>
    $(document).ready(function() {
       $(document).on('click', '#delete-assignment', function() {

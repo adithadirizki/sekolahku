@@ -18,6 +18,7 @@ class Cookie implements FilterInterface
 
    public function before(RequestInterface $request, $arguments = null)
    {
+      $baseURL = \Config\Services::request()->config->baseURL;
       if (isset($_COOKIE['token']) && !session()->has('hasLogin')) {
          $result = $this->m_auth->login_cookie($_COOKIE['token']);
          if ($result) {
@@ -36,8 +37,8 @@ class Cookie implements FilterInterface
             }
             // Set JWT Token
             $payload = [
-               "iss" => "http://localhost/",
-               "aud" => "http://localhost/",
+               "iss" => $baseURL,
+               "aud" => $baseURL,
                "iat" => time(),
                "nbf" => time(),
                "exp" => time() + $_ENV['JWT_EXPIRE'], // for 6 hours

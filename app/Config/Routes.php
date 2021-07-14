@@ -33,13 +33,21 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 // $routes->post('api/user/account/create', 'API\User::create_account');
-$routes->resource('question');
-$routes->get('bankquestion/(:num)/question/add', 'Bankquestion::add_question/$1');
-$routes->get('bankquestion/(:num)/question/new', 'Bankquestion::new_question/$1');
+
 $routes->resource('teacher', ['only' => ['show', 'new', 'edit']]);
 $routes->resource('student', ['only' => ['show', 'new', 'edit']]);
-$routes->resource('assignment', ['only' => ['show', 'new', 'edit']]);
-$routes->resource('bankquestion', ['only' => ['show']]);
+
+$routes->resource('question');
+$routes->resource('bankquestion', ['only' => ['show'], 'placeholder' => '(:num)']);
+$routes->get('bankquestion/(:num)/question/add', 'Bankquestion::add_question/$1');
+$routes->get('bankquestion/(:num)/question/new', 'Bankquestion::new_question/$1');
+
+$routes->resource('assignment', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:alphanum)']);
+
+$routes->get('quiz/(:alphanum)/question/add', 'Quiz::add_question/$1');
+$routes->get('quiz/(:alphanum)/question/new', 'Quiz::new_question/$1');
+$routes->resource('quiz', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:alphanum)']);
+
 $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes) {
 	// $routes->post('auth/login', 'Auth::login'); // for webserver
 	$routes->post('teacher', 'User::create_teacher');
@@ -53,12 +61,21 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->resource('schoolyear');
 	$routes->resource('subject');
 	$routes->resource('question');
+
 	$routes->put('bankquestion/(:num)/question', 'Bankquestion::add_question/$1');
 	$routes->post('bankquestion/(:num)/question', 'Bankquestion::create_question/$1');
 	$routes->post('bankquestion/(:num)/question/(:num)', 'Bankquestion::show_question/$1/$2');
 	$routes->delete('bankquestion/(:num)/question/(:num)', 'Bankquestion::delete_question/$1/$2');
 	$routes->resource('bankquestion');
-	$routes->resource('assignment');
+
+	$routes->post('assignment/(:alphanum)/copy', 'Assignment::copy/$1');
+	$routes->resource('assignment', ['only' => ['create', 'update', 'delete']]);
+
+	$routes->put('quiz/(:alphanum)/question', 'Quiz::add_question/$1');
+	$routes->post('quiz/(:alphanum)/question', 'Quiz::create_question/$1');
+	$routes->post('quiz/(:alphanum)/question/(:num)', 'Quiz::show_question/$1/$2');
+	$routes->delete('quiz/(:alphanum)/question/(:num)', 'Quiz::delete_question/$1/$2');
+	$routes->resource('quiz', ['only' => ['create', 'update', 'delete']]);
 });
 // $routes->resource('api/classes', ['controller' => 'API\Classes']);
 

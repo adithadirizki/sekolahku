@@ -9,6 +9,12 @@ class M_School_Year extends Model
    protected $table = 'tb_school_year';
 	protected $primaryKey = 'school_year_id';
    protected $allowedFields = ['school_year_title', 'school_year_status'];
+
+   public function school_year_now()
+   {
+      $this->where('school_year_status', 1);
+      return $this->get()->getFirstRow('object');
+   }
    
    public function total_school_year()
    {

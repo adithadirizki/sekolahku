@@ -9,6 +9,23 @@ class M_Assignment extends Model
    protected $table = 'tb_assignment';
 	protected $primaryKey = 'assignment_id';
    protected $allowedFields = ['assignment_code', 'assignment_title', 'assignment_desc', 'point', 'assigned_by', 'class_group', 'subject', 'start_at', 'due_at', 'at_school_year'];
+
+   public function new_assignment_code()
+   {
+      while (true) {
+         $assignment_code = '';
+         $string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+         for ($i = 0; $i < 6; $i++) {
+            $assignment_code .= $string[rand(0, strlen($string) - 1)];
+         }
+         $this->selectCount('assignment_id', 'total_nums');
+         $this->where(['assignment_code' => $assignment_code]);
+         if ($this->get()->getFirstRow('object')->total_nums == 0) {
+            break;
+         }
+      }
+      return $assignment_code;
+   }
    
    public function total_assignment()
    {
@@ -24,8 +41,11 @@ class M_Assignment extends Model
       $this->join('tb_user', 'username = assigned_by');
       $this->join('tb_subject', 'subject_id = subject');
       $this->groupStart();
-      $this->like('assignment_title', $keyword);
-      $this->orLike('assignment_code', $keyword);
+      $this->like('assignment_code', $keyword);
+      $this->orLike('assignment_title', $keyword);
+      $this->orLike('subject_name', $keyword);
+      $this->orLike('fullname', $keyword);
+      $this->orLike("DATE_FORMAT(start_at, '%d %m %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
       return $this->get()->getFirstRow('object')->total_nums;
@@ -37,8 +57,11 @@ class M_Assignment extends Model
       $this->join('tb_user', 'username = assigned_by');
       $this->join('tb_subject', 'subject_id = subject');
       $this->groupStart();
-      $this->like('assignment_title', $keyword);
-      $this->orLike('assignment_code', $keyword);
+      $this->like('assignment_code', $keyword);
+      $this->orLike('assignment_title', $keyword);
+      $this->orLike('subject_name', $keyword);
+      $this->orLike('fullname', $keyword);
+      $this->orLike("DATE_FORMAT(start_at, '%d %m %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
       $this->orderBy($orderby);
@@ -64,6 +87,7 @@ class M_Assignment extends Model
       $this->join('tb_subject', 'subject_id = subject');
       $this->join('tb_school_year', 'school_year_id = at_school_year');
       $this->where('assignment_code', $assignment_code);
+      $this->groupBy('assignment_code');
       return $this->get()->getFirstRow('object');
    }
 
