@@ -24,10 +24,10 @@
       <div class="card">
          <div class="card-body">
             <div class="card-title"><?= $title ?></div>
-            <form id="edit-quiz" enctype="multipart/form-data" onsubmit="return false;">
+            <form id="add-quiz" enctype="multipart/form-data" onsubmit="return false;">
                <div class="form-group">
                   <label for="quiz_title">Judul Quiz <span class="text-danger font-small-4">*</span></label>
-                  <input type="text" class="form-control" name="quiz_title" id="quiz_title" value="<?= $data->quiz_title ?>" placeholder="Judul Quiz" required>
+                  <input type="text" class="form-control" name="quiz_title" id="quiz_title" placeholder="Judul Quiz" required>
                   <div class="invalid-feedback"></div>
                </div>
                <div class="row">
@@ -35,8 +35,9 @@
                      <div class="form-group">
                         <label for="subject">Mata Pelajaran <span class="text-danger font-small-4">*</span></label>
                         <select name="subject" id="subject" class="form-control" required>
+                           <option selected disabled></option>
                            <?php foreach ($subject as $v) { ?>
-                              <option value="<?= $v->subject_id ?>" <?= $data->subject_id == $v->subject_id ? 'selected' : null ?>><?= $v->subject_name ?></option>
+                              <option value="<?= $v->subject_id ?>"><?= $v->subject_name ?></option>
                            <?php } ?>
                         </select>
                         <div class="invalid-feedback"></div>
@@ -45,11 +46,7 @@
                   <div class="col-md-6">
                      <div class="form-group">
                         <label for="class_group">Kelas <span class="text-danger font-small-4">*</span></label>
-                        <select name="class_group[]" id="class_group" class="form-control" multiple required>
-                           <?php foreach ($class_group as $v) { ?>
-                              <option value="<?= $v->class_group_code ?>" selected><?= $v->class_group_name ?></option>
-                           <?php } ?>
-                        </select>
+                        <select name="class_group[]" id="class_group" class="form-control" multiple required></select>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
@@ -57,11 +54,11 @@
                      <div class="form-group">
                         <label class="d-block">Model Pertanyaan <span class="text-danger font-small-4">*</span></label>
                         <div class="custom-control custom-radio custom-control-inline">
-                           <input type="radio" id="normal" name="question_model" class="custom-control-input" value="0" <?= $data->question_model == 0 ? 'checked' : null ?> required>
+                           <input type="radio" id="normal" name="question_model" class="custom-control-input" value="0" checked required>
                            <label class="custom-control-label" for="normal">Berurutan</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                           <input type="radio" id="random" name="question_model" class="custom-control-input" value="1" <?= $data->question_model == 1 ? 'checked' : null ?>>
+                           <input type="radio" id="random" name="question_model" class="custom-control-input" value="1">
                            <label class="custom-control-label" for="random">Acak</label>
                         </div>
                         <div class="invalid-feedback"></div>
@@ -71,11 +68,11 @@
                      <div class="form-group">
                         <label class="d-block ">Perlihatkan Kunci Jawaban <span class="text-danger font-small-4">*</span> (jika siswa sudah selesai mengerjakan quiz)</label>
                         <div class="custom-control custom-radio custom-control-inline">
-                           <input type="radio" id="yes" name="show_ans_key" class="custom-control-input" value="1" <?= $data->show_ans_key == 1 ? 'checked' : null ?> required>
+                           <input type="radio" id="yes" name="show_ans_key" class="custom-control-input" value="1" checked required>
                            <label class="custom-control-label" for="yes">YA</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                           <input type="radio" id="no" name="show_ans_key" class="custom-control-input" value="0" <?= $data->show_ans_key == 0 ? 'checked' : null ?>>
+                           <input type="radio" id="no" name="show_ans_key" class="custom-control-input" value="0">
                            <label class="custom-control-label" for="no">TIDAK</label>
                         </div>
                         <div class="invalid-feedback"></div>
@@ -83,28 +80,28 @@
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
-                        <label for="time">Waktu Quiz <span class="text-danger font-small-4">*</span> (menit</label>
-                        <input type="number" class="form-control" name="time" id="time" value="<?= $data->time ?>" placeholder="Waktu Quiz" required>
+                        <label for="time">Waktu Quiz <span class="text-danger font-small-4">*</span> (menit)</label>
+                        <input type="number" class="form-control" name="time" id="time" placeholder="Waktu Quiz" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label for="start_at">Ditugaskan pada <span class="text-danger font-small-4">*</span></label>
-                        <input type="datetime-local" class="form-control" name="start_at" id="start_at" value="<?= (new DateTime($data->start_at))->format('Y-m-d\TH:i') ?>" required>
+                        <input type="datetime-local" class="form-control" name="start_at" id="start_at" value="<?= (new DateTime())->format('Y-m-d\TH:i') ?>" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label for="due_at">Berakhir pada <span class="text-danger font-small-4">*</span></label>
-                        <input type="datetime-local" class="form-control" name="due_at" id="due_at" value="<?= (new DateTime($data->due_at))->format('Y-m-d\TH:i') ?>" required>
+                        <input type="datetime-local" class="form-control" name="due_at" id="due_at" required>
                         <div class="invalid-feedback"></div>
                      </div>
                   </div>
                </div>
                <div class="text-right mt-2">
-                  <button type="submit" class="btn btn-primary">Simpan perubahan</button>
+                  <button type="submit" class="btn btn-primary">Tambahkan</button>
                </div>
             </form>
          </div>
@@ -195,15 +192,15 @@
          dropdownAutoWidth: true,
          dropdownParent: subject.parent(),
       })
-      $(document).on('submit', '#edit-quiz', function(e) {
+      $(document).on('submit', '#add-quiz', function(e) {
          e.preventDefault();
          $(this).find('.is-invalid').removeClass('is-invalid');
          $(this).find('.invalid-feedback').text(null);
          var form = $(this);
          var data = $(this).serialize();
          $.ajax({
-            url: "<?= base_url('api/quiz/' . $data->quiz_code) ?>",
-            type: "put",
+            url: "<?= base_url('api/quiz') ?>",
+            type: "post",
             dataType: "json",
             data: data,
             headers: {
@@ -222,7 +219,7 @@
                      showConfirmButton: false,
                      timer: 3000
                   }).then(function() {
-                     window.location.href = "<?= base_url('quiz/' . $data->quiz_code) ?>";
+                     window.location.href = "<?= base_url('quiz') ?>";
                   })
                } else if (result.error == true) {
                   Swal.fire({

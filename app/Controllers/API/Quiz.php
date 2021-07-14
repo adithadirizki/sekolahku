@@ -104,9 +104,7 @@ class Quiz extends BaseController
       $new_quiz_code = $this->m_quiz->new_quiz_code();
       $created_by = $this->username;
       $school_year_id = $this->m_school_year->school_year_now()->school_year_id;
-      $sql = "INSERT INTO tb_quiz (quiz_code,quiz_title,questions,question_model,show_ans_key,time,created_by,class_group,subject,start_at,due_at,at_school_year)
-         SELECT '$new_quiz_code',quiz_title,questions,question_model,show_ans_key,time,'$created_by',class_group,subject,start_at,due_at,'$school_year_id' FROM tb_quiz
-         WHERE quiz_code = '$quiz_code'";
+      $sql = "INSERT INTO tb_quiz (quiz_code,quiz_title,questions,question_model,show_ans_key,time,created_by,class_group,subject,start_at,due_at,at_school_year) SELECT '$new_quiz_code',quiz_title,questions,question_model,show_ans_key,time,'$created_by',class_group,subject,start_at,due_at,'$school_year_id' FROM tb_quiz WHERE quiz_code = '$quiz_code'";
       try {
          $this->m_quiz->query($sql);
          return $this->respond([

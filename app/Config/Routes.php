@@ -48,6 +48,9 @@ $routes->get('quiz/(:alphanum)/question/add', 'Quiz::add_question/$1');
 $routes->get('quiz/(:alphanum)/question/new', 'Quiz::new_question/$1');
 $routes->resource('quiz', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:alphanum)']);
 
+$routes->resource('material', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:alphanum)']);
+$routes->resource('announcement', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:num)']);
+
 $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes) {
 	// $routes->post('auth/login', 'Auth::login'); // for webserver
 	$routes->post('teacher', 'User::create_teacher');
@@ -55,6 +58,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->post('teacher/(:alphanum)', 'User::update_teacher/$1');
 	$routes->post('student/(:alphanum)', 'User::update_student/$1');
 	$routes->delete('user/(:alphanum)', 'User::delete/$1');
+
 	$routes->resource('classgroup');
 	$routes->resource('classes');
 	$routes->resource('major');
@@ -69,13 +73,19 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->resource('bankquestion');
 
 	$routes->post('assignment/(:alphanum)/copy', 'Assignment::copy/$1');
-	$routes->resource('assignment', ['only' => ['create', 'update', 'delete']]);
+	$routes->resource('assignment', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);
 
+	$routes->post('quiz/(:alphanum)/copy', 'Quiz::copy/$1');
 	$routes->put('quiz/(:alphanum)/question', 'Quiz::add_question/$1');
 	$routes->post('quiz/(:alphanum)/question', 'Quiz::create_question/$1');
 	$routes->post('quiz/(:alphanum)/question/(:num)', 'Quiz::show_question/$1/$2');
 	$routes->delete('quiz/(:alphanum)/question/(:num)', 'Quiz::delete_question/$1/$2');
-	$routes->resource('quiz', ['only' => ['create', 'update', 'delete']]);
+	$routes->resource('quiz', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);
+
+	$routes->post('material/(:alphanum)/copy', 'Material::copy/$1');
+	$routes->resource('material', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);
+	
+	$routes->resource('announcement', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:num)']);
 });
 // $routes->resource('api/classes', ['controller' => 'API\Classes']);
 

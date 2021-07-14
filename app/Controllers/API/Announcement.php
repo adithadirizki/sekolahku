@@ -3,49 +3,40 @@
 namespace App\Controllers\API;
 
 use App\Controllers\BaseController;
-use App\Models\M_Assignment;
+use App\Models\M_Announcement;
 use App\Models\M_School_Year;
 
-class Assignment extends BaseController
+class Announcement extends BaseController
 {
-   protected $m_assignment;
+   protected $m_announcement;
    protected $m_school_year;
    protected $rules = [
-      "assignment_title" => "required",
-      "subject" => "required|is_not_unique[tb_subject.subject_id]",
-      "class_group*" => "required|multiple_class_group",
-      "point" => "required|numeric",
-      "start_at" => "required|valid_date[Y-m-d\TH:i]",
-      "due_at" => "permit_empty|valid_date[Y-m-d\TH:i]"
+      "announcement_title" => "required",
+      "announcement_for" => "required|in_list[all,teacher,student]",
+      "announced_at" => "required|valid_date[Y-m-d\TH:i]",
+      "announced_until" => "required|valid_date[Y-m-d\TH:i]"
    ];
    protected $errors = [
-      "assignment_title" => [
-         "required" => "Judul Tugas harus diisi."
+      "announcement_title" => [
+         "required" => "Judul Pengumuman harus diisi."
       ],
-      "subject" => [
-         "required" => "Mata Pelajaran harus diisi.",
-         "is_not_unique" => "Mata Pelajaran tidak valid."
+      "announcement_for" => [
+         "required" => "Kolom ditujukan harus diisi.",
+         "in_list" => "Kolom ditujukan tidak valid."
       ],
-      "class_group*" => [
-         "required" => "Kelas harus diisi.",
-         "multiple_class_group" => "Kelas tidak valid."
+      "announced_at" => [
+         "required" => "Tgl diumumkan harus diisi.",
+         "valid_date" => "Tgl diumumkan tidak valid."
       ],
-      "point" => [
-         "required" => "Poin Tugas harus diisi.",
-         "numeric" => "Poin Tugas harus berisi angka."
-      ],
-      "start_at" => [
-         "required" => "Tgl ditugaskan harus diisi.",
-         "valid_date" => "Tgl ditugaskan tidak valid."
-      ],
-      "due_at" => [
+      "announced_until" => [
+         "required" => "Tgl berakhir harus diisi.",
          "valid_date" => "Tgl berakhir tidak valid."
       ]
    ];
 
    public function __construct()
    {
-      $this->m_assignment = new M_Assignment();
+      $this->m_announcement = new M_Announcement();
       $this->m_school_year = new M_School_Year();
    }
 
@@ -53,9 +44,9 @@ class Assignment extends BaseController
    {
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
-      $validation->setRule('assignment_desc', null, "required|striptags", [
-         "required" => "Deskripsi Tugas harus diisi.",
-         "striptags" => "Deskripsi Tugas harus diisi."
+      $validation->setRule('announcement_desc', null, "required|striptags", [
+         "required" => "Deskripsi Pengumuman harus diisi.",
+         "striptags" => "Deskripsi Pengumuman harus diisi."
       ]);
       if ($validation->withRequest($this->request)->run() == false) {
          return $this->respond([
@@ -72,10 +63,9 @@ class Assignment extends BaseController
             $data[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
          }
       }
-      $data['assignment_code'] = $this->m_assignment->new_assignment_code();
-      $data['assigned_by'] = $this->username;
+      $data['announced_by'] = $this->username;
       $data['at_school_year'] = $this->m_school_year->school_year_now()->school_year_id;
-      $result = $this->m_assignment->create_assignment($data);
+      $result = $this->m_announcement->create_announcement($data);
       if ($result) {
          return $this->respond([
             "message" => "Added successfully.",
@@ -90,35 +80,13 @@ class Assignment extends BaseController
       ]);
    }
 
-   public function copy($assignment_code)
-   {
-      $new_assignment_code = $this->m_assignment->new_assignment_code();
-      $assigned_by = $this->username;
-      $school_year_id = $this->m_school_year->school_year_now()->school_year_id;
-      $sql = "INSERT INTO tb_assignment (assignment_code,assignment_title,assignment_desc,point,assigned_by,class_group,subject,start_at,due_at,at_school_year) SELECT '$new_assignment_code',assignment_title,assignment_desc,point,'$assigned_by',class_group,subject,start_at,due_at,'$school_year_id' FROM tb_assignment WHERE assignment_code = '$assignment_code'";
-      try {
-         $this->m_assignment->query($sql);
-         return $this->respond([
-            "message" => "Copied successfully.",
-            "status" => 200,
-            "error" => false
-         ]);
-      } catch (\Exception $e) {
-         return $this->respond([
-            "message" => "Failed to copy.",
-            "status" => 400,
-            "error" => true
-         ]);
-      }
-   }
-
-   public function update($assignment_code)
+   public function update($announcement_id)
    {
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
-      $validation->setRule('assignment_desc', null, "required|striptags", [
-         "required" => "Deskripsi Tugas harus diisi.",
-         "striptags" => "Deskripsi Tugas harus diisi."
+      $validation->setRule('announcement_desc', null, "required|striptags", [
+         "required" => "Deskripsi Pengumuman harus diisi.",
+         "striptags" => "Deskripsi Pengumuman harus diisi."
       ]);
       if ($validation->withRequest($this->request)->run() == false) {
          return $this->respond([
@@ -136,9 +104,9 @@ class Assignment extends BaseController
          }
       }
       $where = [
-         "assignment_code" => $assignment_code
+         "announcement_id" => $announcement_id
       ];
-      $result = $this->m_assignment->update_assignment($data, $where);
+      $result = $this->m_announcement->update_announcement($data, $where);
       if ($result) {
          return $this->respond([
             "message" => "Changes saved successfully.",
@@ -153,13 +121,13 @@ class Assignment extends BaseController
       ]);
    }
 
-   public function delete($assignment_code)
+   public function delete($announcement_id)
    {
       $where = [
-         "assignment_code" => $assignment_code
+         "announcement_id" => $announcement_id
       ];
       try {
-         $this->m_assignment->delete_assignment($where);
+         $this->m_announcement->delete_announcement($where);
          return $this->respond([
             "message" => "Successfully deleted.",
             "status" => 200,

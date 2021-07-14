@@ -6,72 +6,61 @@
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="row">
-   <div class="col-md-6 col-xl-3 order-xl-first">
-      <div class="card border-primary">
-         <div class="card-body">
-            <?= strtotime('now') > strtotime($data->due_at) ? '<div class="badge badge-light-danger font-medium-2 d-block p-75 mb-1">BERAKHIR</div>' : '' ?>
-            <h4 class="font-weight-bolder">
-               Kode Tugas :
-            </h4>
-            <div class="mb-2">
-               <?= $data->assignment_code ?>
-            </div>
-            <h4 class="font-weight-bolder">
-               Mata Pelajaran :
-            </h4>
-            <div class="mb-2">
-               <?= $data->subject_name ?>
-            </div>
-            <h4 class="font-weight-bolder">
-               Kelas :
-            </h4>
-            <div>
-               <?= $data->class_group_name ?> (<?= $data->school_year_title ?>)
-            </div>
-         </div>
-      </div>
-   </div>
-   <div class="col-md-12 order-md-first col-xl-6 ">
+   <div class="col-md-12 col-xl-8">
       <div class="card">
          <div class="card-body">
-            <div class="card-title"><?= $data->assignment_title ?></div>
+            <div class="card-title"><?= $data->announcement_title ?></div>
             <hr>
-            <div class="font-medium-1 mb-50">Deskripsi Tugas :</div>
+            <div class="font-medium-1 mb-50">Deskripsi Pengumuman :</div>
             <div class="ql-snow">
-               <div class="assignment-text text-wrap ql-editor p-0"><?= html_entity_decode($data->assignment_desc, ENT_QUOTES, 'UTF-8') ?></div>
+               <div class="announcement-text text-wrap ql-editor p-0"><?= html_entity_decode($data->announcement_desc, ENT_QUOTES, 'UTF-8') ?></div>
             </div>
          </div>
       </div>
    </div>
-   <div class="col-md-6 col-xl-3">
+   <div class="col-md-6 col-xl-4">
       <div class="card">
          <div class="card-body">
             <h4 class="font-weight-bolder">
-               Poin Tugas :
+               Ditujukan untuk :
             </h4>
             <div class="mb-2">
-               <?= $data->point ?>
+               <?php 
+               if ($data->announcement_for == 'teacher') {
+                  echo 'Hanya Guru';
+               } elseif ($data->announcement_for == 'student') {
+                  echo 'Hanya Siswa';
+               } elseif ($data->announcement_for == 'all') {
+                  echo 'Untuk Semua';  
+               }
+               ?>
             </div>
             <h4 class="font-weight-bolder">
-               Ditugaskan pada :
+               Dibuat pada :
             </h4>
             <div class="mb-2">
-               <?= (new DateTime($data->start_at))->format('d F Y H:i') ?> WIB
+               <?= (new DateTime($data->announced_at))->format('d F Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
                Sampai :
             </h4>
             <div class="mb-2">
-               <?= (new DateTime($data->due_at))->format('d F Y H:i') ?> WIB
+               <?= (new DateTime($data->announced_until))->format('d F Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
-               Dibuat oleh :
+               Tahun Ajaran :
             </h4>
             <div class="mb-2">
-               <?= $data->assigned ?>
+               <?= $data->school_year_title ?>
             </div>
-            <a href="<?= base_url('/assignment/' . $data->assignment_code) ?>/edit" class="btn btn-primary btn-block">Edit tugas</a>
-            <button id="delete-assignment" class="btn btn-danger btn-block">Hapus</button>
+            <h4 class="font-weight-bolder">
+               Diumumkan oleh :
+            </h4>
+            <div class="mb-2">
+               <?= $data->announced ?>
+            </div>
+            <a href="<?= base_url('/announcement/' . $data->announcement_id) ?>/edit" class="btn btn-primary btn-block">Edit pengumuman</a>
+            <button id="delete-announcement" class="btn btn-danger btn-block">Hapus</button>
          </div>
       </div>
    </div>
@@ -80,7 +69,7 @@
 <?= $this->section('customJS') ?>
 <script>
    $(document).ready(function() {
-      $(document).on('click', '#delete-assignment', function() {
+      $(document).on('click', '#delete-announcement', function() {
          Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -96,7 +85,7 @@
          }).then((result) => {
             if (result.value) {
                $.ajax({
-                  url: "<?= base_url('api/assignment/' . $data->assignment_code) ?>",
+                  url: "<?= base_url('api/announcement/' . $data->announcement_id) ?>",
                   type: "delete",
                   dataType: "json",
                   headers: {
@@ -115,7 +104,7 @@
                            showConfirmButton: false,
                            timer: 3000
                         }).then(function() {
-                           window.location.href = "<?= base_url('assignment') ?>";
+                           window.location.href = "<?= base_url('announcement') ?>";
                         })
                      } else {
                         Swal.fire({

@@ -35,6 +35,7 @@
       <div class="card">
          <div class="card-body">
             <div class="card-title"><?= $data->quiz_title ?></div>
+            <hr>
             <div id="question" data-question_type="" data-number_question="">
                <div class="btn btn-sm btn-outline-primary question-type">Tipe Soal</div>
                <div class="btn btn-sm btn-primary font-weight-bold">No. <span class="number-question"></span></div>
@@ -127,6 +128,18 @@
       </div>
       <div class="card">
          <div class="card-body">
+            <h4 class="font-weight-bolder">
+               Kunci Jawaban :
+            </h4>
+            <div class="mb-2 font-italic">
+               <?php
+               if ($data->show_ans_key == "0") {
+                  echo "Siswa tidak dapat melihat kunci jawaban setelah mengerjakan Quiz.";
+               } elseif ($data->show_ans_key == "1") {
+                  echo "Siswa dapat melihat kunci jawaban setelah mengerjakan Quiz.";
+               }
+               ?>
+            </div>
             <h4 class="font-weight-bolder">
                Ditugaskan pada :
             </h4>

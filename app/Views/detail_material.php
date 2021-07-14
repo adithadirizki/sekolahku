@@ -9,12 +9,11 @@
    <div class="col-md-6 col-xl-3 order-xl-first">
       <div class="card border-primary">
          <div class="card-body">
-            <?= strtotime('now') > strtotime($data->due_at) ? '<div class="badge badge-light-danger font-medium-2 d-block p-75 mb-1">BERAKHIR</div>' : '' ?>
             <h4 class="font-weight-bolder">
-               Kode Tugas :
+               Kode Materi :
             </h4>
             <div class="mb-2">
-               <?= $data->assignment_code ?>
+               <?= $data->material_code ?>
             </div>
             <h4 class="font-weight-bolder">
                Mata Pelajaran :
@@ -34,11 +33,11 @@
    <div class="col-md-12 order-md-first col-xl-6 ">
       <div class="card">
          <div class="card-body">
-            <div class="card-title"><?= $data->assignment_title ?></div>
+            <div class="card-title"><?= $data->material_title ?></div>
             <hr>
-            <div class="font-medium-1 mb-50">Deskripsi Tugas :</div>
+            <div class="font-medium-1 mb-50">Deskripsi Materi :</div>
             <div class="ql-snow">
-               <div class="assignment-text text-wrap ql-editor p-0"><?= html_entity_decode($data->assignment_desc, ENT_QUOTES, 'UTF-8') ?></div>
+               <div class="material-text text-wrap ql-editor p-0"><?= html_entity_decode($data->material_desc, ENT_QUOTES, 'UTF-8') ?></div>
             </div>
          </div>
       </div>
@@ -47,31 +46,19 @@
       <div class="card">
          <div class="card-body">
             <h4 class="font-weight-bolder">
-               Poin Tugas :
+               Dibuat pada :
             </h4>
             <div class="mb-2">
-               <?= $data->point ?>
-            </div>
-            <h4 class="font-weight-bolder">
-               Ditugaskan pada :
-            </h4>
-            <div class="mb-2">
-               <?= (new DateTime($data->start_at))->format('d F Y H:i') ?> WIB
-            </div>
-            <h4 class="font-weight-bolder">
-               Sampai :
-            </h4>
-            <div class="mb-2">
-               <?= (new DateTime($data->due_at))->format('d F Y H:i') ?> WIB
+               <?= (new DateTime($data->publish_at))->format('d F Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
                Dibuat oleh :
             </h4>
             <div class="mb-2">
-               <?= $data->assigned ?>
+               <?= $data->created ?>
             </div>
-            <a href="<?= base_url('/assignment/' . $data->assignment_code) ?>/edit" class="btn btn-primary btn-block">Edit tugas</a>
-            <button id="delete-assignment" class="btn btn-danger btn-block">Hapus</button>
+            <a href="<?= base_url('/material/' . $data->material_code) ?>/edit" class="btn btn-primary btn-block">Edit materi</a>
+            <button id="delete-material" class="btn btn-danger btn-block">Hapus</button>
          </div>
       </div>
    </div>
@@ -80,7 +67,7 @@
 <?= $this->section('customJS') ?>
 <script>
    $(document).ready(function() {
-      $(document).on('click', '#delete-assignment', function() {
+      $(document).on('click', '#delete-material', function() {
          Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -96,7 +83,7 @@
          }).then((result) => {
             if (result.value) {
                $.ajax({
-                  url: "<?= base_url('api/assignment/' . $data->assignment_code) ?>",
+                  url: "<?= base_url('api/material/' . $data->material_code) ?>",
                   type: "delete",
                   dataType: "json",
                   headers: {
@@ -115,7 +102,7 @@
                            showConfirmButton: false,
                            timer: 3000
                         }).then(function() {
-                           window.location.href = "<?= base_url('assignment') ?>";
+                           window.location.href = "<?= base_url('material') ?>";
                         })
                      } else {
                         Swal.fire({

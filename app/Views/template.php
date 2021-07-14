@@ -425,9 +425,9 @@
                   </li>
                </ul>
             </li>
-            <li class="<?= $url_active == 'e-learning/material' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('material') ?>"><i data-feather="book"></i><span class="menu-title text-truncate" data-i18n="Materi">Materi</span></a>
+            <li class="<?= $url_active == 'material' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('material') ?>"><i data-feather="book"></i><span class="menu-title text-truncate" data-i18n="Materi">Materi</span></a>
             </li>
-            <li class="<?= $url_active == 'e-learning/announcement' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('announcement') ?>"><i data-feather="info"></i><span class="menu-title text-truncate" data-i18n="Pengumuman">Pengumuman</span></a>
+            <li class="<?= $url_active == 'announcement' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('announcement') ?>"><i data-feather="info"></i><span class="menu-title text-truncate" data-i18n="Pengumuman">Pengumuman</span></a>
             </li>
          </ul>
       </div>
