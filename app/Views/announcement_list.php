@@ -15,7 +15,7 @@
             <tr>
                <th>No</th>
                <th>Judul Pengumuman</th>
-               <th>Dibuat Oleh</th>
+               <th>Diumumkan Oleh</th>
                <th>Diumumkan Pada</th>
                <th>Aksi</th>
             </tr>

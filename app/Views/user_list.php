@@ -105,7 +105,7 @@
             {
                "data": "username",
                "mRender": function(username, row, data) {
-                  return '<div class="d-flex justify-content-left align-items-center"><div class="avatar-wrapper"><div class="avatar  mr-1"><img src="<?= base_url('assets/upload') ?>/' + data.photo + '" alt="Avatar" height="32" width="32"></div></div><div class="d-flex flex-column"><a href="<?= base_url('user') ?>/' + username + '" class="user_name text-truncate"><span class="font-weight-bold">' + data.fullname + '</span>&nbsp;</a><small class="emp_post text-muted">@' + username + '</small></div></div>';
+                  return '<div class="d-flex justify-content-left align-items-center"><div class="avatar-wrapper"><div class="avatar  mr-1"><img src="<?= base_url('assets/upload') ?>/' + data.photo + '" alt="Avatar" height="32" width="32"></div></div><div class="d-flex flex-column"><a href="<?= base_url() ?>/' + data.role + '/' + username + '" class="user_name text-truncate"><span class="font-weight-bold">' + data.fullname + '</span>&nbsp;</a><small class="emp_post text-muted">@' + username + '</small></div></div>';
                }
             },
             {

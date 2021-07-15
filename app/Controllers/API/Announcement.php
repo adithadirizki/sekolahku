@@ -123,11 +123,8 @@ class Announcement extends BaseController
 
    public function delete($announcement_id)
    {
-      $where = [
-         "announcement_id" => $announcement_id
-      ];
       try {
-         $this->m_announcement->delete_announcement($where);
+         $this->m_announcement->delete_announcement($this->username, $announcement_id);
          return $this->respond([
             "message" => "Successfully deleted.",
             "status" => 200,

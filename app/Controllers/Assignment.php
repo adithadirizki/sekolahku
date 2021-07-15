@@ -26,7 +26,11 @@ class Assignment extends BaseController
 			"title" => "Tugas",
 			"url_active" => "assignment"
 		];
-		return view('assignment_list', $data);
+		if ($this->role == 'superadmin') {
+			return view('assignment_list', $data);
+		} elseif ($this->role == 'student') {
+			return view('student/assignment_list', $data);
+		}
 	}
 
 	public function get_assignments()

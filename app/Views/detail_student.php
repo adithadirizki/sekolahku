@@ -84,14 +84,14 @@
    </div>
    <div class="col-md-6 col-lg-5 col-xl-4">
       <div class="card">
-         <div class="card-body">
-            <div class="card-title">Riwayat Kelas</div>
+            <div class="card-title px-2 pt-2">Riwayat Kelas</div>
             <div class="table-responsive">
                <table class="table text-center">
                   <thead>
                      <tr>
                         <th>KELAS</th>
                         <th>TAHUN AJARAN</th>
+                        <th>HAPUS</th>
                      </tr>
                   </thead>
                   <tbody>
@@ -101,12 +101,15 @@
                      </tr>
                      <?php
                      foreach (json_decode($data->class_history) as $v) :
-                        $class = array_search($v->class, array_column($history_classgroup, 'class_group_code'));
-                        $year = array_search($v->year, array_column($history_schoolyear, 'school_year_id'));
+                        $class = array_search($v->class, array_column($classgroup_history, 'class_group_code'));
+                        $year = array_search($v->year, array_column($schoolyear_history, 'school_year_id'));
                      ?>
                         <tr>
-                           <td><?= $history_classgroup[$class]->class_group_name ?></td>
-                           <td><?= $history_schoolyear[$year]->school_year_title ?></td>
+                           <td><?= $classgroup_history[$class]->class_group_name ?></td>
+                           <td><?= $schoolyear_history[$year]->school_year_title ?></td>
+                           <td>
+                              <button class="btn btn-icon rounded-circle btn-flat-danger"><i data-feather="trash"></i></button>
+                           </td>
                         </tr>
                      <?php
                      endforeach;
@@ -114,7 +117,6 @@
                   </tbody>
                </table>
             </div>
-         </div>
       </div>
    </div>
 </div>

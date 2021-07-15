@@ -202,41 +202,11 @@
             </li>
             <li class="<?= $url_active == 'dashboard' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('dashboard') ?>"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboard">Dashboard</span></a>
             </li>
-            <li class="<?= $url_active == 'user' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('user') ?>"><i data-feather="users"></i><span class="menu-title text-truncate" data-i18n="User">User</span></a>
-            </li>
-            <li class="<?= $url_active == 'teacher' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('teacher') ?>"><i data-feather="user-check"></i><span class="menu-title text-truncate" data-i18n="Guru">Guru</span></a>
-            </li>
-            <li class="<?= $url_active == 'student' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('student') ?>"><i data-feather="user"></i><span class="menu-title text-truncate" data-i18n="Siswa">Siswa</span></a>
-            </li>
-            <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="trello"></i><span class="menu-title text-truncate" data-i18n="Kelas/Jurusan">Kelas/Jurusan</span></a>
-               <ul class="menu-content">
-                  <li class="<?= $url_active == 'classes' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('classes') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Kelas">Kelas</span></a>
-                  </li>
-                  <li class="<?= $url_active == 'major' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('major') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Jurusan">Jurusan</span></a>
-                  </li>
-                  <li class="<?= $url_active == 'schoolyear' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('schoolyear') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Tahun Pelajaran">Tahun Pelajaran</span></a>
-                  </li>
-               </ul>
-            </li>
-            <li class="<?= $url_active == 'subject' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('subject') ?>"><i data-feather="book-open"></i><span class="menu-title text-truncate" data-i18n="Mata Pelajaran">Mata Pelajaran</span></a>
-            </li>
             <li class=" navigation-header"><span data-i18n="E-Learning">E-Learning</span><i data-feather="more-horizontal"></i>
             </li>
-            <li class="<?= $url_active == 'bankquestion' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('bankquestion') ?>"><i data-feather="align-justify"></i><span class="menu-title text-truncate" data-i18n="Bank Soal">Bank Soal</span></a>
+            <li class="<?= $url_active == 'assignment' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment') ?>"><i data-feather="file-text"></i><span class="menu-title text-truncate" data-i18n="Tugas">Tugas</span></a>
             </li>
-            <li class="<?= $url_active == 'question' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('question') ?>"><i data-feather="list"></i><span class="menu-title text-truncate" data-i18n="Daftar Soal">Daftar Soal</span></a>
-            </li>
-            <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="file-text"></i><span class="menu-title text-truncate" data-i18n="Tugas">Tugas</span></a>
-               <ul class="menu-content">
-                  <li class="<?= $url_active == 'assignment' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Instruksi">Instruksi</span></a>
-                  </li>
-                  <li class="<?= $url_active == 'assignment_result' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment_result') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Hasil Instruksi">Hasil Instruksi</span></a>
-                  </li>
-                  <li class="<?= $url_active == 'quiz' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('quiz') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Quiz">Quiz</span></a>
-                  </li>
-                  <li class="<?= $url_active == 'quiz_result' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('quiz_result') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Hasil Quiz">Hasil Quiz</span></a>
-                  </li>
-               </ul>
+            <li class="<?= $url_active == 'quiz' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('quiz') ?>"><i data-feather="message-circle"></i><span class="menu-title text-truncate" data-i18n="Quiz">Quiz</span></a>
             </li>
             <li class="<?= $url_active == 'material' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('material') ?>"><i data-feather="book"></i><span class="menu-title text-truncate" data-i18n="Materi">Materi</span></a>
             </li>

@@ -27,11 +27,12 @@ class M_Assignment extends Model
       return $assignment_code;
    }
    
-   public function total_assignment()
+   public function total_assignment($where = [])
    {
       $this->selectCount('assignment_id', 'total_nums');
       $this->join('tb_user', 'username = assigned_by');
       $this->join('tb_subject', 'subject_id = subject');
+      $this->where($where);
       return $this->get()->getFirstRow('object')->total_nums;
    }
    
@@ -69,11 +70,34 @@ class M_Assignment extends Model
       return $this->get()->getResultObject();
    }
    
-   public function assignments($where = [])
+   public function assignments($where = [], $limit = 0, $offset = 0)
    {
-      $this->select("assignment_id,assignment_title,assignment_code");
+      // $this->select("assignment_id,assignment_title,assignment_code");
       $this->where($where);
-      $this->orderBy('assignment_title ASC');
+      $this->limit($limit, $offset);
+      $this->orderBy('start_at DESC');
+      return $this->get()->getResultObject();
+   }
+   
+   public function total_assignment_student($username, $where = [])
+   {
+      $this->selectCount('assignment_id', 'total_nums');
+      $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
+      $this->join('tb_assignment_result', 'assignment = assignment_code', 'left');
+      $this->join('tb_subject', 'subject_id = subject');
+      $this->where($where);
+      return $this->get()->getFirstRow('object')->total_nums;
+   }
+   
+   public function assignments_student($username, $where = [], $limit = 0, $offset = 0)
+   {
+      $this->select('assignment_code,assignment_title,start_at,due_at,subject_name,subject_code');
+      $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
+      $this->join('tb_assignment_result', 'assignment = assignment_code AND submitted_by = student_username', 'left');
+      $this->join('tb_subject', 'subject_id = subject');
+      $this->where($where);
+      $this->limit($limit, $offset);
+      $this->orderBy('start_at DESC');
       return $this->get()->getResultObject();
    }
 

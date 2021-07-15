@@ -24,13 +24,13 @@ class Cookie implements FilterInterface
          if ($result) {
             if (strtotime($result->token_expired) < strtotime('now')) {
                // if cookie is expired
-               setcookie('token', '', time() - 3600);
+               setcookie('token', '', time() - 3600, '/');
                unset($_COOKIE['token']);
                session()->destroy();
                return redirect()->to(base_url('auth/login'));
             }
             if ($result->is_active != 1) {
-               setcookie('token', '', time() - 3600);
+               setcookie('token', '', time() - 3600, '/');
                unset($_COOKIE['token']);
                session()->destroy();
                return redirect()->to(base_url('auth/login'));
@@ -58,7 +58,7 @@ class Cookie implements FilterInterface
                "hasLogin" => true
             ]);
          } else {
-            setcookie('token', '', time() - 3600);
+            setcookie('token', '', time() - 3600, '/');
             unset($_COOKIE['token']);
             session()->destroy();
             return redirect()->to(base_url('auth/login'));

@@ -75,9 +75,20 @@ class M_Announcement extends Model
       return $this->update();
    }
 
-   public function delete_announcement($where)
+   public function delete_announcement($username, $announcement_id)
    {
-      $this->where($where);
-      return $this->delete();
+      $builder = \Config\Database::connect();
+      $builder->transBegin();
+      $announcement_title = $builder->query("SELECT announcement_title FROM tb_announcement WHERE announcement_id = $announcement_id")->getFirstRow('object')->announcement_title;
+      $builder->query("DELETE FROM tb_announcement WHERE announcement_id = $announcement_id");
+      $builder->query("INSERT INTO tb_log_activity (log_type,log_desc,log_action,log_username) VALUES ('announcement','$announcement_title','delete','$username')");
+      $builder->transComplete();
+      if ($builder->transStatus() === false) {
+         $builder->transRollback();
+         return false;
+      } else {
+         $builder->transCommit();
+         return true;
+      }
    }
 }

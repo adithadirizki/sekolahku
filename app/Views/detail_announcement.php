@@ -36,7 +36,7 @@
                ?>
             </div>
             <h4 class="font-weight-bolder">
-               Dibuat pada :
+               Diumumkan pada :
             </h4>
             <div class="mb-2">
                <?= (new DateTime($data->announced_at))->format('d F Y H:i') ?> WIB

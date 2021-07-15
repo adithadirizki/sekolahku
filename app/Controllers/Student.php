@@ -88,8 +88,8 @@ class Student extends BaseController
 			"title" => "Detail Guru",
 			"url_active" => "student",
 			"data" => $result,
-			"classgroup_history" => $classgroup_history,
-			"schoolyear_history" => $schoolyear_history
+			"classgroup_history" => array_reverse($classgroup_history),
+			"schoolyear_history" => array_reverse($schoolyear_history)
 		];
 		return view('detail_student', $data);
 	}

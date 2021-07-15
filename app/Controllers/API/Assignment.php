@@ -49,6 +49,53 @@ class Assignment extends BaseController
       $this->m_school_year = new M_School_Year();
    }
 
+   public function getAll()
+   {
+      $validation = \Config\Services::validation();
+      $validation->setRules(
+         [
+            "page" => "required|is_natural_no_zero"
+         ],
+         [
+            "page" => [
+               "required" => "Parameter is invalid.",
+               "is_natural_no_zero" => "Parameter is invalid."
+            ]
+         ]
+      );
+      if ($validation->withRequest($this->request)->run() === false) {
+         return $this->respond([
+            "message" => "ERROR!",
+            "status" => 400,
+            "errors" => $validation->getErrors(),
+         ]);
+      }
+      $limit = 10;
+      $offset = ($_POST['page'] - 1) * $limit;
+      if ($this->role == 'superadmin') {
+         $where = [];
+         $result = $this->m_assignment->get_assignments_by_admin($where, $limit, $offset);
+         $total_nums = $this->m_assignment->get_total_assignment_by_admin($where);
+      } elseif ($this->role == 'teacher') {
+         $where = [
+            "assigned_by" => $this->username
+         ];
+         $result = $this->m_assignment->assignments($where, $limit, $offset);
+         $total_nums = $this->m_assignment->total_assignment($where);
+      } elseif ($this->role == 'student') {
+         $where = [];
+         $result = $this->m_assignment->assignments_student($this->username, $where, $limit, $offset);
+         $total_nums = $this->m_assignment->total_assignment_student($this->username, $where);
+      }
+      return $this->respond([
+         "message" => "OK",
+         "status" => 200,
+         "error" => false,
+         "data" => $result,
+         "total_nums" => $total_nums
+      ]);
+   }
+
    public function create()
    {
       $validation = \Config\Services::validation();

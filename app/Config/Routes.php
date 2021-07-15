@@ -32,6 +32,7 @@ $routes->setAutoRoute(true);
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
+$routes->get('logout', 'Home::logout');
 // $routes->post('api/user/account/create', 'API\User::create_account');
 
 $routes->resource('teacher', ['only' => ['show', 'new', 'edit']]);
@@ -72,6 +73,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->delete('bankquestion/(:num)/question/(:num)', 'Bankquestion::delete_question/$1/$2');
 	$routes->resource('bankquestion');
 
+	// $routes->post('')
 	$routes->post('assignment/(:alphanum)/copy', 'Assignment::copy/$1');
 	$routes->resource('assignment', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);
 

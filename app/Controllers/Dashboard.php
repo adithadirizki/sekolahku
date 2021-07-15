@@ -8,6 +8,11 @@ class Dashboard extends BaseController
 			"title" => "Dashboard",
 			"url_active" => "dashboard"
 		];
-		return view('dashboard', $data);
+		if ($this->role == 'superadmin') {
+			return view('dashboard', $data);
+			
+		} elseif ($this->role == 'student') {
+			return view('student/dashboard', $data);
+		}
 	}
 }
