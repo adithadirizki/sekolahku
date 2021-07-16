@@ -26,10 +26,14 @@ class Quiz extends BaseController
 			"title" => "Quiz",
 			"url_active" => "quiz"
 		];
-		return view('quiz_list', $data);
+		if ($this->role == 'superadmin') {
+			return view('quiz_list', $data);
+		} elseif ($this->role == 'student') {
+			return view('student/quiz_list', $data);
+		}
 	}
 
-	public function get_quizs()
+	public function get_quizzes()
 	{
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
@@ -67,7 +71,11 @@ class Quiz extends BaseController
 
 	public function show($quiz_code)
 	{
-		$result = $this->m_quiz->quiz($quiz_code);
+		if ($this->role == 'superadmin') {
+			$result = $this->m_quiz->detail_quiz($quiz_code);
+		} elseif ($this->role == 'student') {
+			$result = $this->m_quiz->quiz_student($this->username, $quiz_code);
+		}
 		if (!$result) {
 			throw new PageNotFoundException();
 		}
@@ -76,7 +84,11 @@ class Quiz extends BaseController
 			"url_active" => "quiz",
 			"data" => $result
 		];
-		return view('detail_quiz', $data);
+		if ($this->role == 'superadmin') {
+			return view('detail_quiz', $data);
+		} elseif ($this->role == 'student') {
+			return view('student/detail_quiz', $data);
+		}
 	}
 
 	public function edit($quiz_code)
@@ -98,6 +110,23 @@ class Quiz extends BaseController
 			"class_group" => $this->m_class_group->class_groups($where)
 		];
 		return view('edit_quiz', $data);
+	}
+
+	public function do_quiz($quiz_code)
+	{
+		$questions = $this->m_quiz->questions($quiz_code);
+		if (!$questions) {
+			throw new PageNotFoundException();
+		}
+		$data = [
+			"title" => "Sedang mengerjakan Quiz",
+			"url_active" => "quiz",
+			"data" => (object) [
+				"quiz_code" => $quiz_code,
+				"questions" => json_decode($questions)
+			]
+		];
+		return view('student/do_quiz', $data);
 	}
 
 	public function add_question($quiz_code)

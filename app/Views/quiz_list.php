@@ -44,7 +44,7 @@
          serverSide: true,
          processing: true,
          ajax: {
-            url: "<?= base_url('quiz/get_quizs') ?>",
+            url: "<?= base_url('quiz/get_quizzes') ?>",
             type: "post",
             dataType: "json",
             data: function(data) {

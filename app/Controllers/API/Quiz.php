@@ -5,11 +5,13 @@ namespace App\Controllers\API;
 use App\Controllers\BaseController;
 use App\Models\M_Question;
 use App\Models\M_Quiz;
+use App\Models\M_Quizresult;
 use App\Models\M_School_Year;
 
 class Quiz extends BaseController
 {
    protected $m_quiz;
+   protected $m_quiz_result;
    protected $m_school_year;
    protected $m_question;
    protected $rules = [
@@ -58,8 +60,56 @@ class Quiz extends BaseController
    public function __construct()
    {
       $this->m_quiz = new M_Quiz();
+      $this->m_quiz_result = new M_Quizresult();
       $this->m_school_year = new M_School_Year();
       $this->m_question = new M_Question();
+   }
+
+   public function getAll()
+   {
+      $validation = \Config\Services::validation();
+      $validation->setRules(
+         [
+            "page" => "required|is_natural_no_zero"
+         ],
+         [
+            "page" => [
+               "required" => "Parameter is invalid.",
+               "is_natural_no_zero" => "Parameter is invalid."
+            ]
+         ]
+      );
+      if ($validation->withRequest($this->request)->run() === false) {
+         return $this->respond([
+            "message" => "ERROR!",
+            "status" => 400,
+            "errors" => $validation->getErrors(),
+         ]);
+      }
+      $limit = 10;
+      $offset = ($_POST['page'] - 1) * $limit;
+      if ($this->role == 'superadmin') {
+         $where = [];
+         $result = $this->m_quiz->get_quizzes_by_admin($where, $limit, $offset);
+         $total_nums = $this->m_quiz->get_total_quiz_by_admin($where);
+      } elseif ($this->role == 'teacher') {
+         $where = [
+            "assigned_by" => $this->username
+         ];
+         $result = $this->m_quiz->quizzes($where, $limit, $offset);
+         $total_nums = $this->m_quiz->total_quiz($where);
+      } elseif ($this->role == 'student') {
+         $where = [];
+         $result = $this->m_quiz->quizzes_student($this->username, $where, $limit, $offset);
+         $total_nums = $this->m_quiz->total_quiz_student($this->username, $where);
+      }
+      return $this->respond([
+         "message" => "OK",
+         "status" => 200,
+         "error" => false,
+         "data" => $result,
+         "total_nums" => $total_nums
+      ]);
    }
 
    public function create()
@@ -179,11 +229,48 @@ class Quiz extends BaseController
       }
    }
 
+   public function start($quiz_code)
+   {
+      $result = $this->m_quiz->quiz($quiz_code);
+      if (!$result) {
+         return $this->failValidationError();
+      }
+      if ($result->question_model == 1) {
+         // Generate Random Number Questions
+         shuffle($result->questions);
+      }
+      $questions = array_fill_keys($result->questions, NULL); // Set answer NULL
+      $data = [
+         "quiz" => $quiz_code,
+         "answer" => json_encode($questions),
+         "submitted_by" => $this->username,
+         "at_school_year" => $this->m_school_year->school_year_now()->school_year_id
+      ];
+      $result = $this->m_quiz_result->create_quiz_result($data);
+      if ($result) {
+         return $this->respond([
+            "message" => "Successfully start Quiz.",
+            "status" => 200,
+            "error" => false
+         ]);
+      }
+      return $this->respond([
+         "message" => "Failed to start Quiz.",
+         "status" => 400,
+         "error" => true
+      ]);
+   }
+
    public function show_question($quiz_code, $number_question)
    {
       $result = $this->m_quiz->get_question($quiz_code, $number_question);
       if ($result) {
+         if ($this->role == 'student') {
+            unset($result->answer_key);
+            unset($result->created_by);
+         }
          $result->choices = json_decode($result->choice);
+         unset($result->choice);
          return $this->respond([
             "message" => "Data found!",
             "status" => 200,

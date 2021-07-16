@@ -4,7 +4,7 @@
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/monokai-sublime.min.css') ?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/quill.snow.css') ?>">
 <?= $this->endSection() ?>
-<?= $this->section('styleCSS') ?>
+<?= $this->section('customCSS') ?>
 <style>
    .ql-container {
       resize: vertical;
@@ -14,97 +14,80 @@
 </style>
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
-<div class="row">
+<div class="row match-height">
    <div class="col-md-8">
       <div class="card">
          <div class="card-body">
-            <div class="card-title text-center">
-               <?= $data->assignment_title ?>
+            <div class="card-title"><?= $data->assignment_title ?>
+               <?= $data->assignment_result_id !== null ? '<div class="badge badge-pill badge-light-success ml-25">SELESAI</div>' : null ?>
+               <?= strtotime('now') > strtotime($data->due_at) ? '<div class="badge badge-pill badge-light-danger ml-25">BERAKHIR</div>' : null ?>
             </div>
-            <?php
-            if (new DateTime() < new DateTime($data->start_at) || new DateTime() > new DateTime($data->due_at)) {
-               echo '<h4 class="mb-2"><div class="badge badge-light-danger d-block py-1">TELAH BERAKHIR</div></h4>';
-            }
-            ?>
-            <h4 class="font-weight-bolder">
-               Mata pelajaran :
-            </h4>
-            <div class="mb-2">
-               <?= $data->subject_name ?>
-            </div>
-            <h4 class="font-weight-bolder">
-               Poin :
-            </h4>
-            <div class="mb-2">
-               <?= $data->point ?>
-            </div>
-            <h4 class="font-weight-bolder">
-               Deskripsi tugas :
-            </h4>
-            <div class="ql-editor text-wrap p-0" id="assignment_desc">
-               <?= html_entity_decode($data->assignment_desc, ENT_QUOTES, 'UTF-8') ?>
+            <hr>
+            <div class="ql-snow">
+               <div class="assignment-text text-wrap ql-editor p-0"><?= html_entity_decode($data->assignment_desc, ENT_QUOTES, 'UTF-8') ?></div>
             </div>
          </div>
       </div>
    </div>
-   <div class="col-md-4 order-md-first">
-      <div class="card">
+   <div class="col-md-4">
+      <div class="card border-primary flex-grow-0">
          <div class="card-body">
             <h4 class="font-weight-bolder">
-               Kode tugas :
+               Kode Tugas :
             </h4>
             <div class="mb-2">
                <?= $data->assignment_code ?>
             </div>
             <h4 class="font-weight-bolder">
-               Dibuat pada :
+               Mata Pelajaran :
+            </h4>
+            <div>
+               <?= $data->subject_name ?>
+            </div>
+         </div>
+      </div>
+      <div class="card flex-grow-0">
+         <div class="card-body">
+            <?php if ($data->assignment_result_id === null) { ?>
+               <h4 class="font-weight-bolder">
+                  Poin Tugas :
+               </h4>
+               <div class="mb-2">
+                  <?= $data->point ?>
+               </div>
+            <?php } elseif ($data->value === null) { ?>
+               <h4 class="font-weight-bolder">
+                  Nilai Tugas :
+               </h4>
+               <div class="mb-2">
+                  Belum dinilai/<?= $data->point ?>
+               </div>
+            <?php } else { ?>
+               <h4 class="font-weight-bolder">
+                  Nilai Tugas :
+               </h4>
+               <div class="mb-2">
+                  <?= $data->value ?>/<?= $data->point ?>
+               </div>
+            <?php } ?>
+            <h4 class="font-weight-bolder">
+               Ditugaskan pada :
             </h4>
             <div class="mb-2">
-               <?php
-               echo (new Datetime($data->start_at))->format('d m Y');
-               ?>
+               <?= (new DateTime($data->start_at))->format('d M Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
-               Berakhir :
+               Sampai :
             </h4>
             <div class="mb-2">
-               <?= $data->due_at ? (new Datetime($data->due_at))->format('d m Y') : '-' ?>
-            </div>
-            <h4 class="font-weight-bolder">
-               Tahun ajaran :
-            </h4>
-            <div class="mb-2">
-               <?= $data->school_year_title ?>
+               <?= (new DateTime($data->due_at))->format('d M Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
                Ditugaskan oleh :
             </h4>
-            <div class="mb-2">
+            <div>
                <?= $data->assigned ?>
             </div>
-            <?php if ($data->assignment_result_id !== null) { ?>
-               <h4 class="font-weight-bolder">
-                  Nilai :
-               </h4>
-               <div class="mb-2">
-                  <?= $data->value !== null ? $data->value . '/' . $data->point : 'Belum dinilai' ?>
-               </div>
-               <h4 class="font-weight-bolder">
-                  Dikirim pada :
-               </h4>
-               <div class="mb-2">
-                  <?= (new DateTime($data->submitted_at))->format('d m Y') ?>
-               </div>
-               <?php if (new DateTime($data->submitted_at) > new DateTime($data->due_at)) { ?>
-                  <h4>
-                     <div class="badge badge-light-danger d-block py-1">TERLAMBAT</div>
-                  </h4>
-               <?php } ?>
-            <?php } else { ?>
-               <h4 class="m-0">
-                  <div class="badge badge-danger d-block py-1">BELUM DIKERJAKAN</div>
-               </h4>
-            <?php } ?>
          </div>
       </div>
    </div>
@@ -113,12 +96,12 @@
          <div class="card">
             <div class="card-body">
                <div class="divider">
-                  <div class="font-weight-bolder divider-text">
-                     JAWABAN
-                  </div>
+                  <div class="divider-text">JAWABAN</div>
                </div>
-               <div class="ql-editor text-wrap p-0">
-                  <?= html_entity_decode($data->answer, ENT_QUOTES, 'UTF-8') ?>
+               <div class="ql-snow">
+                  <div class="ql-editor text-wrap p-0">
+                     <?= html_entity_decode($data->answer, ENT_QUOTES, 'UTF-8') ?>
+                  </div>
                </div>
             </div>
          </div>
@@ -133,8 +116,8 @@
                <form id="add-assignment-result" enctype="multipart/form-data" onsubmit="return false;">
                   <div class="form-group">
                      <input type="hidden" name="assignment_code" value="<?= $data->assignment_code ?>">
-                     <textarea name="answer" id="answer" class="d-none"></textarea>
-                     <div class="quill-editor"></div>
+                     <textarea name="answer" id="answer" hidden></textarea>
+                     <div class="all-editor"></div>
                   </div>
                   <div class="d-flex justify-content-end">
                      <button type="submit" class="btn btn-primary">Serahkan tugas</button>
@@ -153,10 +136,15 @@
 <script src="<?= base_url('app-assets/vendors/js/editors/quill/image-resize.min.js') ?>"></script>
 <script src="<?= base_url('app-assets/vendors/js/forms/select/select2.full.min.js') ?>"></script>
 <?= $this->endSection() ?>
-<?= $this->section('scriptJS') ?>
+<?= $this->section('customJS') ?>
 <script src="<?= base_url('assets/js/quill-editor.js') ?>" type="text/javascript"></script>
 <script>
    $(document).ready(function() {
+      var csrf_token = "<?= csrf_hash() ?>";
+      var icons = Quill.import('ui/icons');
+      var all_editor = [];
+      icons['undo'] = feather.icons['corner-up-left'].toSvg();
+      icons['redo'] = feather.icons['corner-up-right'].toSvg();
       var set_editor = {
          theme: 'snow',
          modules: {
@@ -216,7 +204,8 @@
                ],
                handlers: {
                   file: function() {
-                     const range = editor.getSelection();
+                     const quill_editor = this.quill;
+                     const range = this.quill.getSelection();
                      const input = document.createElement('input');
                      input.setAttribute('type', 'file');
                      input.setAttribute('accept', listMimeImg.concat(listMimeAudio, listMimeVideo, listOtherMime));
@@ -240,16 +229,16 @@
                               if (result.error == false) {
                                  if (listMimeImg.indexOf(file.type) > -1) {
                                     //Picture
-                                    editor.insertEmbed(range.index, 'image', result.url);
+                                    quill_editor.insertEmbed(range.index, 'image', result.url);
                                  } else if (listMimeAudio.indexOf(file.type) > -1) {
                                     //Audio
-                                    editor.insertEmbed(range.index, 'audio', result.url);
+                                    quill_editor.insertEmbed(range.index, 'audio', result.url);
                                  } else if (listMimeVideo.indexOf(file.type) > -1) {
                                     //Video
-                                    editor.insertEmbed(range.index, 'video', result.url);
+                                    quill_editor.insertEmbed(range.index, 'video', result.url);
                                  } else if (listOtherMime.indexOf(file.type) > -1) {
                                     //Other file type
-                                    editor.insertText(range.index, file.name, 'link', result.url);
+                                    quill_editor.insertText(range.index, file.name, 'link', result.url);
                                  }
                               }
                            }
@@ -257,20 +246,23 @@
                      };
                   },
                   undo: function() {
-                     editor.history.undo();
+                     this.quill.history.undo();
                   },
                   redo: function() {
-                     editor.history.redo();
+                     this.quill.history.redo();
                   }
                }
             }
          }
       };
-      var editor = new Quill('.quill-editor', set_editor);
-      editor.setContents(editor.clipboard.convert($('#answer').val())); // Set default value
-      editor.on('text-change', function() {
-         // Set value on change
-         $('#answer').val(editor.root.innerHTML);
+      $('.all-editor').each(function(index, obj) {
+         var this_editor = $(this);
+         all_editor.push(new Quill(obj, set_editor));
+         all_editor[index].setContents(all_editor[index].clipboard.convert(this_editor.siblings('textarea').val())); // Set default value
+         all_editor[index].on('text-change', function(delta) {
+            // Update value choices every text change
+            this_editor.siblings('textarea').val(all_editor[index].root.innerHTML);
+         })
       })
       $(document).on('submit', '#add-assignment-result', function(e) {
          e.preventDefault();
@@ -279,7 +271,7 @@
          var form = $(this);
          var data = $(this).serialize();
          $.ajax({
-            url: "<?= base_url('api/assignment_result') ?>",
+            url: "<?= base_url('api/assignment/result') ?>",
             type: "post",
             dataType: "json",
             data: data,

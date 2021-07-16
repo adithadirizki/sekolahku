@@ -7,12 +7,12 @@
 </style>
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
-<div id="tmp-assignment" class="d-none">
+<div id="tmp-quiz" class="d-none">
    <div class="col-md-6">
       <div class="card mb-1">
          <div class="card-body">
             <h4 class="card-title mb-50">
-               <a href="javascript:void(0)" class="blog-title-truncate text-body-heading assignment-title">-</a>
+               <a href="javascript:void(0)" class="blog-title-truncate text-body-heading quiz-title">-</a>
             </h4>
             <div class="media">
                <div class="media-body">
@@ -27,7 +27,7 @@
    </div>
 </div>
 <div class="list-group">
-   <div class="row" id="assignments">
+   <div class="row" id="quizzes">
    </div>
    <div class="m-auto" id="loading-sm">
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -45,7 +45,7 @@
       var csrf_hash = "<?= csrf_hash() ?>";
       var load_data = (page = 1) => {
          $.ajax({
-            url: "<?= base_url('api/assignment/getAll') ?>",
+            url: "<?= base_url('api/quiz/getAll') ?>",
             type: "post",
             dataType: "json",
             data: {
@@ -65,36 +65,40 @@
                   curr_page = page;
                   total_pages = Math.floor(result.total_nums / 10) + 1;
                   if (result.data.length === 0 && curr_page === 1) {
-                     $('#assignments').html('<h5 class="text-center w-100">Tidak ada tugas</h5>');
+                     $('#quizzes').html('<h5 class="text-center w-100">Tidak ada quiz</h5>');
                   }
                   result.data.forEach(v => {
-                     var assignment_code = v.assignment_code,
-                        assignment_title = v.assignment_title,
+                     var quiz_code = v.quiz_code,
+                        quiz_title = v.quiz_title,
                         subject_name = v.subject_name,
                         start_at = new Date(v.start_at),
                         due_at = new Date(v.due_at),
-                        assignment_result_id = v.assignment_result_id;
+                        status = v.status;
                      var d = start_at.getDate() > 9 ? start_at.getDate() : "0" + start_at.getDate();
                      var m = start_at.toLocaleString('default', {
                         'month': 'short'
                      });
                      var Y = start_at.getFullYear();
-                     var tmp = $('#tmp-assignment').clone();
+                     var tmp = $('#tmp-quiz').clone();
                      if (subject_name.length > 20) {
                         subject_name = v.subject_code;
                      }
-                     if (assignment_result_id !== null) {
+                     if (status == 0) {
+                        tmp.find('.tag-badges').append('<div class="badge badge-pill badge-light-warning mr-50">SEDANG MENGERJAKAN</div>');
+                     } else if (status == 1) {
                         tmp.find('.tag-badges').append('<div class="badge badge-pill badge-light-success mr-50">SELESAI</div>');
+                     } else if (status == 2) {
+                        tmp.find('.tag-badges').append('<div class="badge badge-pill badge-light-danger mr-50">WAKTU HABIS</div>');
                      }
                      if (Date.now() > new Date(due_at).getTime()) {
                         tmp.find('.tag-badges').append('<div class="badge badge-pill badge-light-danger mr-50">BERAKHIR</div>');
                      }
-                     tmp.find('.assignment-title').attr('href', '<?= base_url('assignment') ?>/' + assignment_code);
-                     tmp.find('.assignment-title').text(assignment_title);
+                     tmp.find('.quiz-title').attr('href', '<?= base_url('quiz') ?>/' + quiz_code);
+                     tmp.find('.quiz-title').text(quiz_title);
                      tmp.find('.subject-name').text(subject_name);
                      tmp.find('.assigned-at').text(`${d} ${m} ${Y} ${start_at.toTimeString().substr(0, 5)} WIB`);
-                     $('#assignments h5').remove();
-                     $('#assignments').append(tmp.html());
+                     $('#quizzes h5').remove();
+                     $('#quizzes').append(tmp.html());
                   });
                }
             },

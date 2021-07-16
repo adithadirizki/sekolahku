@@ -71,15 +71,44 @@ class M_Quiz extends Model
       return $this->get()->getResultObject();
    }
    
-   public function quizs($where = [])
+   public function quizzes($where = [], $limit = 0, $offset = 0)
    {
-      $this->select("quiz_id,quiz_title,quiz_code");
       $this->where($where);
-      $this->orderBy('quiz_title ASC');
+      $this->limit($limit, $offset);
+      $this->orderBy('start_at DESC');
+      return $this->get()->getResultObject();
+   }
+   
+   public function total_quiz_student($username, $where = [])
+   {
+      $this->selectCount('quiz_id', 'total_nums');
+      $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
+      $this->join('tb_quiz_result', 'quiz = quiz_code', 'left');
+      $this->join('tb_subject', 'subject_id = subject');
+      $this->where($where);
+      return $this->get()->getFirstRow('object')->total_nums;
+   }
+   
+   public function quizzes_student($username, $where = [], $limit = 0, $offset = 0)
+   {
+      $this->select('quiz_code,quiz_title,start_at,due_at,quiz_result_id,status,subject_name,subject_code');
+      $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
+      $this->join('tb_quiz_result', 'quiz = quiz_code AND submitted_by = student_username', 'left');
+      $this->join('tb_subject', 'subject_id = subject');
+      $this->where($where);
+      $this->limit($limit, $offset);
+      $this->orderBy('start_at DESC');
+      $this->groupBy('quiz_code');
       return $this->get()->getResultObject();
    }
 
    public function quiz($quiz_code)
+   {
+      $this->where('quiz_code', $quiz_code);
+      return $this->get()->getFirstRow('object');
+   }
+
+   public function detail_quiz($quiz_code)
    {
       $this->select("quiz_id,quiz_code,quiz_title,questions,GROUP_CONCAT(CONCAT_WS(' ',class_name,major_code,unit_major) SEPARATOR ',') class_group_name,class_group class_group_code,subject_id,subject_code,subject_name,created_by,fullname created,question_model,show_ans_key,time,start_at,due_at,school_year_title");
       $this->join('tb_user', 'username = created_by');
@@ -91,6 +120,28 @@ class M_Quiz extends Model
       $this->where('quiz_code', $quiz_code);
       $this->groupBy('quiz_code');
       return $this->get()->getFirstRow('object');
+   }
+
+   public function quiz_student($username, $quiz_code)
+   {
+      $this->select("quiz_id,quiz_code,quiz_title,questions,question_model,show_ans_key,time,subject_id,subject_code,subject_name,created_by,fullname created,start_at,due_at,quiz_result_id,answer,essay_score,value,status,submitted_at");
+      $this->join('tb_user', 'username = created_by');
+      $this->join('tb_subject', 'subject_id = subject');
+      $this->join('tb_quiz_result', "quiz = quiz_code AND submitted_by = '$username'", 'left');
+      $this->where('quiz_code', $quiz_code);
+      $this->groupBy('quiz_code');
+      return $this->get()->getFirstRow('object');
+   }
+
+   public function is_due($quiz_code)
+   {
+      $this->selectCount('quiz_id', 'total_nums');
+      $this->where("NOW() > due_at");
+      $this->where('quiz_code', $quiz_code);
+      if ($this->get()->getFirstRow('object')->total_nums > 0) {
+         return true;
+      }
+      return false;
    }
 
    public function create_quiz($data)

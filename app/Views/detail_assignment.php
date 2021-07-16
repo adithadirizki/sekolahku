@@ -6,7 +6,19 @@
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="row">
-   <div class="col-md-6 col-xl-3 order-xl-first">
+   <div class="col-md-8">
+      <div class="card">
+         <div class="card-body">
+            <div class="card-title"><?= $data->assignment_title ?></div>
+            <hr>
+            <div class="font-medium-1 mb-50">Deskripsi Tugas :</div>
+            <div class="ql-snow">
+               <div class="assignment-text text-wrap ql-editor p-0"><?= html_entity_decode($data->assignment_desc, ENT_QUOTES, 'UTF-8') ?></div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="col-md-4">
       <div class="card border-primary">
          <div class="card-body">
             <?= strtotime('now') > strtotime($data->due_at) ? '<div class="badge badge-light-danger font-medium-2 d-block p-75 mb-1">BERAKHIR</div>' : '' ?>
@@ -30,20 +42,6 @@
             </div>
          </div>
       </div>
-   </div>
-   <div class="col-md-12 order-md-first col-xl-6 ">
-      <div class="card">
-         <div class="card-body">
-            <div class="card-title"><?= $data->assignment_title ?></div>
-            <hr>
-            <div class="font-medium-1 mb-50">Deskripsi Tugas :</div>
-            <div class="ql-snow">
-               <div class="assignment-text text-wrap ql-editor p-0"><?= html_entity_decode($data->assignment_desc, ENT_QUOTES, 'UTF-8') ?></div>
-            </div>
-         </div>
-      </div>
-   </div>
-   <div class="col-md-6 col-xl-3">
       <div class="card">
          <div class="card-body">
             <h4 class="font-weight-bolder">

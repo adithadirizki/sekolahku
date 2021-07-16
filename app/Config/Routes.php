@@ -45,6 +45,7 @@ $routes->get('bankquestion/(:num)/question/new', 'Bankquestion::new_question/$1'
 
 $routes->resource('assignment', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:alphanum)']);
 
+$routes->get('quiz/(:alphanum)/do_quiz', 'Quiz::do_quiz/$1');
 $routes->get('quiz/(:alphanum)/question/add', 'Quiz::add_question/$1');
 $routes->get('quiz/(:alphanum)/question/new', 'Quiz::new_question/$1');
 $routes->resource('quiz', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:alphanum)']);
@@ -73,7 +74,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->delete('bankquestion/(:num)/question/(:num)', 'Bankquestion::delete_question/$1/$2');
 	$routes->resource('bankquestion');
 
-	// $routes->post('')
+	$routes->resource('assignment/result', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:num)', 'controller' => 'Assignmentresult']);
+
+	$routes->post('assignment/getAll', 'Assignment::getAll');
 	$routes->post('assignment/(:alphanum)/copy', 'Assignment::copy/$1');
 	$routes->resource('assignment', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);
 

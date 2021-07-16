@@ -72,7 +72,6 @@ class M_Assignment extends Model
    
    public function assignments($where = [], $limit = 0, $offset = 0)
    {
-      // $this->select("assignment_id,assignment_title,assignment_code");
       $this->where($where);
       $this->limit($limit, $offset);
       $this->orderBy('start_at DESC');
@@ -91,13 +90,14 @@ class M_Assignment extends Model
    
    public function assignments_student($username, $where = [], $limit = 0, $offset = 0)
    {
-      $this->select('assignment_code,assignment_title,start_at,due_at,subject_name,subject_code');
+      $this->select('assignment_code,assignment_title,start_at,due_at,assignment_result_id,subject_name,subject_code');
       $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
       $this->join('tb_assignment_result', 'assignment = assignment_code AND submitted_by = student_username', 'left');
       $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
       $this->limit($limit, $offset);
       $this->orderBy('start_at DESC');
+      $this->groupBy('assignment_code');
       return $this->get()->getResultObject();
    }
 
@@ -113,6 +113,28 @@ class M_Assignment extends Model
       $this->where('assignment_code', $assignment_code);
       $this->groupBy('assignment_code');
       return $this->get()->getFirstRow('object');
+   }
+
+   public function assignment_student($username, $assignment_code)
+   {
+      $this->select("assignment_id,assignment_code,assignment_title,assignment_desc,point,subject_id,subject_code,subject_name,assigned_by,fullname assigned,start_at,due_at,assignment_result_id,answer,value,submitted_at");
+      $this->join('tb_user', 'username = assigned_by');
+      $this->join('tb_subject', 'subject_id = subject');
+      $this->join('tb_assignment_result', "assignment = assignment_code AND submitted_by = '$username'", 'left');
+      $this->where('assignment_code', $assignment_code);
+      $this->groupBy('assignment_code');
+      return $this->get()->getFirstRow('object');
+   }
+
+   public function is_due($assignment_code)
+   {
+      $this->selectCount('assignment_id', 'total_nums');
+      $this->where("NOW() > due_at");
+      $this->where('assignment_code', $assignment_code);
+      if ($this->get()->getFirstRow('object')->total_nums > 0) {
+         return true;
+      }
+      return false;
    }
 
    public function create_assignment($data)

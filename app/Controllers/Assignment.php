@@ -71,7 +71,11 @@ class Assignment extends BaseController
 
 	public function show($assignment_code)
 	{
-		$result = $this->m_assignment->assignment($assignment_code);
+		if ($this->role == 'superadmin') {
+			$result = $this->m_assignment->assignment($assignment_code);
+		} elseif ($this->role == 'student') {
+			$result = $this->m_assignment->assignment_student($this->username, $assignment_code);
+		}
 		if (!$result) {
 			throw new PageNotFoundException();
 		}
@@ -80,7 +84,11 @@ class Assignment extends BaseController
 			"url_active" => "assignment",
 			"data" => $result
 		];
-		return view('detail_assignment', $data);
+		if ($this->role == 'superadmin') {
+			return view('detail_assignment', $data);
+		} elseif ($this->role == 'student') {
+			return view('student/detail_assignment', $data);
+		}
 	}
 
 	public function edit($assignment_code)
