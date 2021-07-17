@@ -20,7 +20,7 @@ class M_Quiz extends Model
          }
          $this->selectCount('quiz_id', 'total_nums');
          $this->where(['quiz_code' => $quiz_code]);
-         if ($this->get()->getFirstRow('object')->total_nums == 0) {
+         if ($this->get(1)->getFirstRow('object')->total_nums == 0) {
             break;
          }
       }
@@ -32,7 +32,7 @@ class M_Quiz extends Model
       $this->selectCount('quiz_id', 'total_nums');
       $this->join('tb_user', 'username = created_by');
       $this->join('tb_subject', 'subject_id = subject');
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function total_quiz_filtered($where, $keyword)
@@ -49,7 +49,7 @@ class M_Quiz extends Model
       $this->orLike("DATE_FORMAT(start_at, '%d %m %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function quiz_data($where, $keyword, $limit, $offset, $orderby)
@@ -86,7 +86,7 @@ class M_Quiz extends Model
       $this->join('tb_quiz_result', 'quiz = quiz_code', 'left');
       $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function quizzes_student($username, $where = [], $limit = 0, $offset = 0)
@@ -105,7 +105,7 @@ class M_Quiz extends Model
    public function quiz($quiz_code)
    {
       $this->where('quiz_code', $quiz_code);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function detail_quiz($quiz_code)
@@ -119,29 +119,35 @@ class M_Quiz extends Model
       $this->join('tb_school_year', 'school_year_id = at_school_year');
       $this->where('quiz_code', $quiz_code);
       $this->groupBy('quiz_code');
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function quiz_student($username, $quiz_code)
    {
+      $this->select('tb_quiz.*');;
+      $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
+      $this->where('quiz_code'. $quiz_code);
+      return $this->get(1)->getFirstRow('object');
+   }
+
+   public function detail_quiz_student($username, $quiz_code)
+   {
       $this->select("quiz_id,quiz_code,quiz_title,questions,question_model,show_ans_key,time,subject_id,subject_code,subject_name,created_by,fullname created,start_at,due_at,quiz_result_id,answer,essay_score,value,status,submitted_at");
       $this->join('tb_user', 'username = created_by');
+      $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
+      $this->join('tb_quiz_result', 'quiz = quiz_code AND submitted_by = student_username', 'left');
       $this->join('tb_subject', 'subject_id = subject');
-      $this->join('tb_quiz_result', "quiz = quiz_code AND submitted_by = '$username'", 'left');
       $this->where('quiz_code', $quiz_code);
       $this->groupBy('quiz_code');
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function is_due($quiz_code)
    {
-      $this->selectCount('quiz_id', 'total_nums');
-      $this->where("NOW() > due_at");
+      $this->select('1');
+      $this->where('NOW() > due_at');
       $this->where('quiz_code', $quiz_code);
-      if ($this->get()->getFirstRow('object')->total_nums > 0) {
-         return true;
-      }
-      return false;
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function create_quiz($data)
@@ -166,7 +172,7 @@ class M_Quiz extends Model
    {
       $this->select("questions");
       $this->where('quiz_code', $quiz_code);
-      return $this->get()->getFirstRow('object')->questions;
+      return $this->get(1)->getFirstRow('object')->questions;
    }
 
    public function get_question($quiz_code, $number_question)
@@ -174,7 +180,7 @@ class M_Quiz extends Model
       $this->select("tb_question.*");
       $this->join('tb_question', "question_id = JSON_EXTRACT(questions, '$[$number_question]')");
       $this->where('quiz_code', $quiz_code);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function update_question($quiz_code, $question_id)

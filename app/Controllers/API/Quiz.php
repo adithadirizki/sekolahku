@@ -229,17 +229,69 @@ class Quiz extends BaseController
       }
    }
 
+   public function get_question($quiz_code, $question_id)
+   {
+      $where = [
+         "quiz" => $quiz_code,
+         "submitted_by" => $this->username
+      ];
+      $result = $this->m_quiz_result->show_question($where, $question_id);
+      unset($result->answer_key);
+      unset($result->created_by);
+      if (!$result) {
+         return $this->respond([
+            "message" => "Quiz not found!",
+            "status" => 404,
+            "error" => true,
+            "data" => null
+         ]);
+      }
+      $result->choice = json_decode($result->choice);
+      return $this->respond([
+         "message" => "Quiz found!",
+         "status" => 200,
+         "error" => false,
+         "data" => $result
+      ]);
+   }
+
    public function start($quiz_code)
    {
-      $result = $this->m_quiz->quiz($quiz_code);
-      if (!$result) {
-         return $this->failValidationError();
+      if (!$result = $this->m_quiz->quiz_student($this->username, $quiz_code)) {
+         return $this->respond([
+            "message" => "Quiz not found!",
+            "status" => 404,
+            "error" => false
+         ]);
+      }
+      if (strtotime('now') > strtotime($result->due_at)) {
+         return $this->respond([
+            "message" => "Quiz is due.",
+            "status" => 403,
+            "error" => true
+         ]);
+      }
+      if ($status = $this->m_quiz_result->status_submitted($this->username, $quiz_code)) {
+         if ($status->status == 0) {
+            return $this->respond([
+               "message" => "Successfully started Quiz.",
+               "status" => 200,
+               "error" => false
+            ]);
+         }
+         if (in_array($status->status, [1, 2])) {
+            return $this->respond([
+               "message" => "You have submitted the quiz.",
+               "status" => 403,
+               "error" => true
+            ]);
+         }
       }
       if ($result->question_model == 1) {
          // Generate Random Number Questions
          shuffle($result->questions);
       }
-      $questions = array_fill_keys($result->questions, NULL); // Set answer NULL
+      $questions = array_fill_keys(json_decode($result->questions), NULL); // Set answer NULL
       $data = [
          "quiz" => $quiz_code,
          "answer" => json_encode($questions),
@@ -249,7 +301,7 @@ class Quiz extends BaseController
       $result = $this->m_quiz_result->create_quiz_result($data);
       if ($result) {
          return $this->respond([
-            "message" => "Successfully start Quiz.",
+            "message" => "Successfully started Quiz.",
             "status" => 200,
             "error" => false
          ]);
@@ -261,9 +313,90 @@ class Quiz extends BaseController
       ]);
    }
 
+   public function answer($quiz_code)
+   {
+      $validation = \Config\Services::validation();
+      $validation->setRules(
+         [
+            "answer" => "required"
+         ],
+         [
+            "answer" => [
+               "required" => "Jawaban harus diisi."
+            ]
+         ]
+      );
+      if ($validation->withRequest($this->request)->run() == false) {
+         return $this->respond([
+            "message" => "Failed to answer.",
+            "status" => 400,
+            "errors" => $validation->getErrors()
+         ]);
+      }
+      if ($this->m_quiz->is_due($quiz_code)) {
+         return $this->respond([
+            "message" => "Quiz is due.",
+            "status" => 403,
+            "error" => true
+         ]);
+      }
+      $where = [
+         "quiz" => $quiz_code,
+         "submitted_by" => $this->username
+      ];
+      parse_str(file_get_contents('php://input'), $input);
+      $answer = htmlentities($input['answer'], ENT_QUOTES, 'UTF-8');
+      $result = $this->m_quiz_result->submit_answer($_POST['question_id'], $answer, $where);
+      if ($result) {
+         return $this->respond([
+            "message" => "Successfully answered.",
+            "status" => 200,
+            "error" => false
+         ]);
+      }
+      return $this->respond([
+         "message" => "Failed to answer.",
+         "status" => 400,
+         "error" => true
+      ]);
+   }
+
+   public function complete($quiz_code)
+   {
+      $where = [
+         "quiz" => $quiz_code,
+         "submitted_by" => $this->username
+      ];
+      if ($this->m_quiz_result->is_timeout($this->username, $quiz_code)) {
+         $result = $this->m_quiz_result->submit_timeout($where);
+      } else {
+         $result = $this->m_quiz_result->submit_completed($where);
+      }
+      if ($result) {
+         return $this->respond([
+            "message" => "Successfully completed the Quiz.",
+            "status" => 200,
+            "error" => false
+         ]);
+      }
+      return $this->respond([
+         "message" => "Failed to complete the Quiz.",
+         "status" => 400,
+         "error" => true
+      ]);
+   }
+
    public function show_question($quiz_code, $number_question)
    {
-      $result = $this->m_quiz->get_question($quiz_code, $number_question);
+      if ($this->role == 'superadmin') {
+         $result = $this->m_quiz->get_question($quiz_code, $number_question);
+      } elseif ($this->role == 'student') {
+         $where = [
+            "quiz" => $quiz_code,
+            "submitted_by" => $this->username
+         ];
+         $result = $this->m_quiz_result->show_question($where, $number_question);
+      }
       if ($result) {
          if ($this->role == 'student') {
             unset($result->answer_key);
@@ -272,14 +405,14 @@ class Quiz extends BaseController
          $result->choices = json_decode($result->choice);
          unset($result->choice);
          return $this->respond([
-            "message" => "Data found!",
+            "message" => "Quiz found!",
             "status" => 200,
             "data" => $result,
             "error" => false
          ]);
       }
       return $this->respond([
-         "message" => "Data not found!",
+         "message" => "Quiz not found!",
          "status" => 200,
          "data" => null,
          "error" => true

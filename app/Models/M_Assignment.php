@@ -128,13 +128,10 @@ class M_Assignment extends Model
 
    public function is_due($assignment_code)
    {
-      $this->selectCount('assignment_id', 'total_nums');
-      $this->where("NOW() > due_at");
+      $this->select('1');
+      $this->where('NOW() > due_at');
       $this->where('assignment_code', $assignment_code);
-      if ($this->get()->getFirstRow('object')->total_nums > 0) {
-         return true;
-      }
-      return false;
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function create_assignment($data)

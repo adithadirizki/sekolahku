@@ -4,18 +4,21 @@ namespace App\Controllers;
 
 use App\Models\M_Quiz;
 use App\Models\M_Class_Group;
+use App\Models\M_Quizresult;
 use App\Models\M_Subject;
 use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Quiz extends BaseController
 {
 	protected $m_quiz;
+	protected $m_quiz_result;
 	protected $m_subject;
 	protected $m_class_group;
 
 	public function __construct()
 	{
 		$this->m_quiz = new M_Quiz();
+		$this->m_quiz_result = new M_Quizresult();
 		$this->m_subject = new M_Subject();
 		$this->m_class_group = new M_Class_Group();
 	}
@@ -74,7 +77,7 @@ class Quiz extends BaseController
 		if ($this->role == 'superadmin') {
 			$result = $this->m_quiz->detail_quiz($quiz_code);
 		} elseif ($this->role == 'student') {
-			$result = $this->m_quiz->quiz_student($this->username, $quiz_code);
+			$result = $this->m_quiz->detail_quiz_student($this->username, $quiz_code);
 		}
 		if (!$result) {
 			throw new PageNotFoundException();
@@ -114,17 +117,19 @@ class Quiz extends BaseController
 
 	public function do_quiz($quiz_code)
 	{
-		$questions = $this->m_quiz->questions($quiz_code);
-		if (!$questions) {
+		if (!$result = $this->m_quiz_result->quiz_result($this->username, $quiz_code)) {
+			throw new PageNotFoundException();
+		}
+		if (in_array($result->status, [1, 2])) {
+			throw new PageNotFoundException();
+		}
+      if (strtotime('now') > strtotime($result->due_at)) {
 			throw new PageNotFoundException();
 		}
 		$data = [
 			"title" => "Sedang mengerjakan Quiz",
 			"url_active" => "quiz",
-			"data" => (object) [
-				"quiz_code" => $quiz_code,
-				"questions" => json_decode($questions)
-			]
+			"data" => $result
 		];
 		return view('student/do_quiz', $data);
 	}

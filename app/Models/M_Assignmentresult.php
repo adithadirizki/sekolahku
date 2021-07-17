@@ -12,10 +12,10 @@ class M_Assignmentresult extends Model
 
    public function has_submitted($username, $assignment_code)
    {
-      $this->selectCount('assignment_result_id', 'total_nums');
+      $this->select('status');
       $this->where('assignment', $assignment_code);
       $this->where('submitted_by', $username);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function create_assignment_result($data)

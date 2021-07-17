@@ -80,7 +80,11 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->post('assignment/(:alphanum)/copy', 'Assignment::copy/$1');
 	$routes->resource('assignment', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);
 
+	$routes->post('quiz/getAll', 'Quiz::getAll');
 	$routes->post('quiz/(:alphanum)/copy', 'Quiz::copy/$1');
+	$routes->post('quiz/(:alphanum)/start', 'Quiz::start/$1');
+	$routes->post('quiz/(:alphanum)/answer', 'Quiz::answer/$1');
+	$routes->post('quiz/(:alphanum)/complete', 'Quiz::complete/$1');
 	$routes->put('quiz/(:alphanum)/question', 'Quiz::add_question/$1');
 	$routes->post('quiz/(:alphanum)/question', 'Quiz::create_question/$1');
 	$routes->post('quiz/(:alphanum)/question/(:num)', 'Quiz::show_question/$1/$2');
