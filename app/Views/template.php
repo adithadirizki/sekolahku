@@ -228,13 +228,17 @@
             </li>
             <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="file-text"></i><span class="menu-title text-truncate" data-i18n="Tugas">Tugas</span></a>
                <ul class="menu-content">
-                  <li class="<?= $url_active == 'assignment' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Instruksi">Instruksi</span></a>
+                  <li class="<?= $url_active == 'assignment' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Daftar Tugas">Daftar Tugas</span></a>
                   </li>
-                  <li class="<?= $url_active == 'assignment_result' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment_result') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Hasil Instruksi">Hasil Instruksi</span></a>
+                  <li class="<?= $url_active == 'assignment_result' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment_result') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Hasil Tugas">Hasil Tugas</span></a>
                   </li>
-                  <li class="<?= $url_active == 'quiz' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('quiz') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Quiz">Quiz</span></a>
+               </ul>
+            </li>
+            <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="message-circle"></i><span class="menu-title text-truncate" data-i18n="Quiz">Quiz</span></a>
+               <ul class="menu-content">
+                  <li class="<?= $url_active == 'quiz' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('quiz') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Daftar Quiz">Daftar Quiz</span></a>
                   </li>
-                  <li class="<?= $url_active == 'quiz_result' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('quiz_result') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Hasil Quiz">Hasil Quiz</span></a>
+                  <li class="<?= $url_active == 'quizresult' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('quizresult') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Hasil Quiz">Hasil Quiz</span></a>
                   </li>
                </ul>
             </li>

@@ -14,14 +14,14 @@ class M_Question extends Model
    {
       $this->select('question_id');
       $this->orderBy('question_id DESC');
-      return $this->get()->getFirstRow('object')->question_id;
+      return $this->get(1)->getFirstRow('object')->question_id;
    }
    
    public function total_question()
    {
       $this->selectCount('question_id', 'total_nums');
       $this->join('tb_user', 'username = created_by');
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function total_question_filtered($where, $keyword)
@@ -34,7 +34,7 @@ class M_Question extends Model
       $this->orLike('fullname', $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function question_data($where, $keyword, $limit, $offset, $orderby)
@@ -63,7 +63,7 @@ class M_Question extends Model
    public function question($where)
    {
       $this->where($where);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function create_question($data)

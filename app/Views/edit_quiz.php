@@ -83,7 +83,7 @@
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
-                        <label for="time">Waktu Quiz <span class="text-danger font-small-4">*</span> (menit</label>
+                        <label for="time">Waktu Quiz <span class="text-danger font-small-4">*</span> (menit)</label>
                         <input type="number" class="form-control" name="time" id="time" value="<?= $data->time ?>" placeholder="Waktu Quiz" required>
                         <div class="invalid-feedback"></div>
                      </div>

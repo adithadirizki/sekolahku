@@ -126,7 +126,7 @@ class M_Quiz extends Model
    {
       $this->select('tb_quiz.*');;
       $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
-      $this->where('quiz_code'. $quiz_code);
+      $this->where('quiz_code', $quiz_code);
       return $this->get(1)->getFirstRow('object');
    }
 

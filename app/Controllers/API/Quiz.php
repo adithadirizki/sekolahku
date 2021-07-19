@@ -367,10 +367,51 @@ class Quiz extends BaseController
          "quiz" => $quiz_code,
          "submitted_by" => $this->username
       ];
-      if ($this->m_quiz_result->is_timeout($this->username, $quiz_code)) {
-         $result = $this->m_quiz_result->submit_timeout($where);
+      $answers = $this->m_quiz_result->answers($this->username, $quiz_code);
+      $answers = json_decode($answers, true);
+      $questions = json_encode(array_keys($answers));
+      $questions = substr($questions, 1);
+      $questions = substr($questions, 0, -1);
+      $questions = $this->m_question->questions("question_id IN ($questions)");
+      $total_mc = 0;
+      $total_essay = 0;
+      $mc_score = 0;
+      $essay_score = 0;
+      $save_essay_score = [];
+      foreach ($questions as $k => $v) {
+         if ($v->question_type == 'mc') {
+            $total_mc++;
+            if ($answers[$v->question_id] == $v->answer_key) {
+               $mc_score += 100;
+            }
+         } elseif ($v->question_type == 'essay') {
+            $total_essay++;
+            if (strtolower($answers[$v->question_id]) == strtolower($v->answer_key)) {
+               $essay_score += 100;
+               $save_essay_score[$v->question_id] = 100;
+            } else {
+               $save_essay_score[$v->question_id] = 0;
+            }
+         }
+      }
+
+      $mc_score = $total_mc ? floor($mc_score / $total_mc) : 0;
+      $essay_score = $total_essay ? floor($essay_score / $total_essay) : 0;
+      if ($total_mc && $total_essay) {
+         $total_score = floor(($mc_score + $essay_score) / 2);
       } else {
-         $result = $this->m_quiz_result->submit_completed($where);
+         $total_score = floor($mc_score + $essay_score);
+      }
+      $save_essay_score = json_encode($save_essay_score);
+
+      $data = [
+         "essay_score" => $save_essay_score,
+         "value" => $total_score
+      ];
+      if ($this->m_quiz_result->is_timeout($this->username, $quiz_code)) {
+         $result = $this->m_quiz_result->submit_timeout($data, $where);
+      } else {
+         $result = $this->m_quiz_result->submit_completed($data, $where);
       }
       if ($result) {
          return $this->respond([

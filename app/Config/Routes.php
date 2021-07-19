@@ -50,6 +50,8 @@ $routes->get('quiz/(:alphanum)/question/add', 'Quiz::add_question/$1');
 $routes->get('quiz/(:alphanum)/question/new', 'Quiz::new_question/$1');
 $routes->resource('quiz', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:alphanum)']);
 
+$routes->resource('quizresult', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:num)']);
+
 $routes->resource('material', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:alphanum)']);
 $routes->resource('announcement', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:num)']);
 
@@ -90,6 +92,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->post('quiz/(:alphanum)/question/(:num)', 'Quiz::show_question/$1/$2');
 	$routes->delete('quiz/(:alphanum)/question/(:num)', 'Quiz::delete_question/$1/$2');
 	$routes->resource('quiz', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);
+
+	// $routes->resource('quizresult', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:num)']);
 
 	$routes->post('material/(:alphanum)/copy', 'Material::copy/$1');
 	$routes->resource('material', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);

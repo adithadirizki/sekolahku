@@ -158,8 +158,10 @@
             <div class="mb-2">
                <?= $data->created ?>
             </div>
-            <a href="<?= base_url('/quiz/' . $data->quiz_code) ?>/edit" class="btn btn-primary btn-block">Edit quiz</a>
-            <button id="delete-quiz" class="btn btn-danger btn-block">Hapus</button>
+            <div class="d-flex justify-content-between align-items-center">
+               <button id="delete-quiz" class="btn btn-danger">Hapus</button>
+               <a href="<?= base_url('/quiz/' . $data->quiz_code) ?>/edit" class="btn btn-primary">Edit quiz</a>
+            </div>
          </div>
       </div>
    </div>

@@ -14,7 +14,7 @@
 
    .question-list button.complete.active {
       border: 1px solid #28c76f !important;
-      background-color: transparent !important;
+      background-color: rgba(40, 199, 111, 0.04) !important;
       color: #28c76f !important;
    }
 </style>
@@ -24,10 +24,12 @@
    <div class="col-md-8">
       <div class="card">
          <div class="card-body">
+            <div class="divider divider-success divider-right m-0">
+               <h3 class="border-success round text-center timer divider-text font-medium-4 px-1 py-50">00:00:00</h3>
+            </div>
             <div id="question" data-question_type="" data-number_question="">
                <div class="btn btn-sm btn-outline-primary question-type">Tipe Soal</div>
                <div class="btn btn-sm btn-primary font-weight-bold">No. <span class="number-question"></span></div>
-               <span class="h3 timer align-middle ml-50">00:00:00</span>
                <div class="mb-2"></div>
                <div class="ql-snow">
                   <div class="question-text ql-editor p-0">
@@ -148,7 +150,7 @@
          var seconds = remaining % 60;
          var minutes = Math.floor(remaining / 60);
          var hours = Math.floor(minutes / 60);
-         sexonds = seconds > 9 ? seconds : "0" + seconds;
+         seconds = seconds > 9 ? seconds : "0" + seconds;
          minutes = minutes % 60 > 9 ? minutes : "0" + minutes;
          hours = hours % 60 > 9 ? hours : "0" + hours;
          now = new Date(time_limit - remaining).toLocaleString();
