@@ -51,7 +51,13 @@
                   Nilai Quiz :
                </h4>
                <div class="mb-2">
-                  <?= $data->value === null ? 'Belum dinilai' : $data->value; ?>
+                  <?= $data->value === null ? 'Belum dinilai' : $data->value ?>
+               </div>
+               <h4 class="font-weight-bolder">
+                  Selesai pada :
+               </h4>
+               <div class="mb-2">
+                  <?= (new DateTime($data->submitted_at))->format('d M Y H:i') ?> WIB
                </div>
             <?php } ?>
             <h4 class="font-weight-bolder">
@@ -87,6 +93,118 @@
       </div>
    </div>
 </div>
+<?php if (count($questions) > 0) { ?>
+   <div class="card">
+      <div class="table-responsive">
+         <table class="table table-bordered table-hover">
+            <thead>
+               <tr>
+                  <th class="text-center align-middle">No</th>
+                  <th class="align-middle">Pertanyaan</th>
+                  <?php if ($data->show_ans_key == 1) { ?>
+                     <th class="text-center align-middle">Kunci Jawaban</th>
+                  <?php } ?>
+                  <th class="text-center align-middle">Jawaban</th>
+                  <th class="text-center align-middle">B/S</th>
+               </tr>
+            </thead>
+            <tbody>
+               <?php
+               $abcde = range('A', 'E');
+               $mc_score = 0;
+               $answers = json_decode($data->answer, true);
+               $essay_score = json_decode($data->essay_score, true);
+
+               $question_type = array_count_values(array_column($questions, 'question_type'));
+               $total_mc = isset($question_type['mc']) ? $question_type['mc'] : 0;
+               $total_essay = isset($question_type['essay']) ? $question_type['essay'] : 0;
+
+               foreach ($questions as $k => $v) { ?>
+                  <tr>
+                     <td class="text-center"><?= ($k + 1) ?></td>
+                     <td><?= html_entity_decode($v->question_text, ENT_QUOTES, 'UTF-8') ?></td>
+                     <td>
+                        <?php
+                        if ($v->question_type == 'mc') {
+                           echo '<center>' . $abcde[$v->answer_key] . '</center>';
+                        } elseif ($v->question_type == 'essay') {
+                           echo $v->answer_key ? html_entity_decode($v->answer_key, ENT_QUOTES, 'UTF-8') : '<center>-</center>';
+                        }
+                        ?>
+                     </td>
+                     <?php if ($data->show_ans_key == 1) { ?>
+                        <td>
+                           <?php
+                           if ($v->question_type == 'mc') {
+                              if ($answers[$v->question_id] === null || $answers[$v->question_id] == '') {
+                                 echo '<center>-</center>';
+                              } else {
+                                 echo '<center>' . $abcde[$answers[$v->question_id]] . '</center>';
+                              }
+                           } elseif ($v->question_type == 'essay') {
+                              if ($answers[$v->question_id] === null || $answers[$v->question_id] == '') {
+                                 echo '<center>-</center>';
+                              } else {
+                                 echo html_entity_decode($answers[$v->question_id], ENT_QUOTES, 'UTF-8');
+                              }
+                           }
+                           ?>
+                        </td>
+                     <?php } ?>
+                     <td class="text-center">
+                        <?php
+                        if ($v->question_type == 'mc') {
+                           if ($answers[$v->question_id] == $v->answer_key) {
+                              $mc_score += 100;
+                              echo '<div class="badge badge-pill badge-light-success">BENAR</div>';
+                           } else {
+                              echo '<div class="badge badge-pill badge-light-danger">SALAH</div>';
+                           }
+                        } elseif ($v->question_type == 'essay') {
+                           echo $essay_score[$v->question_id] ? $essay_score[$v->question_id] : '-';
+                        }
+                        ?>
+                     </td>
+                  </tr>
+               <?php } ?>
+            </tbody>
+         </table>
+      </div>
+      <div class="card-body">
+         <div class="row">
+            <div class="offset-sm-4"></div>
+            <div class="col-sm-4">
+               <h4 class="font-weight-bold">
+                  <span> PG :</span> <span class="float-right"><?= $total_mc ?> soal</span>
+               </h4>
+               <hr>
+               <h4 class="font-weight-bold">
+                  <span> Essai :</span> <span class="float-right"><?= $total_essay ?> soal</span>
+               </h4>
+               <hr>
+            </div>
+            <div class="col-sm-4">
+               <?php
+               $mc_score = $total_mc ? floor($mc_score / $total_mc) : 0;
+               $essay_score = $total_essay ? array_sum($essay_score)  / $total_essay : 0;
+               $total_score = floor(($mc_score + $essay_score) / ($total_mc && $total_essay ? 2 : 1));
+               ?>
+               <h4 class="font-weight-bold">
+                  <span> Skor PG :</span> <span class="float-right score-mc"><?= $mc_score ?></span>
+               </h4>
+               <hr>
+               <h4 class="font-weight-bold">
+                  <span> Skor Essai :</span> <span class="float-right score-essay"><?= $essay_score ?></span>
+               </h4>
+               <hr>
+               <h4 class="font-weight-bolder">
+                  <span> Nilai Akhir :</span> <span class="float-right total-score"><?= $total_score ?></span>
+               </h4>
+            </div>
+         </div>
+      </div>
+   </div>
+<?php } ?>
 <?= $this->endSection() ?>
 <?= $this->section('customJS') ?>
 <script>

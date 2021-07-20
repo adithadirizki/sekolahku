@@ -106,7 +106,7 @@
             </div>
          </div>
       </div>
-   <?php } else { ?>
+   <?php } elseif ($data->assignment_result_id === null && strtotime('now') < strtotime($data->due_at)) { ?>
       <div class="col">
          <div class="card">
             <div class="card-body">

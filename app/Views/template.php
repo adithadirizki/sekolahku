@@ -230,7 +230,7 @@
                <ul class="menu-content">
                   <li class="<?= $url_active == 'assignment' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Daftar Tugas">Daftar Tugas</span></a>
                   </li>
-                  <li class="<?= $url_active == 'assignment_result' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment_result') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Hasil Tugas">Hasil Tugas</span></a>
+                  <li class="<?= $url_active == 'assignmentresult' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignmentresult') ?>"><i data-feather="circle"></i><span class="menu-title text-truncate" data-i18n="Hasil Tugas">Hasil Tugas</span></a>
                   </li>
                </ul>
             </li>

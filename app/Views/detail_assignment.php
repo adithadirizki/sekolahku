@@ -68,7 +68,8 @@
             <div class="mb-2">
                <?= $data->assigned ?>
             </div>
-            <a href="<?= base_url('/assignment/' . $data->assignment_code) ?>/edit" class="btn btn-primary btn-block">Edit tugas</a>
+            <a href="<?= base_url('assignmentresult?assignment=' . $data->assignment_code) ?>" class="btn btn-info btn-block">Lihat hasil Tugas</a>
+            <a href="<?= base_url('assignment/' . $data->assignment_code) ?>/edit" class="btn btn-primary btn-block">Edit tugas</a>
             <button id="delete-assignment" class="btn btn-danger btn-block">Hapus</button>
          </div>
       </div>

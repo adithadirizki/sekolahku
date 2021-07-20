@@ -85,6 +85,7 @@ class M_Assignment extends Model
       $this->join('tb_assignment_result', 'assignment = assignment_code', 'left');
       $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
+      $this->where('NOW() > start_at');
       return $this->get()->getFirstRow('object')->total_nums;
    }
    
@@ -95,6 +96,7 @@ class M_Assignment extends Model
       $this->join('tb_assignment_result', 'assignment = assignment_code AND submitted_by = student_username', 'left');
       $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
+      $this->where('NOW() > start_at');
       $this->limit($limit, $offset);
       $this->orderBy('start_at DESC');
       $this->groupBy('assignment_code');
@@ -122,6 +124,7 @@ class M_Assignment extends Model
       $this->join('tb_subject', 'subject_id = subject');
       $this->join('tb_assignment_result', "assignment = assignment_code AND submitted_by = '$username'", 'left');
       $this->where('assignment_code', $assignment_code);
+      $this->where('NOW() > start_at');
       $this->groupBy('assignment_code');
       return $this->get()->getFirstRow('object');
    }

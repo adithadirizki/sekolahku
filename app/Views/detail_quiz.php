@@ -124,6 +124,9 @@
                   </svg>
                </button>
             </div>
+            <div class="text-right mt-1">
+               <a href="<?= base_url('quizresult?quiz='.$data->quiz_code) ?>" class="btn btn-info">Lihat hasil Quiz</a>
+            </div>
          </div>
       </div>
       <div class="card">
@@ -137,6 +140,18 @@
                   echo "Siswa tidak dapat melihat kunci jawaban setelah mengerjakan Quiz.";
                } elseif ($data->show_ans_key == "1") {
                   echo "Siswa dapat melihat kunci jawaban setelah mengerjakan Quiz.";
+               }
+               ?>
+            </div>
+            <h4 class="font-weight-bolder">
+               Model Soal :
+            </h4>
+            <div class="mb-2">
+               <?php
+               if ($data->question_model == 0) {
+                  echo 'Berurutan';
+               } elseif ($data->question_model == 1) {
+                  echo 'Acak';
                }
                ?>
             </div>

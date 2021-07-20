@@ -99,11 +99,12 @@ class Assignmentresult extends BaseController
       $validation = \Config\Services::validation();
       $validation->setRules(
          [
-            "value" => "permit_empty|numeric"
+            "value" => "required|numeric"
          ],
          [
             "value" => [
-               "numeric" => "Nilai harus diisi."
+               "required" => "Nilai harus diisi.",
+               "numeric" => "Nilai harus terdiri dari angka."
             ]
          ]
       );
@@ -115,7 +116,7 @@ class Assignmentresult extends BaseController
          ]);
       }
       parse_str(file_get_contents('php://input'), $input);
-      $data['value'] = isset($input['value']) && is_numeric($input['value']) ? $input['value'] : null;
+      $data['value'] = htmlentities($input['value'], ENT_QUOTES, 'UTF-8');
       $where = [
          "assignment_result_id" => $assignment_result_id
       ];

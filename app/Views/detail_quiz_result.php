@@ -1,9 +1,4 @@
 <?= $this->extend('template') ?>
-<?= $this->section('vendorCSS') ?>
-<link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/katex.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/monokai-sublime.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/quill.snow.css') ?>">
-<?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="row">
    <div class="col-xl-3">
@@ -52,7 +47,7 @@
    </div>
    <div class="col-xl-9 ">
       <div class="card">
-         <form enctype="multipart/form-data" onsubmit="return false;">
+         <form id="edit-value" enctype="multipart/form-data" onsubmit="return false;">
             <div class="table-responsive">
                <table class="table table-bordered table-hover">
                   <thead>
@@ -115,7 +110,7 @@
                                     echo '<div class="badge badge-pill badge-light-danger">SALAH</div>';
                                  }
                               } elseif ($v->question_type == 'essay') {
-                                 echo '<input type="number" name="score" class="form-control" min="0" max="100" value="' . $essay_score[$v->question_id] . '" placeholder="Skor" required>';
+                                 echo '<div class="form-group"><input type="number" name="essay_score[' . $v->question_id . ']" class="form-control score" min="0" max="100" value="' . $essay_score[$v->question_id] . '" placeholder="Skor" required><div class="invalid-feedback"></div></div>';
                               }
                               ?>
                            </td>
@@ -126,8 +121,8 @@
             </div>
             <div class="card-body">
                <div class="row">
-                  <div class="offset-sm-4"></div>
-                  <div class="col-sm-4">
+                  <div class="offset-md-4"></div>
+                  <div class="col-md-4">
                      <h4 class="font-weight-bold">
                         <span> PG :</span> <span class="float-right"><?= $total_mc ?> soal</span>
                      </h4>
@@ -137,7 +132,7 @@
                      </h4>
                      <hr>
                   </div>
-                  <div class="col-sm-4">
+                  <div class="col-md-4">
                      <?php
                      $mc_score = $total_mc ? floor($mc_score / $total_mc) : 0;
                      $essay_score = $total_essay ? array_sum($essay_score)  / $total_essay : 0;
@@ -151,9 +146,15 @@
                         <span> Skor Essai :</span> <span class="float-right score-essay"><?= $essay_score ?></span>
                      </h4>
                      <hr>
-                     <h4 class="font-weight-bolder">
-                        <span> Nilai Akhir :</span> <span class="float-right total-score"><?= $total_score ?></span>
-                     </h4>
+                     <div class="form-group row align-items-center">
+                        <h4 class="col-6 font-weight-bolder"> Nilai Akhir :</h4>
+                        <div class="col-6">
+                           <input type="number" name="value" class="form-control text-right total-score" value="<?= $data->value ?>" required>
+                        </div>
+                        <div class="col-12">
+                           <div class="invalid-feedback"></div>
+                        </div>
+                     </div>
                      <hr>
                      <div class="text-right">
                         <button type="submit" class="btn btn-primary">Perbarui nilai</button>
@@ -163,32 +164,84 @@
             </div>
          </form>
       </div>
-      <div id="tmp-choice" class="d-none">
-         <div class="d-flex mb-50">
-            <h5 class="mr-75"><strong></strong>.</h5>
-            <div class="ql-snow">
-               <div class="choice-text ql-editor p-0"></div>
-            </div>
-         </div>
-      </div>
    </div>
 </div>
 <?= $this->endSection() ?>
 <?= $this->section('customJS') ?>
 <script>
    $(document).ready(function() {
-      $(document).on('keyup', '[name=score]', function() {
+      $(document).on('keyup', '.score', function() {
          var essay_score = 0;
          var total_score = 0;
-         var total_essay = $('[name=score]').length;
+         var total_essay = $('.score').length;
          var mc_score = parseInt($('.score-mc').text());
-         $('[name=score]').each(function(index, obj) {
+         $('.score').each(function(index, obj) {
             essay_score += parseInt($(obj).val() ? $(obj).val() : 0);
          })
          essay_score = Math.floor(essay_score / total_essay);
          total_score = Math.floor((mc_score + essay_score) / 2);
          $('.score-essay').text(essay_score);
-         $('.total-score').text(total_score)
+         $('.total-score').val(total_score)
+      })
+      $(document).on('submit', '#edit-value', function(e) {
+         e.preventDefault();
+         $(this).find('.is-invalid').removeClass('is-invalid');
+         $(this).find('.invalid-feedback').text(null);
+         var form = $(this);
+         var data = $(this).serialize();
+         $.ajax({
+            url: "<?= base_url('api/quizresult/' . $data->quiz_result_id) ?>",
+            type: "put",
+            dataType: "json",
+            data: data,
+            headers: {
+               Authorization: "<?= session()->token ?>"
+            },
+            beforeSend: function() {
+               $.blockUI(set_blockUI);
+            },
+            success: function(result) {
+               $.unblockUI();
+               if (result.error == false) {
+                  Swal.fire({
+                     title: "Success!",
+                     text: result.message,
+                     icon: "success",
+                     showConfirmButton: false,
+                     timer: 3000
+                  })
+               } else if (result.error == true) {
+                  Swal.fire({
+                     title: "Failed!",
+                     text: result.message,
+                     icon: "error",
+                     showConfirmButton: false,
+                     timer: 3000
+                  })
+               } else {
+                  Object.entries(result.errors).forEach(function(key, value) {
+                     if (key[0].search('.')) {
+                        key[0] = key[0].split('.');
+                        key[0] = `${key[0][0]}[${key[0][1]}]`;
+                        key[0] = key[0].replace('*', '');
+                     }
+                     form.find('[name="' + key[0] + '"]').addClass('is-invalid');
+                     form.find('[name="' + key[0] + '"]').closest('.d-flex').addClass('is-invalid');
+                     form.find('[name="' + key[0] + '"]').closest('.form-group').find('.invalid-feedback').addClass('d-block').text(key[1]);
+                  })
+               }
+            },
+            error: function() {
+               $.unblockUI();
+               Swal.fire({
+                  title: "Error!",
+                  text: "An error occurred on the server.",
+                  icon: "error",
+                  showConfirmButton: false,
+                  timer: 3000
+               })
+            }
+         })
       })
    })
 </script>

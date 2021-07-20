@@ -45,6 +45,8 @@ $routes->get('bankquestion/(:num)/question/new', 'Bankquestion::new_question/$1'
 
 $routes->resource('assignment', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:alphanum)']);
 
+$routes->resource('assignmentresult', ['only' => ['show', 'new', 'edit'], 'placeholder' => '(:num)']);
+
 $routes->get('quiz/(:alphanum)/do_quiz', 'Quiz::do_quiz/$1');
 $routes->get('quiz/(:alphanum)/question/add', 'Quiz::add_question/$1');
 $routes->get('quiz/(:alphanum)/question/new', 'Quiz::new_question/$1');
@@ -82,6 +84,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->post('assignment/(:alphanum)/copy', 'Assignment::copy/$1');
 	$routes->resource('assignment', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);
 
+	$routes->resource('assignmentresult', ['only' => ['update', 'delete'], 'placeholder' => '(:num)']);
+
 	$routes->post('quiz/getAll', 'Quiz::getAll');
 	$routes->post('quiz/(:alphanum)/copy', 'Quiz::copy/$1');
 	$routes->post('quiz/(:alphanum)/start', 'Quiz::start/$1');
@@ -93,7 +97,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->delete('quiz/(:alphanum)/question/(:num)', 'Quiz::delete_question/$1/$2');
 	$routes->resource('quiz', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);
 
-	// $routes->resource('quizresult', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:num)']);
+	$routes->resource('quizresult', ['only' => ['update', 'delete'], 'placeholder' => '(:num)']);
 
 	$routes->post('material/(:alphanum)/copy', 'Material::copy/$1');
 	$routes->resource('material', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);

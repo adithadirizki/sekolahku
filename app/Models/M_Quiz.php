@@ -86,6 +86,7 @@ class M_Quiz extends Model
       $this->join('tb_quiz_result', 'quiz = quiz_code', 'left');
       $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
+      $this->where('NOW() > start_at');
       return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
@@ -96,6 +97,7 @@ class M_Quiz extends Model
       $this->join('tb_quiz_result', 'quiz = quiz_code AND submitted_by = student_username', 'left');
       $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
+      $this->where('NOW() > start_at');
       $this->limit($limit, $offset);
       $this->orderBy('start_at DESC');
       $this->groupBy('quiz_code');
@@ -127,6 +129,7 @@ class M_Quiz extends Model
       $this->select('tb_quiz.*');;
       $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
       $this->where('quiz_code', $quiz_code);
+      $this->where('NOW() > start_at');
       return $this->get(1)->getFirstRow('object');
    }
 
@@ -138,6 +141,7 @@ class M_Quiz extends Model
       $this->join('tb_quiz_result', 'quiz = quiz_code AND submitted_by = student_username', 'left');
       $this->join('tb_subject', 'subject_id = subject');
       $this->where('quiz_code', $quiz_code);
+      $this->where('NOW() > start_at');
       $this->groupBy('quiz_code');
       return $this->get(1)->getFirstRow('object');
    }

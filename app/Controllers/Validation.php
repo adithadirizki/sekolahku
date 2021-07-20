@@ -21,6 +21,7 @@ class Validation
 				return false;
 			}
 		}
+		return true;
 	}
 
 	public function choicelength($data)
@@ -37,6 +38,24 @@ class Validation
 		if (!isset($input['choice'])) return false;
 		if (!in_array($data, range(0, count($input['choice']) - 1))) {
 			return false;
+		}
+		return true;
+	}
+
+	public function essay_score($data)
+	{
+		parse_str(file_get_contents('php://input'), $input);
+		if (!is_array($data)) {
+			return false;
+		}
+		foreach ($data as $key => $value) {
+			if (!is_numeric($key)) {
+				return false;
+			}
+
+			if (!is_numeric($value) || $value < 0 || $value > 100) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -67,7 +86,7 @@ class Validation
 		$params = explode(',', $params);
 		$name   = array_shift($params);
 		$type   = array_shift($params);
-		
+
 		if ($type == 'image') {
 			$allowedMimeType = ['image/jpeg', 'image/png'];
 		} elseif ($type == 'any') {
@@ -80,16 +99,13 @@ class Validation
 			$files = [$this->request->getFile($name)];
 		}
 		foreach ($files as $file) {
-			if (is_null($file))
-			{
+			if (is_null($file)) {
 				return false;
 			}
-			if ($file->getError() === UPLOAD_ERR_NO_FILE)
-			{
+			if ($file->getError() === UPLOAD_ERR_NO_FILE) {
 				return true;
 			}
-			if (! in_array($file->getMimeType(), $allowedMimeType))
-			{
+			if (!in_array($file->getMimeType(), $allowedMimeType)) {
 				return false;
 			}
 		}

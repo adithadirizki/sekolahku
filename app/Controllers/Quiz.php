@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\M_Quiz;
 use App\Models\M_Class_Group;
+use App\Models\M_Question;
 use App\Models\M_Quizresult;
 use App\Models\M_Subject;
 use CodeIgniter\Exceptions\PageNotFoundException;
@@ -12,6 +13,7 @@ class Quiz extends BaseController
 {
 	protected $m_quiz;
 	protected $m_quiz_result;
+	protected $m_question;
 	protected $m_subject;
 	protected $m_class_group;
 
@@ -19,6 +21,7 @@ class Quiz extends BaseController
 	{
 		$this->m_quiz = new M_Quiz();
 		$this->m_quiz_result = new M_Quizresult();
+		$this->m_question = new M_Question();
 		$this->m_subject = new M_Subject();
 		$this->m_class_group = new M_Class_Group();
 	}
@@ -82,10 +85,19 @@ class Quiz extends BaseController
 		if (!$result) {
 			throw new PageNotFoundException();
 		}
+			$questions = [];
+		if ($this->role == 'student') {
+			if (in_array($result->status, [1, 2])) {
+				$whereIn = str_replace('[', '(', $result->questions);
+				$whereIn = str_replace(']', ')', $whereIn);
+				$questions = $this->m_question->questions("question_id IN $whereIn");
+			}
+		}
 		$data = [
 			"title" => "Detail Quiz",
 			"url_active" => "quiz",
-			"data" => $result
+			"data" => $result,
+			"questions" => $questions
 		];
 		if ($this->role == 'superadmin') {
 			return view('detail_quiz', $data);
@@ -123,7 +135,7 @@ class Quiz extends BaseController
 		if (in_array($result->status, [1, 2])) {
 			throw new PageNotFoundException();
 		}
-      if (strtotime('now') > strtotime($result->due_at)) {
+		if (strtotime('now') > strtotime($result->due_at)) {
 			throw new PageNotFoundException();
 		}
 		$data = [

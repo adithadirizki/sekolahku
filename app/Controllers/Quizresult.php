@@ -2,28 +2,19 @@
 
 namespace App\Controllers;
 
-use App\Models\M_Quiz;
-use App\Models\M_Class_Group;
 use App\Models\M_Question;
 use App\Models\M_Quizresult;
-use App\Models\M_Subject;
 use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Quizresult extends BaseController
 {
-	protected $m_quiz;
 	protected $m_quiz_result;
 	protected $m_question;
-	protected $m_subject;
-	protected $m_class_group;
 
 	public function __construct()
 	{
-		$this->m_quiz = new M_Quiz();
 		$this->m_quiz_result = new M_Quizresult();
 		$this->m_question = new M_Question();
-		$this->m_subject = new M_Subject();
-		$this->m_class_group = new M_Class_Group();
 	}
 
 	public function index()
@@ -101,27 +92,6 @@ class Quizresult extends BaseController
 		}
 	}
 
-	public function edit($quiz_code)
-	{
-		$result = $this->m_quiz->detail_quiz($quiz_code);
-		if (!$result) {
-			throw new PageNotFoundException();
-		}
-		$where = [];
-		foreach (json_decode($result->class_group_code) as $v) {
-			$where[] = "class_group_code = '$v'";
-		}
-		$where = implode(' OR ', $where);
-		$data = [
-			"title" => "Edit Quiz",
-			"url_active" => "quizresult",
-			"data" => $result,
-			"subject" => $this->m_subject->subjects(),
-			"class_group" => $this->m_class_group->class_groups($where)
-		];
-		return view('edit_quiz', $data);
-	}
-
 	public function do_quiz($quiz_code)
 	{
 		if (!$result = $this->m_quiz_result->quiz_result($this->username, $quiz_code)) {
@@ -139,31 +109,5 @@ class Quizresult extends BaseController
 			"data" => $result
 		];
 		return view('student/do_quiz', $data);
-	}
-
-	public function add_question($quiz_code)
-	{
-		$questions = $this->m_quiz->questions($quiz_code);
-		$data = [
-			"title" => "Tambah Soal",
-			"url_active" => "question",
-			"data" => (object) [
-				"quiz_code" => $quiz_code,
-				"questions" => json_decode($questions)
-			]
-		];
-		return view('add_question_quiz', $data);
-	}
-
-	public function new_question($quiz_code)
-	{
-		$data = [
-			"title" => "Tambah Soal",
-			"url_active" => "question",
-			"data" => (object) [
-				"quiz_code" => $quiz_code
-			]
-		];
-		return view('new_question_quiz', $data);
 	}
 }

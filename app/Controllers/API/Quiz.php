@@ -287,11 +287,12 @@ class Quiz extends BaseController
             ]);
          }
       }
+      $questions = json_decode($result->questions);
       if ($result->question_model == 1) {
          // Generate Random Number Questions
-         shuffle($result->questions);
+         shuffle($questions);
       }
-      $questions = array_fill_keys(json_decode($result->questions), NULL); // Set answer NULL
+      $questions = array_fill_keys($questions, NULL); // Set answer NULL
       $data = [
          "quiz" => $quiz_code,
          "answer" => json_encode($questions),

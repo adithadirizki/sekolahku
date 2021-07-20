@@ -63,7 +63,6 @@ class M_Quizresult extends Model
       $this->select('tb_quiz_result.*,fullname submitted,status,submitted_at,questions');
       $this->join('tb_user', 'username = submitted_by');
       $this->join('tb_quiz', 'quiz_code = quiz');
-      // $this->join('tb_question', "JSON_KEYS()")
       $this->where('quiz_result_id', $quiz_result_id);
       return $this->get(1)->getFirstRow('object');
    }
@@ -73,6 +72,7 @@ class M_Quizresult extends Model
       $this->select("quiz_code,time,start_at,due_at,answer,status,created_at");
       $this->join('tb_quiz', 'quiz_code = quiz');
       $this->where('quiz_code', $quiz_code);
+      $this->where('NOW() > start_at');
       $this->where('submitted_by', $username);
       return $this->get(1)->getFirstRow('object');
    }

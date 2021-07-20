@@ -7,18 +7,9 @@
 <?= $this->section('content') ?>
 <div class="card">
    <div class="card-header">
-      <div class="card-title">Daftar Quiz</div>
+      <div class="card-title">Daftar Tugas</div>
    </div>
    <div class="card-body d-flex flex-wrap pb-0">
-      <div class="form-group mb-0 mr-1">
-         <label for="status">Status</label>
-         <select name="status" id="status" class="form-control w-auto">
-            <option value=""> -- Pilih Status -- </option>
-            <option value="0">SEDANG MENGERJAKAN</option>
-            <option value="1">SELESAI</option>
-            <option value="2">WAKTU HABIS</option>
-         </select>
-      </div>
       <div class="form-group mb-0 mr-1">
          <label for="value">Nilai</label>
          <select name="value" id="value" class="form-control w-auto">
@@ -29,14 +20,13 @@
       </div>
    </div>
    <div class="card-datatable table-responsive">
-      <table class="table table-hover table-striped table-bordered" id="tb_quiz_result_list">
+      <table class="table table-hover table-striped table-bordered" id="tb_assignment_result_list">
          <thead class="text-center">
             <tr>
                <th>No</th>
-               <th>Kode Quiz</th>
-               <th>Judul Quiz</th>
+               <th>Kode Tugas</th>
+               <th>Judul Tugas</th>
                <th>Nilai</th>
-               <th>Status</th>
                <th>Dikerjakan Oleh</th>
                <th>Selesai Pada</th>
                <th>Aksi</th>
@@ -54,7 +44,7 @@
 <script>
    $(document).ready(function() {
       var csrf_token = "<?= csrf_hash() ?>";
-      var tb_quiz_result_list = $('#tb_quiz_result_list').DataTable({
+      var tb_assignment_result_list = $('#tb_assignment_result_list').DataTable({
          dom: '<"card-header py-0"<"dt-action-buttons"B>><"d-flex justify-content-between align-items-center mx-1 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-1 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
          order: [
             [0, 'desc']
@@ -62,7 +52,7 @@
          serverSide: true,
          processing: true,
          ajax: {
-            url: "<?= base_url('quizresult/get_quiz_results') ?>",
+            url: "<?= base_url('assignmentresult/get_assignment_results') ?>",
             type: "post",
             dataType: "json",
             data: function(data) {
@@ -76,18 +66,18 @@
             }
          },
          columns: [{
-               "data": "quiz_result_id",
+               "data": "assignment_result_id",
                "mRender": function(data, row, type, meta) {
                   return meta.row + meta.settings._iDisplayStart + 1;
                },
                "className": "text-center"
             },
             {
-               "data": "quiz_code",
+               "data": "assignment_code",
                "className": "text-center"
             },
             {
-               "data": "quiz_title"
+               "data": "assignment_title"
             },
             {
                "data": "value",
@@ -96,15 +86,6 @@
                      return '<div class="badge badge-light-info">Belum dinilai</div>';
                   }
                   return value;
-               },
-               "className": "text-center"
-            },
-            {
-               "data": "status",
-               "mRender": function(status) {
-                  var text = ['SEDANG MENGERJAKAN', 'SELESAI', 'WAKTU HABIS'];
-                  var color = ['warning', 'success', 'danger'];
-                  return '<div class="badge badge-light-' + color[status] + '">' + text[status] + '</div>';
                },
                "className": "text-center"
             },
@@ -122,13 +103,13 @@
                "className": "text-center"
             },
             {
-               "data": "quiz_result_id",
-               "mRender": function(quiz_result_id, row, data) {
-                  return '<div class="dropdown" data-quiz_result_id="' + quiz_result_id + '"><button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">' + feather.icons['more-vertical'].toSvg({
+               "data": "assignment_result_id",
+               "mRender": function(assignment_result_id, row, data) {
+                  return '<div class="dropdown" data-assignment_result_id="' + assignment_result_id + '"><button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">' + feather.icons['more-vertical'].toSvg({
                      class: 'font-medium-2'
-                  }) + '</button><div class="dropdown-menu"><a class="dropdown-item show-quiz-result text-primary" href="<?= base_url('quizresult') ?>/' + quiz_result_id + '">' + feather.icons['search'].toSvg({
+                  }) + '</button><div class="dropdown-menu"><a class="dropdown-item show-assignment-result text-primary" href="<?= base_url('assignmentresult') ?>/' + assignment_result_id + '">' + feather.icons['search'].toSvg({
                      class: 'font-medium-2'
-                  }) + ' <span>Koreksi</span></a></a><a class="dropdown-item delete-quiz-result text-danger" href="javascript:void(0);">' + feather.icons['trash'].toSvg({
+                  }) + ' <span>Koreksi</span></a></a><a class="dropdown-item delete-assignment-result text-danger" href="javascript:void(0);">' + feather.icons['trash'].toSvg({
                      class: 'font-medium-2'
                   }) + ' <span>Hapus</span></a></div></div>';
                },
@@ -137,17 +118,14 @@
             }
          ],
          search: {
-            "search": "<?= isset($_GET['quiz']) ? $_GET['quiz'] : null ?>"
+            "search": "<?= isset($_GET['assignment']) ? $_GET['assignment'] : null ?>"
          }
       })
       $(document).on('change', '[name=value]', function() {
-         tb_quiz_result_list.ajax.reload();
+         tb_assignment_result_list.ajax.reload();
       })
-      $(document).on('change', '[name=status]', function() {
-         tb_quiz_result_list.ajax.reload();
-      })
-      $(document).on('click', '.delete-quiz-result', function() {
-         var quiz_result_id = $(this).parents('.dropdown').data('quiz_result_id');
+      $(document).on('click', '.delete-assignment-result', function() {
+         var assignment_result_id = $(this).parents('.dropdown').data('assignment_result_id');
          Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -163,7 +141,7 @@
          }).then((result) => {
             if (result.value) {
                $.ajax({
-                  url: "<?= base_url('api/quizresult') ?>/" + quiz_result_id,
+                  url: "<?= base_url('api/assignmentresult') ?>/" + assignment_result_id,
                   type: "delete",
                   dataType: "json",
                   headers: {
@@ -182,7 +160,7 @@
                            showConfirmButton: false,
                            timer: 3000
                         }).then(function() {
-                           tb_quiz_result_list.ajax.reload();
+                           tb_assignment_result_list.ajax.reload();
                         })
                      } else {
                         Swal.fire({
