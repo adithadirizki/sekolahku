@@ -85,6 +85,14 @@ class M_Quizresult extends Model
       return $this->get(1)->getFirstRow('object');
    }
 
+   public function have_quiz($username, $quiz_result_id)
+   {
+      $this->select('1');
+      $this->join('tb_quiz', "quiz_code = quiz AND created_by = '$username'");
+      $this->where('quiz_result_id', $quiz_result_id);
+      return $this->get(1)->getFirstRow('object');
+   }
+
    public function create_quiz_result($data)
    {
       return $this->insert($data);

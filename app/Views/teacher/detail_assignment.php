@@ -6,7 +6,7 @@
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="row match-height">
-   <div class="col-lg-9">
+   <div class="col-md-8">
       <div class="card">
          <div class="card-body">
             <div class="card-title"><?= $data->assignment_title ?></div>
@@ -18,7 +18,7 @@
          </div>
       </div>
    </div>
-   <div class="col-lg-3">
+   <div class="col-md-4">
       <div class="card border-primary flex-grow-0">
          <div class="card-body">
             <?= strtotime('now') > strtotime($data->due_at) ? '<div class="badge badge-light-danger font-medium-2 d-block p-75 mb-1">BERAKHIR</div>' : '' ?>
@@ -61,12 +61,6 @@
             </h4>
             <div class="mb-2">
                <?= (new DateTime($data->due_at))->format('d F Y H:i') ?> WIB
-            </div>
-            <h4 class="font-weight-bolder">
-               Dibuat oleh :
-            </h4>
-            <div class="mb-2">
-               <?= $data->assigned ?>
             </div>
             <a href="<?= base_url('assignmentresult?assignment=' . $data->assignment_code) ?>" class="btn btn-info btn-block">Lihat hasil Tugas</a>
             <a href="<?= base_url('assignment/' . $data->assignment_code) ?>/edit" class="btn btn-primary btn-block">Edit tugas</a>

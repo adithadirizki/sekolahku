@@ -26,7 +26,13 @@ class Announcement extends BaseController
 			"title" => "Pengumuman",
 			"url_active" => "announcement"
 		];
-		return view('announcement_list', $data);
+		if ($this->role == 'superadmin') {
+			return view('announcement_list', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('announcement_list', $data);
+		} elseif ($this->role == 'student') {
+			return view('student/announcement_list', $data);
+		}
 	}
 
 	public function get_announcements()
@@ -42,7 +48,14 @@ class Announcement extends BaseController
 			array_push($orderby, "$field $dir");
 		}
 		$orderby = implode(',', $orderby);
-		$total_announcement = $this->m_announcement->total_announcement();
+
+		if ($this->role == 'teacher') {
+			$where = [
+				"announced_by" => $this->username
+			];
+		}
+
+		$total_announcement = $this->m_announcement->total_announcement($where);
 		$total_announcement_filtered = $this->m_announcement->total_announcement_filtered($where, $keyword);
 		$announcement_data = $this->m_announcement->announcement_data($where, $keyword, $limit, $offset, $orderby);
 		$csrf_name = csrf_token();
@@ -64,9 +77,15 @@ class Announcement extends BaseController
 		return view('add_announcement', $data);
 	}
 
-	public function show($announcement_code)
+	public function show($announcement_id)
 	{
-		$result = $this->m_announcement->announcement($announcement_code);
+		if ($this->role == 'superadmin') {
+			$result = $this->m_announcement->detail_announcement($announcement_id);
+		} elseif ($this->role == 'teacher') {
+			$result = $this->m_announcement->detail_announcement_teacher($this->username, $announcement_id);
+		} elseif ($this->role == 'student') {
+			$result = $this->m_announcement->detail_announcement_student($announcement_id);
+		}
 		if (!$result) {
 			throw new PageNotFoundException();
 		}
@@ -75,12 +94,18 @@ class Announcement extends BaseController
 			"url_active" => "announcement",
 			"data" => $result
 		];
-		return view('detail_announcement', $data);
+		if ($this->role == 'superadmin') {
+			return view('detail_announcement', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('teacher/detail_announcement', $data);
+		} elseif ($this->role == 'student') {
+			return view('student/detail_announcement', $data);
+		}
 	}
 
-	public function edit($announcement_code)
+	public function edit($announcement_id)
 	{
-		$result = $this->m_announcement->announcement($announcement_code);
+		$result = $this->m_announcement->announcement($announcement_id);
 		if (!$result) {
 			throw new PageNotFoundException();
 		}

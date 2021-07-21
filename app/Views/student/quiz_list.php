@@ -85,16 +85,14 @@
                      }
                      if (status == 0) {
                         tmp.find('.tag-badges').append('<div class="badge badge-pill badge-light-warning mr-50">SEDANG MENGERJAKAN</div>');
-                     } else if (status == 1) {
+                     } else if (status == 1 || status == 2) {
                         tmp.find('.tag-badges').append('<div class="badge badge-pill badge-light-success mr-50">SELESAI</div>');
-                     } else if (status == 2) {
-                        tmp.find('.tag-badges').append('<div class="badge badge-pill badge-light-danger mr-50">WAKTU HABIS</div>');
                      }
                      if (Date.now() > new Date(due_at).getTime()) {
                         tmp.find('.tag-badges').append('<div class="badge badge-pill badge-light-danger mr-50">BERAKHIR</div>');
                      }
                      tmp.find('.quiz-title').attr('href', '<?= base_url('quiz') ?>/' + quiz_code);
-                     tmp.find('.quiz-title').text(quiz_title);
+                     tmp.find('.quiz-title').text($.parseHTML(quiz_title)[0].data);
                      tmp.find('.subject-name').text(subject_name);
                      tmp.find('.assigned-at').text(`${d} ${m} ${Y} ${start_at.toTimeString().substr(0, 5)} WIB`);
                      $('#quizzes h5').remove();

@@ -90,8 +90,8 @@ class Quiz extends BaseController
       $offset = ($_POST['page'] - 1) * $limit;
       if ($this->role == 'superadmin') {
          $where = [];
-         $result = $this->m_quiz->get_quizzes_by_admin($where, $limit, $offset);
-         $total_nums = $this->m_quiz->get_total_quiz_by_admin($where);
+         $result = $this->m_quiz->quizzes($where, $limit, $offset);
+         $total_nums = $this->m_quiz->total_quiz($where);
       } elseif ($this->role == 'teacher') {
          $where = [
             "assigned_by" => $this->username
@@ -154,7 +154,11 @@ class Quiz extends BaseController
       $new_quiz_code = $this->m_quiz->new_quiz_code();
       $created_by = $this->username;
       $school_year_id = $this->m_school_year->school_year_now()->school_year_id;
-      $sql = "INSERT INTO tb_quiz (quiz_code,quiz_title,questions,question_model,show_ans_key,time,created_by,class_group,subject,start_at,due_at,at_school_year) SELECT '$new_quiz_code',quiz_title,questions,question_model,show_ans_key,time,'$created_by',class_group,subject,start_at,due_at,'$school_year_id' FROM tb_quiz WHERE quiz_code = '$quiz_code'";
+      if ($this->role == 'superadmin') {
+         $sql = "INSERT INTO tb_quiz (quiz_code,quiz_title,questions,question_model,show_ans_key,time,created_by,class_group,subject,start_at,due_at,at_school_year) SELECT '$new_quiz_code',quiz_title,questions,question_model,show_ans_key,time,'$created_by',class_group,subject,start_at,due_at,'$school_year_id' FROM tb_quiz WHERE quiz_code = '$quiz_code'";
+      } elseif ($this->role == 'teacher') {
+         $sql = "INSERT INTO tb_quiz (quiz_code,quiz_title,questions,question_model,show_ans_key,time,created_by,start_at,due_at,at_school_year) SELECT '$new_quiz_code',quiz_title,questions,question_model,show_ans_key,time,'$created_by',start_at,due_at,'$school_year_id' FROM tb_quiz WHERE quiz_code = '$quiz_code'";
+      }
       try {
          $this->m_quiz->query($sql);
          return $this->respond([
@@ -173,6 +177,11 @@ class Quiz extends BaseController
 
    public function update($quiz_code)
    {
+      if ($this->role == 'teacher') {
+         if (!$this->m_quiz->have_quiz($this->username, $quiz_code)) {
+            return $this->failForbidden();
+         }
+      }
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -210,6 +219,11 @@ class Quiz extends BaseController
 
    public function delete($quiz_code)
    {
+      if ($this->role == 'teacher') {
+         if (!$this->m_quiz->have_quiz($this->username, $quiz_code)) {
+            return $this->failForbidden();
+         }
+      }
       $where = [
          "quiz_code" => $quiz_code
       ];
@@ -432,6 +446,8 @@ class Quiz extends BaseController
    {
       if ($this->role == 'superadmin') {
          $result = $this->m_quiz->get_question($quiz_code, $number_question);
+      } elseif ($this->role == 'teacher') {
+         $result = $this->m_quiz->get_question_teacher($this->username, $quiz_code, $number_question);
       } elseif ($this->role == 'student') {
          $where = [
             "quiz" => $quiz_code,
@@ -473,7 +489,13 @@ class Quiz extends BaseController
       $questions = array_reverse($questions);
       $questions = array_unique($questions);
       $questions = array_reverse($questions);
-      $result = $this->m_quiz->update_question($quiz_code, $questions);
+
+      if ($this->role == 'superadmin') {
+         $result = $this->m_quiz->update_question($quiz_code, $questions);
+      } elseif ($this->role == 'teacher') {
+         $result = $this->m_quiz->update_question_teacher($this->username, $quiz_code, $questions);
+      }
+
       if ($result) {
          return $this->respond([
             "message" => "Changes saved successfully.",
@@ -517,7 +539,13 @@ class Quiz extends BaseController
       $result = $this->m_question->create_question($data);
       if ($result) {
          $question_id = $this->m_question->last_question_id();
-         $result = $this->m_quiz->update_question($quiz_code, $question_id);
+
+         if ($this->role == 'superadmin') {
+            $result = $this->m_quiz->update_question($quiz_code, $question_id);
+         } elseif ($this->role == 'teacher') {
+            $result = $this->m_quiz->update_question_teacher($this->username, $quiz_code, $question_id);
+         }
+
          if ($result) {
             return $this->respond([
                "message" => "Added successfully.",
@@ -536,7 +564,12 @@ class Quiz extends BaseController
    public function delete_question($quiz_code, $number_question)
    {
       try {
-         $this->m_quiz->delete_question($quiz_code, $number_question);
+         if ($this->role == 'superadmin') {
+            $this->m_quiz->delete_question($quiz_code, $number_question);
+         } elseif ($this->role == 'teacher') {
+            $this->m_quiz->delete_question_teacher($this->username, $quiz_code, $number_question);
+         }
+
          return $this->respond([
             "message" => "Successfully deleted.",
             "status" => 200,

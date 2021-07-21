@@ -6,7 +6,20 @@
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="row">
-   <div class="col-md-6 col-xl-3 order-xl-first">
+   <div class="col-lg-9">
+      <div class="card">
+         <div class="card-body">
+            <div class="card-title"><?= $data->material_title ?></div>
+            <hr>
+            <div class="font-medium-1 mb-50">Deskripsi Materi :</div>
+            <div class="ql-snow">
+               <div class="material-text text-wrap ql-editor p-0"><?= html_entity_decode($data->material_desc, ENT_QUOTES, 'UTF-8') ?></div>
+            </div>
+            <hr>
+         </div>
+      </div>
+   </div>
+   <div class="col-lg-3">
       <div class="card border-primary">
          <div class="card-body">
             <h4 class="font-weight-bolder">
@@ -24,27 +37,9 @@
             <h4 class="font-weight-bolder">
                Kelas :
             </h4>
-            <div>
+            <div class="mb-2">
                <?= $data->class_group_name ?> (<?= $data->school_year_title ?>)
             </div>
-         </div>
-      </div>
-   </div>
-   <div class="col-md-12 order-md-first col-xl-6 ">
-      <div class="card">
-         <div class="card-body">
-            <div class="card-title"><?= $data->material_title ?></div>
-            <hr>
-            <div class="font-medium-1 mb-50">Deskripsi Materi :</div>
-            <div class="ql-snow">
-               <div class="material-text text-wrap ql-editor p-0"><?= html_entity_decode($data->material_desc, ENT_QUOTES, 'UTF-8') ?></div>
-            </div>
-         </div>
-      </div>
-   </div>
-   <div class="col-md-6 col-xl-3">
-      <div class="card">
-         <div class="card-body">
             <h4 class="font-weight-bolder">
                Dibuat pada :
             </h4>
@@ -57,7 +52,7 @@
             <div class="mb-2">
                <?= $data->created ?>
             </div>
-            <a href="<?= base_url('/material/' . $data->material_code) ?>/edit" class="btn btn-primary btn-block">Edit materi</a>
+            <a href="<?= base_url('/material/' . $data->material_code) ?>/edit" class="btn btn-primary btn-block">Edit Materi</a>
             <button id="delete-material" class="btn btn-danger btn-block">Hapus</button>
          </div>
       </div>

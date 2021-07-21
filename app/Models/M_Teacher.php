@@ -14,7 +14,7 @@ class M_Teacher extends Model
    {
       $this->selectCount('teacher_id', 'total_nums');
       $this->join('tb_user', 'username = teacher_username');
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function total_teacher_filtered($where, $keyword)
@@ -29,7 +29,7 @@ class M_Teacher extends Model
       $this->orLike('phone', $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function teacher_data($where, $keyword, $limit, $offset, $orderby)
@@ -52,7 +52,7 @@ class M_Teacher extends Model
    public function teacher($username)
    {
       $this->where('teacher_username', $username);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function teacher_account($username)
@@ -60,7 +60,7 @@ class M_Teacher extends Model
       $this->select('tb_teacher.*,photo,fullname,email,password,is_active');
       $this->join('tb_user', 'username = teacher_username');
       $this->where('teacher_username', $username);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function create_teacher($data)

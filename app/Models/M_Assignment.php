@@ -20,7 +20,7 @@ class M_Assignment extends Model
          }
          $this->selectCount('assignment_id', 'total_nums');
          $this->where(['assignment_code' => $assignment_code]);
-         if ($this->get()->getFirstRow('object')->total_nums == 0) {
+         if ($this->get(1)->getFirstRow('object')->total_nums == 0) {
             break;
          }
       }
@@ -33,7 +33,7 @@ class M_Assignment extends Model
       $this->join('tb_user', 'username = assigned_by');
       $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function total_assignment_filtered($where, $keyword)
@@ -49,7 +49,7 @@ class M_Assignment extends Model
       $this->orLike("DATE_FORMAT(start_at, '%d %m %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function assignment_data($where, $keyword, $limit, $offset, $orderby)
@@ -82,11 +82,11 @@ class M_Assignment extends Model
    {
       $this->selectCount('assignment_id', 'total_nums');
       $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
-      $this->join('tb_assignment_result', 'assignment = assignment_code', 'left');
+      $this->join('tb_assignment_result', 'assignment = assignment_code AND submitted_by = student_username', 'left');
       $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
       $this->where('NOW() > start_at');
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function assignments_student($username, $where = [], $limit = 0, $offset = 0)
@@ -103,7 +103,13 @@ class M_Assignment extends Model
       return $this->get()->getResultObject();
    }
 
-   public function assignment($assignment_code)
+   public function assignment($where)
+   {
+      $this->where($where);
+      return $this->get(1)->getFirstRow('object');
+   }
+
+   public function detail_assignment($assignment_code)
    {
       $this->select("assignment_id,assignment_code,assignment_title,assignment_desc,point,GROUP_CONCAT(CONCAT_WS(' ',class_name,major_code,unit_major) SEPARATOR ',') class_group_name,class_group class_group_code,subject_id,subject_code,subject_name,assigned_by,fullname assigned,start_at,due_at,school_year_title");
       $this->join('tb_user', 'username = assigned_by');
@@ -114,10 +120,24 @@ class M_Assignment extends Model
       $this->join('tb_school_year', 'school_year_id = at_school_year');
       $this->where('assignment_code', $assignment_code);
       $this->groupBy('assignment_code');
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
-   public function assignment_student($username, $assignment_code)
+   public function detail_assignment_teacher($username, $assignment_code)
+   {
+      $this->select("assignment_id,assignment_code,assignment_title,assignment_desc,point,GROUP_CONCAT(CONCAT_WS(' ',class_name,major_code,unit_major) SEPARATOR ',') class_group_name,class_group class_group_code,subject_id,subject_code,subject_name,start_at,due_at,school_year_title");
+      $this->join('tb_class_group', 'JSON_CONTAINS(class_group, JSON_QUOTE(class_group_code))');
+      $this->join('tb_class', 'class_id = class');
+      $this->join('tb_major', 'major_id = major');
+      $this->join('tb_subject', 'subject_id = subject');
+      $this->join('tb_school_year', 'school_year_id = at_school_year');
+      $this->where('assignment_code', $assignment_code);
+      $this->where('assigned_by', $username);
+      $this->groupBy('assignment_code');
+      return $this->get(1)->getFirstRow('object');
+   }
+
+   public function detail_assignment_student($username, $assignment_code)
    {
       $this->select("assignment_id,assignment_code,assignment_title,assignment_desc,point,subject_id,subject_code,subject_name,assigned_by,fullname assigned,start_at,due_at,assignment_result_id,answer,value,submitted_at");
       $this->join('tb_user', 'username = assigned_by');
@@ -126,7 +146,7 @@ class M_Assignment extends Model
       $this->where('assignment_code', $assignment_code);
       $this->where('NOW() > start_at');
       $this->groupBy('assignment_code');
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function is_due($assignment_code)
@@ -134,6 +154,14 @@ class M_Assignment extends Model
       $this->select('1');
       $this->where('NOW() > due_at');
       $this->where('assignment_code', $assignment_code);
+      return $this->get(1)->getFirstRow('object');
+   }
+
+   public function have_assignment($username, $assignment_code)
+   {
+      $this->select('1');
+      $this->where('assignment_code', $assignment_code);
+      $this->where('assigned_by', $username);
       return $this->get(1)->getFirstRow('object');
    }
 

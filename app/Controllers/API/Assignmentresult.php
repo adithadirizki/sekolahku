@@ -96,6 +96,11 @@ class Assignmentresult extends BaseController
 
    public function update($assignment_result_id)
    {
+      if ($this->role == 'teacher') {
+         if (!$this->m_assignment_result->have_assignment($this->username, $assignment_result_id)) {
+            return $this->failForbidden();
+         }
+      }
       $validation = \Config\Services::validation();
       $validation->setRules(
          [
@@ -137,6 +142,11 @@ class Assignmentresult extends BaseController
 
    public function delete($assignment_result_id)
    {
+      if ($this->role == 'teacher') {
+         if (!$this->m_assignment_result->have_assignment($this->username, $assignment_result_id)) {
+            return $this->failForbidden();
+         }
+      }
       $where = [
          "assignment_result_id" => $assignment_result_id
       ];

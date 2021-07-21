@@ -68,8 +68,16 @@ class Classes extends BaseController
 			$dir = $value['dir'];
 			array_push($orderby, "$field $dir");
 		}
+
+		if ($this->role == 'teacher') {
+			foreach ($this->class as $v) {
+				$where[] = "class_group_code = '$v'";
+			}
+			$where = count($where) > 0 ? implode(' OR ', $where) : "class_group_code IS NULL";
+		}
+
 		$orderby = implode(',', $orderby);
-		$total_class_group = $this->m_class_group->total_class_group();
+		$total_class_group = $this->m_class_group->total_class_group($where);
 		$total_class_group_filtered = $this->m_class_group->total_class_group_filtered($where, $keyword);
 		$class_group_data = $this->m_class_group->class_group_data($where, $keyword, $limit, $offset, $orderby);
 		$csrf_name = csrf_token();

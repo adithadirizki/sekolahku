@@ -26,7 +26,13 @@ class Material extends BaseController
 			"title" => "Materi",
 			"url_active" => "material"
 		];
-		return view('material_list', $data);
+		if ($this->role == 'superadmin') {
+			return view('material_list', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('material_list', $data);
+		} elseif ($this->role == 'student') {
+			return view('student/material_list', $data);
+		}
 	}
 
 	public function get_materials()
@@ -42,7 +48,14 @@ class Material extends BaseController
 			array_push($orderby, "$field $dir");
 		}
 		$orderby = implode(',', $orderby);
-		$total_material = $this->m_material->total_material();
+
+		if ($this->role == 'teacher') {
+			$where = [
+				"created_by" => $this->username
+			];
+		}
+
+		$total_material = $this->m_material->total_material($where);
 		$total_material_filtered = $this->m_material->total_material_filtered($where, $keyword);
 		$material_data = $this->m_material->material_data($where, $keyword, $limit, $offset, $orderby);
 		$csrf_name = csrf_token();
@@ -57,17 +70,31 @@ class Material extends BaseController
 
 	public function new()
 	{
+		$subject = [];
+		if ($this->role == 'teacher') {
+			foreach ($this->subject as $v) {
+				$subject[] = "subject_id = '$v'";
+			}
+			$subject = count($subject) > 0 ? implode(' OR ', $subject) : "subject_id IS NULL";
+		}
+
 		$data = [
 			"title" => "Tambah Materi",
 			"url_active" => "material",
-			"subject" => $this->m_subject->subjects(),
+			"subject" => $this->m_subject->subjects($subject),
 		];
 		return view('add_material', $data);
 	}
 
 	public function show($material_code)
 	{
-		$result = $this->m_material->material($material_code);
+		if ($this->role == 'superadmin') {
+			$result = $this->m_material->detail_material($material_code);
+		} elseif ($this->role == 'teacher') {
+			$result = $this->m_material->detail_material_teacher($this->username, $material_code);
+		} elseif ($this->role == 'student') {
+			$result = $this->m_material->detail_material_student($this->class, $material_code);
+		}
 		if (!$result) {
 			throw new PageNotFoundException();
 		}
@@ -76,26 +103,47 @@ class Material extends BaseController
 			"url_active" => "material",
 			"data" => $result
 		];
-		return view('detail_material', $data);
+		if ($this->role == 'superadmin') {
+			return view('detail_material', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('teacher/detail_material', $data);
+		} elseif ($this->role == 'student') {
+			return view('student/detail_material', $data);
+		}
 	}
 
 	public function edit($material_code)
 	{
-		$result = $this->m_material->material($material_code);
+		if ($this->role == 'superadmin') {
+			$result = $this->m_material->detail_material($material_code);
+		} elseif ($this->role == 'teacher') {
+			$result = $this->m_material->detail_material_teacher($this->username, $material_code);
+		} elseif ($this->role == 'student') {
+			$result = $this->m_material->detail_material_student($this->class, $material_code);
+		}
 		if (!$result) {
 			throw new PageNotFoundException();
 		}
-		$where = [];
+		$class = [];
 		foreach (json_decode($result->class_group_code) as $v) {
-			$where[] = "class_group_code = '$v'";
+			$class[] = "class_group_code = '$v'";
 		}
-		$where = implode(' OR ', $where);
+		$class = count($class) > 0 ? implode(' OR ', $class) : "class_group_code IS NULL";
+
+		$subject = [];
+		if ($this->role == 'teacher') {
+			foreach ($this->subject as $v) {
+				$subject[] = "subject_id = '$v'";
+			}
+			$subject = count($subject) > 0 ? implode(' OR ', $subject) : "subject_id IS NULL";
+		}
+
 		$data = [
 			"title" => "Edit Materi",
 			"url_active" => "material",
 			"data" => $result,
-			"subject" => $this->m_subject->subjects(),
-			"class_group" => $this->m_class_group->class_groups($where)
+			"subject" => $this->m_subject->subjects($subject),
+			"class_group" => $this->m_class_group->class_groups($class)
 		];
 		return view('edit_material', $data);
 	}

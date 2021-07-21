@@ -27,11 +27,12 @@ class M_Quiz extends Model
       return $quiz_code;
    }
    
-   public function total_quiz()
+   public function total_quiz($where = [])
    {
       $this->selectCount('quiz_id', 'total_nums');
       $this->join('tb_user', 'username = created_by');
       $this->join('tb_subject', 'subject_id = subject');
+      $this->where($where);
       return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
@@ -104,6 +105,15 @@ class M_Quiz extends Model
       return $this->get()->getResultObject();
    }
 
+   public function quiz_student($username, $quiz_code)
+   {
+      $this->select('tb_quiz.*');;
+      $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
+      $this->where('quiz_code', $quiz_code);
+      $this->where('NOW() > start_at');
+      return $this->get(1)->getFirstRow('object');
+   }
+
    public function quiz($quiz_code)
    {
       $this->where('quiz_code', $quiz_code);
@@ -124,12 +134,17 @@ class M_Quiz extends Model
       return $this->get(1)->getFirstRow('object');
    }
 
-   public function quiz_student($username, $quiz_code)
+   public function detail_quiz_teacher($username, $quiz_code)
    {
-      $this->select('tb_quiz.*');;
-      $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
+      $this->select("quiz_id,quiz_code,quiz_title,questions,GROUP_CONCAT(CONCAT_WS(' ',class_name,major_code,unit_major) SEPARATOR ',') class_group_name,class_group class_group_code,subject_id,subject_code,subject_name,question_model,show_ans_key,time,start_at,due_at,school_year_title");
+      $this->join('tb_class_group', 'JSON_CONTAINS(class_group, JSON_QUOTE(class_group_code))');
+      $this->join('tb_class', 'class_id = class');
+      $this->join('tb_major', 'major_id = major');
+      $this->join('tb_subject', 'subject_id = subject');
+      $this->join('tb_school_year', 'school_year_id = at_school_year');
       $this->where('quiz_code', $quiz_code);
-      $this->where('NOW() > start_at');
+      $this->where('created_by', $username);
+      $this->groupBy('quiz_code');
       return $this->get(1)->getFirstRow('object');
    }
 
@@ -151,6 +166,14 @@ class M_Quiz extends Model
       $this->select('1');
       $this->where('NOW() > due_at');
       $this->where('quiz_code', $quiz_code);
+      return $this->get(1)->getFirstRow('object');
+   }
+
+   public function have_quiz($username, $quiz_code)
+   {
+      $this->select('1');
+      $this->where('quiz_code', $quiz_code);
+      $this->where('created_by', $username);
       return $this->get(1)->getFirstRow('object');
    }
 
@@ -187,6 +210,15 @@ class M_Quiz extends Model
       return $this->get(1)->getFirstRow('object');
    }
 
+   public function get_question_teacher($username, $quiz_code, $number_question)
+   {
+      $this->select("tb_question.*");
+      $this->join('tb_question', "question_id = JSON_EXTRACT(questions, '$[$number_question]')");
+      $this->where('quiz_code', $quiz_code);
+      $this->where('tb_quiz.created_by', $username);
+      return $this->get(1)->getFirstRow('object');
+   }
+
    public function update_question($quiz_code, $question_id)
    {
       if (is_array($question_id)) {
@@ -201,10 +233,33 @@ class M_Quiz extends Model
       return $this->update();
    }
 
+   public function update_question_teacher($username, $quiz_code, $question_id)
+   {
+      if (is_array($question_id)) {
+         // Replace all
+         $this->set('questions', json_encode($question_id, JSON_NUMERIC_CHECK));
+      } else {
+         // Append
+         $question_id = (int) $question_id;
+         $this->set('questions', "JSON_ARRAY_APPEND(questions, '$', $question_id)", false);
+      }
+      $this->where('quiz_code', $quiz_code);
+      $this->where('created_by', $username);
+      return $this->update();
+   }
+
    public function delete_question($quiz_code, $number_question)
    {
       $this->set('questions', "JSON_REMOVE(questions, '$[$number_question]')", false);
       $this->where('quiz_code', $quiz_code);
+      return $this->update();
+   }
+
+   public function delete_question_teacher($username, $quiz_code, $number_question)
+   {
+      $this->set('questions', "JSON_REMOVE(questions, '$[$number_question]')", false);
+      $this->where('quiz_code', $quiz_code);
+      $this->where('created_by', $username);
       return $this->update();
    }
 }

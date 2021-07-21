@@ -19,7 +19,7 @@ class M_Auth extends Model
    {
       $this->select("user_id,username,photo,fullname,email,password,role,is_active");
       $this->where('username', $username);
-      $result = $this->get()->getFirstRow('object');
+      $result = $this->get(1)->getFirstRow('object');
       if (!$result) {
          return (object) [
             "data" => null,
@@ -74,6 +74,6 @@ class M_Auth extends Model
    {
       $this->select("user_id,username,photo,fullname,email,role,is_active,token_expired");
       $this->where('token', $token);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 }

@@ -28,6 +28,8 @@ class Assignment extends BaseController
 		];
 		if ($this->role == 'superadmin') {
 			return view('assignment_list', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('assignment_list', $data);
 		} elseif ($this->role == 'student') {
 			return view('student/assignment_list', $data);
 		}
@@ -46,7 +48,14 @@ class Assignment extends BaseController
 			array_push($orderby, "$field $dir");
 		}
 		$orderby = implode(',', $orderby);
-		$total_assignment = $this->m_assignment->total_assignment();
+
+		if ($this->role == 'teacher') {
+			$where = [
+				"assigned_by" => $this->username
+			];
+		}
+
+		$total_assignment = $this->m_assignment->total_assignment($where);
 		$total_assignment_filtered = $this->m_assignment->total_assignment_filtered($where, $keyword);
 		$assignment_data = $this->m_assignment->assignment_data($where, $keyword, $limit, $offset, $orderby);
 		$csrf_name = csrf_token();
@@ -61,10 +70,18 @@ class Assignment extends BaseController
 
 	public function new()
 	{
+		$subject = [];
+		if ($this->role == 'teacher') {
+			foreach ($this->subject as $v) {
+				$subject[] = "subject_id = '$v'";
+			}
+			$subject = count($subject) > 0 ? implode(' OR ', $subject) : "subject_id IS NULL";
+		}
+
 		$data = [
 			"title" => "Tambah Tugas",
 			"url_active" => "assignment",
-			"subject" => $this->m_subject->subjects(),
+			"subject" => $this->m_subject->subjects($subject),
 		];
 		return view('add_assignment', $data);
 	}
@@ -72,9 +89,11 @@ class Assignment extends BaseController
 	public function show($assignment_code)
 	{
 		if ($this->role == 'superadmin') {
-			$result = $this->m_assignment->assignment($assignment_code);
+			$result = $this->m_assignment->detail_assignment($assignment_code);
+		} elseif ($this->role == 'teacher') {
+			$result = $this->m_assignment->detail_assignment_teacher($this->username, $assignment_code);
 		} elseif ($this->role == 'student') {
-			$result = $this->m_assignment->assignment_student($this->username, $assignment_code);
+			$result = $this->m_assignment->detail_assignment_student($this->username, $assignment_code);
 		}
 		if (!$result) {
 			throw new PageNotFoundException();
@@ -86,6 +105,8 @@ class Assignment extends BaseController
 		];
 		if ($this->role == 'superadmin') {
 			return view('detail_assignment', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('teacher/detail_assignment', $data);
 		} elseif ($this->role == 'student') {
 			return view('student/detail_assignment', $data);
 		}
@@ -93,21 +114,34 @@ class Assignment extends BaseController
 
 	public function edit($assignment_code)
 	{
-		$result = $this->m_assignment->assignment($assignment_code);
+		if ($this->role == 'superadmin') {
+			$result = $this->m_assignment->detail_assignment($assignment_code);
+		} elseif ($this->role == 'teacher') {
+			$result = $this->m_assignment->detail_assignment_teacher($this->username, $assignment_code);
+		}
 		if (!$result) {
 			throw new PageNotFoundException();
 		}
-		$where = [];
+		$class = [];
 		foreach (json_decode($result->class_group_code) as $v) {
-			$where[] = "class_group_code = '$v'";
+			$class[] = "class_group_code = '$v'";
 		}
-		$where = implode(' OR ', $where);
+		$class = count($class) > 0 ? implode(' OR ', $class) : "class_group_code IS NULL";
+
+		$subject = [];
+		if ($this->role == 'teacher') {
+			foreach ($this->subject as $v) {
+				$subject[] = "subject_id = '$v'";
+			}
+			$subject = count($subject) > 0 ? implode(' OR ', $subject) : "subject_id IS NULL";
+		}
+
 		$data = [
 			"title" => "Edit Tugas",
 			"url_active" => "assignment",
 			"data" => $result,
-			"subject" => $this->m_subject->subjects(),
-			"class_group" => $this->m_class_group->class_groups($where)
+			"subject" => $this->m_subject->subjects($subject),
+			"class_group" => $this->m_class_group->class_groups($class)
 		];
 		return view('edit_assignment', $data);
 	}

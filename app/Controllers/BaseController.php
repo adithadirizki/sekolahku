@@ -33,6 +33,8 @@ class BaseController extends Controller
 	public $jwt;
 	public $username;
 	public $role;
+	public $class;
+	public $subject;
 
 	/**
 	 * Constructor.
@@ -54,6 +56,8 @@ class BaseController extends Controller
 				$this->token = $this->jwt::decode($_SERVER['HTTP_AUTHORIZATION'], $_ENV['JWT_PRIVATE_KEY'], ['HS256']);
 				$this->username = $this->token->data->username;
 				$this->role = $this->token->data->role;
+				$this->class = $this->token->data->class;
+				$this->subject = $this->token->data->subject;
 			} catch (\Exception $e) {
 				if ($e->getMessage() == 'Expired token') {
 					session()->destroy();
@@ -63,6 +67,8 @@ class BaseController extends Controller
 		} else {
 			$this->username = session()->username;
 			$this->role = session()->role;
+			$this->class = session()->class;
+			$this->subject = session()->subject;
 		}
 	}
 }

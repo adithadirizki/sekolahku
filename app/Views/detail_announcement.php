@@ -5,21 +5,21 @@
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/quill.snow.css') ?>">
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
-<div class="row">
-   <div class="col-md-12 col-xl-8">
+<div class="row match-height">
+   <div class="col-lg-9">
       <div class="card">
          <div class="card-body">
             <div class="card-title"><?= $data->announcement_title ?></div>
             <hr>
-            <div class="font-medium-1 mb-50">Deskripsi Pengumuman :</div>
             <div class="ql-snow">
                <div class="announcement-text text-wrap ql-editor p-0"><?= html_entity_decode($data->announcement_desc, ENT_QUOTES, 'UTF-8') ?></div>
             </div>
+            <hr>
          </div>
       </div>
    </div>
-   <div class="col-md-6 col-xl-4">
-      <div class="card">
+   <div class="col-lg-3">
+      <div class="card border-primary flex-grow-0">
          <div class="card-body">
             <h4 class="font-weight-bolder">
                Ditujukan untuk :
@@ -59,7 +59,7 @@
             <div class="mb-2">
                <?= $data->announced ?>
             </div>
-            <a href="<?= base_url('/announcement/' . $data->announcement_id) ?>/edit" class="btn btn-primary btn-block">Edit pengumuman</a>
+            <a href="<?= base_url('/announcement/' . $data->announcement_id) ?>/edit" class="btn btn-primary btn-block">Edit Pengumuman</a>
             <button id="delete-announcement" class="btn btn-danger btn-block">Hapus</button>
          </div>
       </div>

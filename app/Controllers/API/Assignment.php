@@ -74,8 +74,8 @@ class Assignment extends BaseController
       $offset = ($_POST['page'] - 1) * $limit;
       if ($this->role == 'superadmin') {
          $where = [];
-         $result = $this->m_assignment->get_assignments_by_admin($where, $limit, $offset);
-         $total_nums = $this->m_assignment->get_total_assignment_by_admin($where);
+         $result = $this->m_assignment->assignments($where, $limit, $offset);
+         $total_nums = $this->m_assignment->total_assignment($where);
       } elseif ($this->role == 'teacher') {
          $where = [
             "assigned_by" => $this->username
@@ -142,7 +142,11 @@ class Assignment extends BaseController
       $new_assignment_code = $this->m_assignment->new_assignment_code();
       $assigned_by = $this->username;
       $school_year_id = $this->m_school_year->school_year_now()->school_year_id;
-      $sql = "INSERT INTO tb_assignment (assignment_code,assignment_title,assignment_desc,point,assigned_by,class_group,subject,start_at,due_at,at_school_year) SELECT '$new_assignment_code',assignment_title,assignment_desc,point,'$assigned_by',class_group,subject,start_at,due_at,'$school_year_id' FROM tb_assignment WHERE assignment_code = '$assignment_code'";
+      if ($this->role == 'superadmin') {
+         $sql = "INSERT INTO tb_assignment (assignment_code,assignment_title,assignment_desc,point,assigned_by,class_group,subject,start_at,due_at,at_school_year) SELECT '$new_assignment_code',assignment_title,assignment_desc,point,'$assigned_by',class_group,subject,start_at,due_at,'$school_year_id' FROM tb_assignment WHERE assignment_code = '$assignment_code'";
+      } elseif ($this->role == 'teacher') {
+         $sql = "INSERT INTO tb_assignment (assignment_code,assignment_title,assignment_desc,point,assigned_by,start_at,due_at,at_school_year) SELECT '$new_assignment_code',assignment_title,assignment_desc,point,'$assigned_by,start_at,due_at,'$school_year_id' FROM tb_assignment WHERE assignment_code = '$assignment_code'";
+      }
       try {
          $this->m_assignment->query($sql);
          return $this->respond([
@@ -161,6 +165,11 @@ class Assignment extends BaseController
 
    public function update($assignment_code)
    {
+      if ($this->role == 'teacher') {
+         if (!$this->m_assignment->have_assignment($this->username, $assignment_code)) {
+            return $this->failForbidden();
+         }
+      }
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       $validation->setRule('assignment_desc', null, "required|striptags", [
@@ -202,6 +211,11 @@ class Assignment extends BaseController
 
    public function delete($assignment_code)
    {
+      if ($this->role == 'teacher') {
+         if (!$this->m_assignment->have_assignment($this->username, $assignment_code)) {
+            return $this->failForbidden();
+         }
+      }
       $where = [
          "assignment_code" => $assignment_code
       ];

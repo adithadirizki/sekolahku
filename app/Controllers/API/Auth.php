@@ -4,17 +4,23 @@ namespace App\Controllers\API;
 
 use App\Controllers\BaseController;
 use App\Models\M_Auth;
+use App\Models\M_Student;
+use App\Models\M_Teacher;
 use App\Models\M_User;
 
 class Auth extends BaseController
 {
 	protected $m_auth;
 	protected $m_user;
+	protected $m_teacher;
+	protected $m_student;
 
 	public function __construct()
 	{
 		$this->m_auth = new M_Auth();
 		$this->m_user = new M_User();
+		$this->m_teacher = new M_Teacher();
+		$this->m_student = new M_Student();
 	}
 
 	public function login()
@@ -24,6 +30,18 @@ class Auth extends BaseController
 		$result = $this->m_auth->login($username, $password);
 
 		if ($result->data) {
+			if ($result->data->role == 'superadmin') {
+				$class = null;
+				$subject = null;
+			} elseif ($result->data->role == 'teacher') {
+				$teacher = $this->m_teacher->teacher($result->data->username);
+				$class = json_decode($teacher->teaching_class);
+				$subject = json_decode($teacher->teaching_subject);
+			} elseif ($result->data->role == 'student') {
+				$student = $this->m_student->student($result->data->username);
+				$class = $student->curr_class_group;
+				$subject = null;
+			}
 			// Set JWT Token
 			$payload = [
 				"iss" => $this->request->config->baseURL,
@@ -33,7 +51,9 @@ class Auth extends BaseController
 				"exp" => time() + $_ENV['JWT_EXPIRE'], // for 6 hours
 				"data" => [
 					"username" => $result->data->username,
-					"role" => $result->data->role
+					"role" => $result->data->role,
+					"class" => $class,
+					"subject" => $subject
 				]
 			];
 			$jwt_token = $this->jwt::encode($payload, $_ENV['JWT_PRIVATE_KEY']);
@@ -66,6 +86,8 @@ class Auth extends BaseController
 				"fullname" => $result->data->fullname,
 				"email" => $result->data->email,
 				"role" => $result->data->role,
+				"class" => $class,
+				"subject" => $subject,
 				"token" => $jwt_token,
 				"hasLogin" => true
 			]);

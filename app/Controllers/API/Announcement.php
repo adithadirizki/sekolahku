@@ -40,6 +40,53 @@ class Announcement extends BaseController
       $this->m_school_year = new M_School_Year();
    }
 
+   public function getAll()
+   {
+      $validation = \Config\Services::validation();
+      $validation->setRules(
+         [
+            "page" => "required|is_natural_no_zero"
+         ],
+         [
+            "page" => [
+               "required" => "Parameter is invalid.",
+               "is_natural_no_zero" => "Parameter is invalid."
+            ]
+         ]
+      );
+      if ($validation->withRequest($this->request)->run() === false) {
+         return $this->respond([
+            "message" => "ERROR!",
+            "status" => 400,
+            "errors" => $validation->getErrors(),
+         ]);
+      }
+      $limit = 10;
+      $offset = ($_POST['page'] - 1) * $limit;
+      if ($this->role == 'superadmin') {
+         $where = [];
+         $result = $this->m_announcement->announcements($where, $limit, $offset);
+         $total_nums = $this->m_announcement->total_announcement($where);
+      } elseif ($this->role == 'teacher') {
+         $where = [
+            "announced_by" => $this->username
+         ];
+         $result = $this->m_announcement->announcements($where, $limit, $offset);
+         $total_nums = $this->m_announcement->total_announcement($where);
+      } elseif ($this->role == 'student') {
+         $where = [];
+         $result = $this->m_announcement->announcements_student($this->username, $where, $limit, $offset);
+         $total_nums = $this->m_announcement->total_announcement_student($this->username, $where);
+      }
+      return $this->respond([
+         "message" => "OK",
+         "status" => 200,
+         "error" => false,
+         "data" => $result,
+         "total_nums" => $total_nums
+      ]);
+   }
+
    public function create()
    {
       $validation = \Config\Services::validation();
@@ -82,6 +129,11 @@ class Announcement extends BaseController
 
    public function update($announcement_id)
    {
+      if ($this->role == 'teacher') {
+         if (!$this->m_announcement->have_announcement($this->username, $announcement_id)) {
+            return $this->failForbidden();
+         }
+      }
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       $validation->setRule('announcement_desc', null, "required|striptags", [
@@ -123,6 +175,11 @@ class Announcement extends BaseController
 
    public function delete($announcement_id)
    {
+      if ($this->role == 'teacher') {
+         if (!$this->m_announcement->have_announcement($this->username, $announcement_id)) {
+            return $this->failForbidden();
+         }
+      }
       try {
          $this->m_announcement->delete_announcement($this->username, $announcement_id);
          return $this->respond([

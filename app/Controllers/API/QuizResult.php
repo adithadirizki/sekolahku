@@ -16,6 +16,11 @@ class Quizresult extends BaseController
 
    public function update($quiz_result_id)
    {
+      if ($this->role == 'teacher') {
+         if (!$this->m_quiz_result->have_quiz($this->username, $quiz_result_id)) {
+            return $this->failForbidden();
+         }
+      }
       parse_str(file_get_contents('php://input'), $input);
       $validation = \Config\Services::validation();
       $validation->setRules(
@@ -66,6 +71,11 @@ class Quizresult extends BaseController
 
    public function delete($quiz_result_id)
    {
+      if ($this->role == 'teacher') {
+         if (!$this->m_quiz_result->have_quiz($this->username, $quiz_result_id)) {
+            return $this->failForbidden();
+         }
+      }
       $where = [
          "quiz_result_id" => $quiz_result_id
       ];

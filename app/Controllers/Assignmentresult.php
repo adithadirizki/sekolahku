@@ -22,6 +22,8 @@ class Assignmentresult extends BaseController
 		];
 		if ($this->role == 'superadmin') {
 			return view('assignment_result_list', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('assignment_result_list', $data);
 		} elseif ($this->role == 'student') {
 			return view('student/assignment_result_list', $data);
 		}
@@ -40,13 +42,20 @@ class Assignmentresult extends BaseController
 			array_push($orderby, "$field $dir");
 		}
 		$orderby = implode(',', $orderby);
+
+		if ($this->role == 'teacher') {
+			$where[] = "assigned_by = '$this->username'";
+		}
+
 		if ($_POST['value'] == null) {
 		} elseif ($_POST['value'] == 0) {
-			$where = "value IS NULL";
+			$where[] = "value IS NULL";
 		} elseif ($_POST['value'] == 1) {
-			$where = "value IS NOT NULL";
+			$where[] = "value IS NOT NULL";
 		}
-		$total_assignment_result = $this->m_assignment_result->total_assignment_result();
+		$where = count($where) > 0 ? implode(' AND ', $where) : [];
+
+		$total_assignment_result = $this->m_assignment_result->total_assignment_result($where);
 		$total_assignment_result_filtered = $this->m_assignment_result->total_assignment_result_filtered($where, $keyword);
 		$assignment_result_data = $this->m_assignment_result->assignment_result_data($where, $keyword, $limit, $offset, $orderby);
 		$csrf_name = csrf_token();
@@ -63,8 +72,8 @@ class Assignmentresult extends BaseController
 	{
 		if ($this->role == 'superadmin') {
 			$result = $this->m_assignment_result->detail_assignment_result($assignment_result_id);
-		} elseif ($this->role == 'student') {
-			// $result = $this->m_assignment->assignment_student($this->username, $assignment_result_id);
+		} elseif ($this->role == 'teacher') {
+			$result = $this->m_assignment_result->detail_assignment_result_teacher($this->username, $assignment_result_id);
 		}
 		if (!$result) {
 			throw new PageNotFoundException();
@@ -76,27 +85,10 @@ class Assignmentresult extends BaseController
 		];
 		if ($this->role == 'superadmin') {
 			return view('detail_assignment_result', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('detail_assignment_result', $data);
 		} elseif ($this->role == 'student') {
 			return view('student/detail_assignment_result', $data);
 		}
-	}
-
-	public function do_assignment($assignment_code)
-	{
-		if (!$result = $this->m_assignment_result->assignment_result($this->username, $assignment_code)) {
-			throw new PageNotFoundException();
-		}
-		if (in_array($result->status, [1, 2])) {
-			throw new PageNotFoundException();
-		}
-		if (strtotime('now') > strtotime($result->due_at)) {
-			throw new PageNotFoundException();
-		}
-		$data = [
-			"title" => "Sedang mengerjakan Assignment",
-			"url_active" => "assignmentresult",
-			"data" => $result
-		];
-		return view('student/do_assignment', $data);
 	}
 }

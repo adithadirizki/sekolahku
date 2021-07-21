@@ -34,6 +34,8 @@ class Quiz extends BaseController
 		];
 		if ($this->role == 'superadmin') {
 			return view('quiz_list', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('quiz_list', $data);
 		} elseif ($this->role == 'student') {
 			return view('student/quiz_list', $data);
 		}
@@ -52,7 +54,14 @@ class Quiz extends BaseController
 			array_push($orderby, "$field $dir");
 		}
 		$orderby = implode(',', $orderby);
-		$total_quiz = $this->m_quiz->total_quiz();
+
+		if ($this->role == 'teacher') {
+			$where = [
+				"created_by" => $this->username
+			];
+		}
+
+		$total_quiz = $this->m_quiz->total_quiz($where);
 		$total_quiz_filtered = $this->m_quiz->total_quiz_filtered($where, $keyword);
 		$quiz_data = $this->m_quiz->quiz_data($where, $keyword, $limit, $offset, $orderby);
 		$csrf_name = csrf_token();
@@ -67,10 +76,18 @@ class Quiz extends BaseController
 
 	public function new()
 	{
+		$subject = [];
+		if ($this->role == 'teacher') {
+			foreach ($this->subject as $v) {
+				$subject[] = "subject_id = '$v'";
+			}
+			$subject = count($subject) > 0 ? implode(' OR ', $subject) : "subject_id IS NULL";
+		}
+
 		$data = [
 			"title" => "Tambah Quiz",
 			"url_active" => "quiz",
-			"subject" => $this->m_subject->subjects(),
+			"subject" => $this->m_subject->subjects($subject),
 		];
 		return view('add_quiz', $data);
 	}
@@ -79,13 +96,15 @@ class Quiz extends BaseController
 	{
 		if ($this->role == 'superadmin') {
 			$result = $this->m_quiz->detail_quiz($quiz_code);
+		} elseif ($this->role == 'teacher') {
+			$result = $this->m_quiz->detail_quiz_teacher($this->username, $quiz_code);
 		} elseif ($this->role == 'student') {
 			$result = $this->m_quiz->detail_quiz_student($this->username, $quiz_code);
 		}
 		if (!$result) {
 			throw new PageNotFoundException();
 		}
-			$questions = [];
+		$questions = [];
 		if ($this->role == 'student') {
 			if (in_array($result->status, [1, 2])) {
 				$whereIn = str_replace('[', '(', $result->questions);
@@ -101,6 +120,8 @@ class Quiz extends BaseController
 		];
 		if ($this->role == 'superadmin') {
 			return view('detail_quiz', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('teacher/detail_quiz', $data);
 		} elseif ($this->role == 'student') {
 			return view('student/detail_quiz', $data);
 		}
@@ -108,21 +129,34 @@ class Quiz extends BaseController
 
 	public function edit($quiz_code)
 	{
-		$result = $this->m_quiz->detail_quiz($quiz_code);
+		if ($this->role == 'superadmin') {
+			$result = $this->m_quiz->detail_quiz($quiz_code);
+		} elseif ($this->role == 'teacher') {
+			$result = $this->m_quiz->detail_quiz_teacher($this->username, $quiz_code);
+		}
 		if (!$result) {
 			throw new PageNotFoundException();
 		}
-		$where = [];
+		$class = [];
 		foreach (json_decode($result->class_group_code) as $v) {
-			$where[] = "class_group_code = '$v'";
+			$class[] = "class_group_code = '$v'";
 		}
-		$where = implode(' OR ', $where);
+		$class = count($class) > 0 ? implode(' OR ', $class) : "class_group_code IS NULL";
+
+		$subject = [];
+		if ($this->role == 'teacher') {
+			foreach ($this->subject as $v) {
+				$subject[] = "subject_id = '$v'";
+			}
+			$subject = count($subject) > 0 ? implode(' OR ', $subject) : "subject_id IS NULL";
+		}
+
 		$data = [
 			"title" => "Edit Quiz",
 			"url_active" => "quiz",
 			"data" => $result,
-			"subject" => $this->m_subject->subjects(),
-			"class_group" => $this->m_class_group->class_groups($where)
+			"subject" => $this->m_subject->subjects($subject),
+			"class_group" => $this->m_class_group->class_groups($class)
 		];
 		return view('edit_quiz', $data);
 	}
