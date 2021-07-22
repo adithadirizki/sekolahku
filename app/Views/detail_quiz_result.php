@@ -1,9 +1,9 @@
 <?= $this->extend('template') ?>
 <?= $this->section('content') ?>
 <div class="row">
-   <div class="col-xl-3">
+   <div class="col-lg-3">
       <div class="row">
-         <div class="col-6 col-xl-12">
+         <div class="col-md-6 col-lg-12">
             <div class="card border-primary">
                <div class="card-body">
                   <h4 class="font-weight-bolder">
@@ -21,7 +21,7 @@
                </div>
             </div>
          </div>
-         <div class="col-6 col-xl-12">
+         <div class="col-md-6 col-lg-12">
             <div class="card">
                <div class="card-body">
                   <h4 class="font-weight-bolder">
@@ -35,17 +35,29 @@
                      ?>
                   </div>
                   <h4 class="font-weight-bolder">
-                     Diserahkan pada :
+                     Selesai pada :
                   </h4>
-                  <div>
+                  <div class="mb-2">
                      <?= (new DateTime($data->submitted_at))->format('d M Y H:i') ?> WIB
                   </div>
+                  <form id="edit-value" enctype="multipart/form-data" onsubmit="return false;">
+                     <div class="form-group">
+                        <h4 class="font-weight-bolder">
+                           Nilai :
+                        </h4>
+                        <input type="number" name="value" class="form-control" min="0" value="<?= $data->value ?>" placeholder="Nilai" required>
+                        <div class="invalid-feedback"></div>
+                     </div>
+                     <div class="text-right">
+                        <button class="btn btn-primary">Perbarui Nilai</button>
+                     </div>
+                  </form>
                </div>
             </div>
          </div>
       </div>
    </div>
-   <div class="col-xl-9 ">
+   <div class="col-lg-9 order-lg-first">
       <div class="card">
          <form id="edit-value" enctype="multipart/form-data" onsubmit="return false;">
             <div class="table-responsive">
@@ -146,19 +158,9 @@
                         <span> Skor Essai :</span> <span class="float-right score-essay"><?= $essay_score ?></span>
                      </h4>
                      <hr>
-                     <div class="form-group row align-items-center">
-                        <h4 class="col-6 font-weight-bolder"> Nilai Akhir :</h4>
-                        <div class="col-6">
-                           <input type="number" name="value" class="form-control text-right total-score" value="<?= $data->value ?>" required>
-                        </div>
-                        <div class="col-12">
-                           <div class="invalid-feedback"></div>
-                        </div>
-                     </div>
-                     <hr>
-                     <div class="text-right">
-                        <button type="submit" class="btn btn-primary">Perbarui nilai</button>
-                     </div>
+                     <h4 class="font-weight-bolder">
+                        <span> Nilai Akhir :</span> <span class="float-right total-score"><?= $total_score ?></span>
+                     </h4>
                   </div>
                </div>
             </div>
@@ -181,7 +183,7 @@
          essay_score = Math.floor(essay_score / total_essay);
          total_score = Math.floor((mc_score + essay_score) / 2);
          $('.score-essay').text(essay_score);
-         $('.total-score').val(total_score)
+         $('.total-score').text(total_score)
       })
       $(document).on('submit', '#edit-value', function(e) {
          e.preventDefault();

@@ -9,7 +9,7 @@
    <div class="col-lg-9">
       <div class="card">
          <div class="card-body">
-            <div class="card-title"><?= $data->announcement_title ?></div>
+            <h1 class="h2"><?= $data->announcement_title ?></h1>
             <hr>
             <div class="ql-snow">
                <div class="announcement-text text-wrap ql-editor p-0"><?= html_entity_decode($data->announcement_desc, ENT_QUOTES, 'UTF-8') ?></div>
@@ -25,13 +25,13 @@
                Diumumkan pada :
             </h4>
             <div class="mb-2">
-               <?= (new DateTime($data->announced_at))->format('d F Y H:i') ?> WIB
+               <?= (new DateTime($data->announced_at))->format('d M Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
                Sampai :
             </h4>
             <div class="mb-2">
-               <?= (new DateTime($data->announced_until))->format('d F Y H:i') ?> WIB
+               <?= (new DateTime($data->announced_until))->format('d M Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
                Diumumkan oleh :

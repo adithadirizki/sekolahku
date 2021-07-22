@@ -46,7 +46,7 @@ class M_Assignment extends Model
       $this->orLike('assignment_title', $keyword);
       $this->orLike('subject_name', $keyword);
       $this->orLike('fullname', $keyword);
-      $this->orLike("DATE_FORMAT(start_at, '%d %m %Y %H:%i')", $keyword);
+      $this->orLike("DATE_FORMAT(start_at, '%d %b %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
       return $this->get(1)->getFirstRow('object')->total_nums;
@@ -54,7 +54,7 @@ class M_Assignment extends Model
    
    public function assignment_data($where, $keyword, $limit, $offset, $orderby)
    {
-      $this->select("assignment_id,assignment_title,assignment_code,subject_name,fullname assigned,DATE_FORMAT(start_at, '%d %m %Y %H:%i') start_at");
+      $this->select("assignment_id,assignment_title,assignment_code,subject_name,fullname assigned,start_at");
       $this->join('tb_user', 'username = assigned_by');
       $this->join('tb_subject', 'subject_id = subject');
       $this->groupStart();
@@ -62,7 +62,7 @@ class M_Assignment extends Model
       $this->orLike('assignment_title', $keyword);
       $this->orLike('subject_name', $keyword);
       $this->orLike('fullname', $keyword);
-      $this->orLike("DATE_FORMAT(start_at, '%d %m %Y %H:%i')", $keyword);
+      $this->orLike("DATE_FORMAT(start_at, '%d %b %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
       $this->orderBy($orderby);

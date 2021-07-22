@@ -12,6 +12,7 @@ class Announcement extends BaseController
    protected $m_school_year;
    protected $rules = [
       "announcement_title" => "required",
+      "announcement_desc" => "required|striptags",
       "announcement_for" => "required|in_list[all,teacher,student]",
       "announced_at" => "required|valid_date[Y-m-d\TH:i]",
       "announced_until" => "required|valid_date[Y-m-d\TH:i]"
@@ -20,17 +21,21 @@ class Announcement extends BaseController
       "announcement_title" => [
          "required" => "Judul Pengumuman harus diisi."
       ],
+      "announcement_desc" => [
+         "required" => "Deskripsi Pengumuman harus diisi.",
+         "striptags" => "Deskripsi Pengumuman harus diisi."
+      ],
       "announcement_for" => [
-         "required" => "Kolom ditujukan harus diisi.",
-         "in_list" => "Kolom ditujukan tidak valid."
+         "required" => "Kolom Ditujukan harus diisi.",
+         "in_list" => "Kolom Ditujukan tidak valid."
       ],
       "announced_at" => [
-         "required" => "Tgl diumumkan harus diisi.",
-         "valid_date" => "Tgl diumumkan tidak valid."
+         "required" => "Tgl Diumumkan harus diisi.",
+         "valid_date" => "Tgl Diumumkan tidak valid."
       ],
       "announced_until" => [
-         "required" => "Tgl berakhir harus diisi.",
-         "valid_date" => "Tgl berakhir tidak valid."
+         "required" => "Tgl Berakhir harus diisi.",
+         "valid_date" => "Tgl Berakhir tidak valid."
       ]
    ];
 
@@ -75,8 +80,8 @@ class Announcement extends BaseController
          $total_nums = $this->m_announcement->total_announcement($where);
       } elseif ($this->role == 'student') {
          $where = [];
-         $result = $this->m_announcement->announcements_student($this->username, $where, $limit, $offset);
-         $total_nums = $this->m_announcement->total_announcement_student($this->username, $where);
+         $result = $this->m_announcement->announcements_student($where, $limit, $offset);
+         $total_nums = $this->m_announcement->total_announcement_student($where);
       }
       return $this->respond([
          "message" => "OK",
@@ -91,13 +96,9 @@ class Announcement extends BaseController
    {
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
-      $validation->setRule('announcement_desc', null, "required|striptags", [
-         "required" => "Deskripsi Pengumuman harus diisi.",
-         "striptags" => "Deskripsi Pengumuman harus diisi."
-      ]);
       if ($validation->withRequest($this->request)->run() == false) {
          return $this->respond([
-            "message" => "Failed to save changes.",
+            "message" => "Failed to added.",
             "status" => 400,
             "errors" => $validation->getErrors()
          ]);
@@ -136,10 +137,6 @@ class Announcement extends BaseController
       }
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
-      $validation->setRule('announcement_desc', null, "required|striptags", [
-         "required" => "Deskripsi Pengumuman harus diisi.",
-         "striptags" => "Deskripsi Pengumuman harus diisi."
-      ]);
       if ($validation->withRequest($this->request)->run() == false) {
          return $this->respond([
             "message" => "Failed to save changes.",

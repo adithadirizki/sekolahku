@@ -46,7 +46,7 @@ class Question extends BaseController
             $choices[] = htmlentities($value, ENT_QUOTES, 'UTF-8');
          }
       }
-      $answer_key = $input['answer_key'] ? htmlentities($input['answer_key'], ENT_QUOTES, 'UTF-8') : null;
+      $answer_key = $input['answer_key'] > -1 ? htmlentities($input['answer_key'], ENT_QUOTES, 'UTF-8') : null;
       $data = [
          "question_type" => $question_type,
          "question_text" => $question_text,
@@ -87,7 +87,7 @@ class Question extends BaseController
             $choices[] = htmlentities($value, ENT_QUOTES, 'UTF-8');
          }
       }
-      $answer_key = $input['answer_key'] ? htmlentities($input['answer_key'], ENT_QUOTES, 'UTF-8') : null;
+      $answer_key = $input['answer_key'] > -1 ? htmlentities($input['answer_key'], ENT_QUOTES, 'UTF-8') : null;
       $data = [
          "question_text" => $question_text,
          "choice" => json_encode($choices),

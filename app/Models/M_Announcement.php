@@ -25,7 +25,7 @@ class M_Announcement extends Model
       $this->groupStart();
       $this->like('announcement_title', $keyword);
       $this->orLike('fullname', $keyword);
-      $this->orLike("DATE_FORMAT(announced_at, '%d %m %Y %H:%i')", $keyword);
+      $this->orLike("DATE_FORMAT(announced_at, '%d %b %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
       return $this->get()->getFirstRow('object')->total_nums;
@@ -33,12 +33,12 @@ class M_Announcement extends Model
 
    public function announcement_data($where, $keyword, $limit, $offset, $orderby)
    {
-      $this->select("announcement_id,announcement_title,fullname announced,DATE_FORMAT(announced_at, '%d %m %Y %H:%i') announced_at");
+      $this->select("announcement_id,announcement_title,fullname announced,announced_at");
       $this->join('tb_user', 'username = announced_by');
       $this->groupStart();
       $this->like('announcement_title', $keyword);
       $this->orLike('fullname', $keyword);
-      $this->orLike("DATE_FORMAT(announced_at, '%d %m %Y %H:%i')", $keyword);
+      $this->orLike("DATE_FORMAT(announced_at, '%d %b %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
       $this->orderBy($orderby);
@@ -51,7 +51,7 @@ class M_Announcement extends Model
       $this->selectCount('announcement_id', 'total_nums');
       $this->where($where);
       $this->where('NOW() > announced_at');
-      $this->orWhere("announcement_for", ['all', 'student']);
+      $this->whereIn("announcement_for", ['all', 'student']);
       return $this->get()->getFirstRow('object')->total_nums;
    }
 
@@ -60,7 +60,7 @@ class M_Announcement extends Model
       $this->select('announcement_id,announcement_title,announced_at');
       $this->where($where);
       $this->where('NOW() > announced_at');
-      $this->orWhere("announcement_for", ['all', 'student']);
+      $this->whereIn("announcement_for", ['all', 'student']);
       $this->limit($limit, $offset);
       $this->orderBy('announced_at DESC');
       $this->groupBy('announcement_id');

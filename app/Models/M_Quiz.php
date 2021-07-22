@@ -47,7 +47,7 @@ class M_Quiz extends Model
       $this->orLike('JSON_LENGTH(questions)', $keyword);
       $this->orLike('subject_name', $keyword);
       $this->orLike('fullname', $keyword);
-      $this->orLike("DATE_FORMAT(start_at, '%d %m %Y %H:%i')", $keyword);
+      $this->orLike("DATE_FORMAT(start_at, '%d %b %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
       return $this->get(1)->getFirstRow('object')->total_nums;
@@ -55,7 +55,7 @@ class M_Quiz extends Model
    
    public function quiz_data($where, $keyword, $limit, $offset, $orderby)
    {
-      $this->select("quiz_id,quiz_code,quiz_title,JSON_LENGTH(questions) total_questions,subject_name,fullname created,DATE_FORMAT(start_at, '%d %m %Y %H:%i') start_at");
+      $this->select("quiz_id,quiz_code,quiz_title,JSON_LENGTH(questions) total_questions,subject_name,fullname created,start_at");
       $this->join('tb_user', 'username = created_by');
       $this->join('tb_subject', 'subject_id = subject');
       $this->groupStart();
@@ -64,7 +64,7 @@ class M_Quiz extends Model
       $this->orLike('JSON_LENGTH(questions)', $keyword);
       $this->orLike('subject_name', $keyword);
       $this->orLike('fullname', $keyword);
-      $this->orLike("DATE_FORMAT(start_at, '%d %m %Y %H:%i')", $keyword);
+      $this->orLike("DATE_FORMAT(start_at, '%d %b %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
       $this->orderBy($orderby);

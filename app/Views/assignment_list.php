@@ -17,8 +17,8 @@
                <th>Kode Tugas</th>
                <th>Judul Tugas</th>
                <th>Mata Pelajaran</th>
-               <th>Dibuat Oleh</th>
-               <th>Dibuat Pada</th>
+               <th>Ditugaskan Oleh</th>
+               <th>Ditugaskan Pada</th>
                <th>Aksi</th>
             </tr>
          </thead>
@@ -35,6 +35,19 @@
 <script>
    $(document).ready(function() {
       var csrf_token = "<?= csrf_hash() ?>";
+
+      function toDateTime(datetime) {
+         var datetime = new Date(datetime),
+            y = datetime.getFullYear(),
+            m = datetime.toLocaleDateString('default', {
+               'month': 'short'
+            }),
+            d = (d = datetime.getDate()) > 9 ? d : "0" + d,
+            h = (h = datetime.getHours()) > 9 ? h : "0" + h,
+            i = (i = datetime.getMinutes()) > 9 ? i : "0" + i;
+         return `${d} ${m} ${y} ${h}:${i} WIB`;
+      }
+
       var tb_assignment_list = $('#tb_assignment_list').DataTable({
          dom: '<"card-header py-0"<"dt-action-buttons"B>><"d-flex justify-content-between align-items-center mx-1 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-1 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
          order: [
@@ -78,7 +91,7 @@
             {
                "data": "start_at",
                "mRender": function(start_at) {
-                  return start_at + ' WIB';
+                  return toDateTime(start_at);
                },
                "className": "text-center"
             },

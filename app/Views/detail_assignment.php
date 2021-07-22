@@ -9,7 +9,7 @@
    <div class="col-lg-9">
       <div class="card">
          <div class="card-body">
-            <div class="card-title"><?= $data->assignment_title ?></div>
+            <h1 class="h2"><?= $data->assignment_title ?></h1>
             <hr>
             <div class="ql-snow">
                <div class="assignment-text text-wrap ql-editor p-0"><?= html_entity_decode($data->assignment_desc, ENT_QUOTES, 'UTF-8') ?></div>
@@ -37,8 +37,14 @@
             <h4 class="font-weight-bolder">
                Kelas :
             </h4>
+            <div class="mb-2">
+               <?= $data->class_group_name ?>
+            </div>
+            <h4 class="font-weight-bolder">
+               Tahun Ajaran :
+            </h4>
             <div>
-               <?= $data->class_group_name ?> (<?= $data->school_year_title ?>)
+               <?= $data->school_year_title ?>
             </div>
          </div>
       </div>
@@ -54,23 +60,25 @@
                Ditugaskan pada :
             </h4>
             <div class="mb-2">
-               <?= (new DateTime($data->start_at))->format('d F Y H:i') ?> WIB
+               <?= (new DateTime($data->start_at))->format('d M Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
                Sampai :
             </h4>
             <div class="mb-2">
-               <?= (new DateTime($data->due_at))->format('d F Y H:i') ?> WIB
+               <?= (new DateTime($data->due_at))->format('d M Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
-               Dibuat oleh :
+               Ditugaskan oleh :
             </h4>
             <div class="mb-2">
                <?= $data->assigned ?>
             </div>
-            <a href="<?= base_url('assignmentresult?assignment=' . $data->assignment_code) ?>" class="btn btn-info btn-block">Lihat hasil Tugas</a>
-            <a href="<?= base_url('assignment/' . $data->assignment_code) ?>/edit" class="btn btn-primary btn-block">Edit tugas</a>
-            <button id="delete-assignment" class="btn btn-danger btn-block">Hapus</button>
+            <div class="d-flex justify-content-between flex-wrap-reverse">
+               <button id="delete-assignment" class="btn btn-danger mb-25">Hapus</button>
+               <a href="<?= base_url('assignment/' . $data->assignment_code) ?>/edit" class="btn btn-primary mb-25">Edit tugas</a>
+               <a href="<?= base_url('assignmentresult?assignment=' . $data->assignment_code) ?>" class="btn btn-info mb-25">Lihat hasil Tugas</a>
+            </div>
          </div>
       </div>
    </div>

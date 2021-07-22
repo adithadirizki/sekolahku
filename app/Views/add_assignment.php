@@ -28,71 +28,67 @@
 </style>
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
-<div class="row">
-   <div class="col-lg-12 m-auto">
-      <div class="card">
-         <div class="card-body">
-            <div class="card-title"><?= $title ?></div>
-            <form id="add-assignment" enctype="multipart/form-data" onsubmit="return false;">
-               <div class="form-group">
-                  <label for="assignment_title">Judul Tugas <span class="text-danger font-small-4">*</span></label>
-                  <input type="text" class="form-control" name="assignment_title" id="assignment_title" placeholder="Judul Tugas" required>
-                  <div class="invalid-feedback"></div>
-               </div>
-               <div class="form-group">
-                  <label for="assignment_desc">Deskripsi Tugas</label>
-                  <textarea name="assignment_desc" id="assignment_desc" hidden></textarea>
-                  <div class="invalid-feedback"></div>
-                  <div class="all-editor"></div>
-               </div>
-               <div class="row">
-                  <div class="col-md-6">
-                     <div class="form-group">
-                        <label for="subject">Mata Pelajaran <span class="text-danger font-small-4">*</span></label>
-                        <select name="subject" id="subject" class="form-control" required>
-                           <option selected disabled></option>
-                           <?php foreach ($subject as $v) { ?>
-                              <option value="<?= $v->subject_id ?>"><?= $v->subject_name ?></option>
-                           <?php } ?>
-                        </select>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-md-6">
-                     <div class="form-group">
-                        <label for="class_group">Kelas <span class="text-danger font-small-4">*</span></label>
-                        <select name="class_group[]" id="class_group" class="form-control" multiple required></select>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-md-4">
-                     <div class="form-group">
-                        <label for="point">Poin Tugas <span class="text-danger font-small-4">*</span></label>
-                        <input type="number" class="form-control" name="point" id="point" placeholder="Poin Tugas" required>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-md-4">
-                     <div class="form-group">
-                        <label for="start_at">Ditugaskan pada <span class="text-danger font-small-4">*</span></label>
-                        <input type="datetime-local" class="form-control" name="start_at" id="start_at" value="<?= (new DateTime())->format('Y-m-d\TH:i') ?>" required>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-md-4">
-                     <div class="form-group">
-                        <label for="due_at">Berakhir pada <span class="text-danger font-small-4">*</span></label>
-                        <input type="datetime-local" class="form-control" name="due_at" id="due_at" required>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-               </div>
-               <div class="text-right mt-2">
-                  <button type="submit" class="btn btn-primary">Tambahkan</button>
-               </div>
-            </form>
+<div class="card">
+   <div class="card-body">
+      <div class="card-title"><?= $title ?></div>
+      <form id="add-assignment" enctype="multipart/form-data" onsubmit="return false;">
+         <div class="form-group">
+            <label for="assignment_title">Judul Tugas <span class="text-danger font-small-4">*</span></label>
+            <input type="text" class="form-control" name="assignment_title" id="assignment_title" placeholder="Judul Tugas" required>
+            <div class="invalid-feedback"></div>
          </div>
-      </div>
+         <div class="form-group">
+            <label for="assignment_desc">Deskripsi Tugas <span class="text-danger font-small-4">*</span></label>
+            <textarea name="assignment_desc" id="assignment_desc" hidden></textarea>
+            <div class="invalid-feedback mt-0 mb-50"></div>
+            <div class="all-editor"></div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="subject">Mata Pelajaran <span class="text-danger font-small-4">*</span></label>
+                  <select name="subject" id="subject" class="form-control" required>
+                     <option selected disabled></option>
+                     <?php foreach ($subject as $v) { ?>
+                        <option value="<?= $v->subject_id ?>"><?= $v->subject_name ?></option>
+                     <?php } ?>
+                  </select>
+                  <div class="invalid-feedback"></div>
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="class_group">Kelas <span class="text-danger font-small-4">*</span></label>
+                  <select name="class_group[]" id="class_group" class="form-control" multiple required></select>
+                  <div class="invalid-feedback"></div>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <label for="point">Poin Tugas <span class="text-danger font-small-4">*</span></label>
+                  <input type="number" class="form-control" name="point" id="point" placeholder="Poin Tugas" required>
+                  <div class="invalid-feedback"></div>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <label for="start_at">Ditugaskan pada <span class="text-danger font-small-4">*</span></label>
+                  <input type="datetime-local" class="form-control" name="start_at" id="start_at" value="<?= (new DateTime())->format('Y-m-d\TH:i') ?>" required>
+                  <div class="invalid-feedback"></div>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <label for="due_at">Berakhir pada <span class="text-danger font-small-4">*</span></label>
+                  <input type="datetime-local" class="form-control" name="due_at" id="due_at" required>
+                  <div class="invalid-feedback"></div>
+               </div>
+            </div>
+         </div>
+         <div class="text-right mt-2">
+            <button type="submit" class="btn btn-primary">Tambahkan</button>
+         </div>
+      </form>
    </div>
 </div>
 <?= $this->endSection() ?>
@@ -346,7 +342,11 @@
                   })
                } else {
                   Object.entries(result.errors).forEach(function(key, value) {
-                     key[0] = key[0].replace('*', '[]');
+                     if (key[0].search('.')) {
+                        key[0] = key[0].split('.');
+                        key[0] = `${key[0][0]}[${key[0][1]}]`;
+                        key[0] = key[0].replace('*', '');
+                     }
                      form.find('[name="' + key[0] + '"]').addClass('is-invalid');
                      form.find('[name="' + key[0] + '"]').closest('.d-flex').addClass('is-invalid');
                      form.find('[name="' + key[0] + '"]').closest('.form-group').find('.invalid-feedback').addClass('d-block').text(key[1]);

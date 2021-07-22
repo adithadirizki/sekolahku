@@ -6,35 +6,10 @@
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="row">
-   <div class="col-md-6 col-xl-3 order-xl-first">
-      <div class="card border-primary">
-         <div class="card-body">
-            <?= strtotime('now') > strtotime($data->due_at) ? '<div class="badge badge-light-danger font-medium-2 d-block p-75 mb-1">BERAKHIR</div>' : '' ?>
-            <h4 class="font-weight-bolder">
-               Kode Quiz :
-            </h4>
-            <div class="mb-2">
-               <?= $data->quiz_code ?>
-            </div>
-            <h4 class="font-weight-bolder">
-               Mata Pelajaran :
-            </h4>
-            <div class="mb-2">
-               <?= $data->subject_name ?>
-            </div>
-            <h4 class="font-weight-bolder">
-               Kelas :
-            </h4>
-            <div>
-               <?= $data->class_group_name ?> (<?= $data->school_year_title ?>)
-            </div>
-         </div>
-      </div>
-   </div>
-   <div class="col-md-12 order-md-first col-xl-6 ">
+   <div class="col-lg-9">
       <div class="card">
          <div class="card-body">
-            <div class="card-title"><?= $data->quiz_title ?></div>
+            <h1 class="h2"><?= $data->quiz_title ?></h1>
             <hr>
             <div id="question" data-question_type="" data-number_question="">
                <div class="btn btn-sm btn-outline-primary question-type">Tipe Soal</div>
@@ -83,8 +58,6 @@
             </div>
          </div>
       </div>
-   </div>
-   <div class="col-md-6 col-xl-3">
       <div class="card">
          <div class="card-body">
             <div class="btn-group">
@@ -124,8 +97,36 @@
                   </svg>
                </button>
             </div>
-            <div class="text-right mt-1">
-               <a href="<?= base_url('quizresult?quiz='.$data->quiz_code) ?>" class="btn btn-info">Lihat hasil Quiz</a>
+         </div>
+      </div>
+   </div>
+   <div class="col-lg-3">
+      <div class="card border-primary">
+         <div class="card-body">
+            <?= strtotime('now') > strtotime($data->due_at) ? '<div class="badge badge-light-danger font-medium-2 d-block p-75 mb-1">BERAKHIR</div>' : '' ?>
+            <h4 class="font-weight-bolder">
+               Kode Quiz :
+            </h4>
+            <div class="mb-2">
+               <?= $data->quiz_code ?>
+            </div>
+            <h4 class="font-weight-bolder">
+               Mata Pelajaran :
+            </h4>
+            <div class="mb-2">
+               <?= $data->subject_name ?>
+            </div>
+            <h4 class="font-weight-bolder">
+               Kelas :
+            </h4>
+            <div class="mb-2">
+               <?= $data->class_group_name ?>
+            </div>
+            <h4 class="font-weight-bolder">
+               Tahun Ajaran :
+            </h4>
+            <div>
+               <?= $data->school_year_title ?>
             </div>
          </div>
       </div>
@@ -168,14 +169,15 @@
                <?= (new DateTime($data->due_at))->format('d F Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
-               Dibuat oleh :
+               Ditugaskan oleh :
             </h4>
             <div class="mb-2">
                <?= $data->created ?>
             </div>
-            <div class="d-flex justify-content-between align-items-center">
-               <button id="delete-quiz" class="btn btn-danger">Hapus</button>
-               <a href="<?= base_url('/quiz/' . $data->quiz_code) ?>/edit" class="btn btn-primary">Edit quiz</a>
+            <div class="d-flex justify-content-between flex-wrap-reverse">
+               <button id="delete-quiz" class="btn btn-danger mb-25">Hapus</button>
+               <a href="<?= base_url('/quiz/' . $data->quiz_code) ?>/edit" class="btn btn-primary mb-25">Edit quiz</a>
+               <a href="<?= base_url('quizresult?quiz=' . $data->quiz_code) ?>" class="btn btn-info mb-25">Lihat hasil Quiz</a>
             </div>
          </div>
       </div>

@@ -238,35 +238,51 @@
       }
 
       function submit_quiz() {
-         $.ajax({
-            url: "<?= base_url('api/quiz/' . $data->quiz_code . '/complete') ?>",
-            type: "post",
-            dataType: "json",
-            headers: {
-               Authorization: "<?= session()->token ?>"
+         Swal.fire({
+            title: "Penting!",
+            text: "Yakin sudah selesai menjawab semua soal Quiz ini?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, selesai!",
+            cancelButtonText: "Batal",
+            customClass: {
+               confirmButton: "btn btn-primary",
+               cancelButton: "btn btn-outline-danger ml-1"
             },
-            success: function(result) {
-               if (result.error == false) {
-                  Swal.fire({
-                     title: "Success!",
-                     text: result.message,
-                     icon: "success",
-                     showConfirmButton: false,
-                     timer: 3000
-                  }).then(function() {
-                     window.location.href = "<?= base_url('quiz/' . $data->quiz_code) ?>";
-                  })
-               } else {
-                  Swal.fire({
-                     title: "Failed!",
-                     text: result.message,
-                     icon: "error",
-                     showConfirmButton: false,
-                     timer: 3000
-                  })
-               }
+            buttonsStyling: false
+         }).then((result) => {
+            if (result.value) {
+               $.ajax({
+                  url: "<?= base_url('api/quiz/' . $data->quiz_code . '/complete') ?>",
+                  type: "post",
+                  dataType: "json",
+                  headers: {
+                     Authorization: "<?= session()->token ?>"
+                  },
+                  success: function(result) {
+                     if (result.error == false) {
+                        Swal.fire({
+                           title: "Success!",
+                           text: result.message,
+                           icon: "success",
+                           showConfirmButton: false,
+                           timer: 3000
+                        }).then(function() {
+                           window.location.href = "<?= base_url('quiz/' . $data->quiz_code) ?>";
+                        })
+                     } else {
+                        Swal.fire({
+                           title: "Failed!",
+                           text: result.message,
+                           icon: "error",
+                           showConfirmButton: false,
+                           timer: 3000
+                        })
+                     }
+                  }
+               })
             }
-         })
+         });
       }
 
       if (question_ids.length > 0) {

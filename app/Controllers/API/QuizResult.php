@@ -41,6 +41,7 @@ class Quizresult extends BaseController
                "regex_match" => "Skor Essai harus terdiri dari angka 0 - 100."
             ]);
          }
+         $data['essay_score'] = json_encode($input['essay_score']);
       }
       if ($validation->withRequest($this->request)->run() == false) {
          return $this->respond([
@@ -50,7 +51,6 @@ class Quizresult extends BaseController
          ]);
       }
       $data['value'] = htmlentities($input['value'], ENT_QUOTES, 'UTF-8');
-      $data['essay_score'] = json_encode($input['essay_score']);
       $where = [
          "quiz_result_id" => $quiz_result_id
       ];

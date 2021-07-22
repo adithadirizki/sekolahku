@@ -13,7 +13,7 @@ class Material extends BaseController
    protected $rules = [
       "material_title" => "required",
       "subject" => "required|is_not_unique[tb_subject.subject_id]",
-      "class_group*" => "required|multiple_class_group",
+      "class_group" => "required|multiple_class_group",
       "publish_at" => "required|valid_date[Y-m-d\TH:i]"
    ];
    protected $errors = [
@@ -29,8 +29,8 @@ class Material extends BaseController
          "multiple_class_group" => "Kelas tidak valid."
       ],
       "publish_at" => [
-         "required" => "Tgl dibuat harus diisi.",
-         "valid_date" => "Tgl dibuat tidak valid."
+         "required" => "Tgl Terbit harus diisi.",
+         "valid_date" => "Tgl Terbit tidak valid."
       ]
    ];
 
@@ -97,7 +97,7 @@ class Material extends BaseController
       ]);
       if ($validation->withRequest($this->request)->run() == false) {
          return $this->respond([
-            "message" => "Failed to save changes.",
+            "message" => "Failed to added.",
             "status" => 400,
             "errors" => $validation->getErrors()
          ]);

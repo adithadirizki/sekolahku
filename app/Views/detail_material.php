@@ -5,13 +5,12 @@
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/quill.snow.css') ?>">
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
-<div class="row">
-   <div class="col-lg-9">
+<div class="row match-height">
+   <div class="col-lg-8">
       <div class="card">
          <div class="card-body">
-            <div class="card-title"><?= $data->material_title ?></div>
+            <h1 class="h2"><?= $data->material_title ?></h1>
             <hr>
-            <div class="font-medium-1 mb-50">Deskripsi Materi :</div>
             <div class="ql-snow">
                <div class="material-text text-wrap ql-editor p-0"><?= html_entity_decode($data->material_desc, ENT_QUOTES, 'UTF-8') ?></div>
             </div>
@@ -19,8 +18,8 @@
          </div>
       </div>
    </div>
-   <div class="col-lg-3">
-      <div class="card border-primary">
+   <div class="col-lg-4">
+      <div class="card border-primary flex-grow-0">
          <div class="card-body">
             <h4 class="font-weight-bolder">
                Kode Materi :
@@ -38,13 +37,19 @@
                Kelas :
             </h4>
             <div class="mb-2">
-               <?= $data->class_group_name ?> (<?= $data->school_year_title ?>)
+               <?= $data->class_group_name ?>
             </div>
             <h4 class="font-weight-bolder">
-               Dibuat pada :
+               Tahun Ajaran :
             </h4>
             <div class="mb-2">
-               <?= (new DateTime($data->publish_at))->format('d F Y H:i') ?> WIB
+               <?= $data->school_year_title ?>
+            </div>
+            <h4 class="font-weight-bolder">
+               Diterbitkan pada :
+            </h4>
+            <div class="mb-2">
+               <?= (new DateTime($data->publish_at))->format('d M Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
                Dibuat oleh :
@@ -52,8 +57,10 @@
             <div class="mb-2">
                <?= $data->created ?>
             </div>
-            <a href="<?= base_url('/material/' . $data->material_code) ?>/edit" class="btn btn-primary btn-block">Edit Materi</a>
-            <button id="delete-material" class="btn btn-danger btn-block">Hapus</button>
+            <div class="d-flex justify-content-between flex-wrap">
+               <button id="delete-material" class="btn btn-danger">Hapus</button>
+               <a href="<?= base_url('/material/' . $data->material_code) ?>/edit" class="btn btn-primary">Edit Materi</a>
+            </div>
          </div>
       </div>
    </div>

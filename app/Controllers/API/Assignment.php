@@ -13,10 +13,10 @@ class Assignment extends BaseController
    protected $rules = [
       "assignment_title" => "required",
       "subject" => "required|is_not_unique[tb_subject.subject_id]",
-      "class_group*" => "required|multiple_class_group",
+      "class_group" => "required|multiple_class_group",
       "point" => "required|numeric",
       "start_at" => "required|valid_date[Y-m-d\TH:i]",
-      "due_at" => "permit_empty|valid_date[Y-m-d\TH:i]"
+      "due_at" => "required|valid_date[Y-m-d\TH:i]"
    ];
    protected $errors = [
       "assignment_title" => [
@@ -26,7 +26,7 @@ class Assignment extends BaseController
          "required" => "Mata Pelajaran harus diisi.",
          "is_not_unique" => "Mata Pelajaran tidak valid."
       ],
-      "class_group*" => [
+      "class_group" => [
          "required" => "Kelas harus diisi.",
          "multiple_class_group" => "Kelas tidak valid."
       ],
@@ -35,11 +35,12 @@ class Assignment extends BaseController
          "numeric" => "Poin Tugas harus berisi angka."
       ],
       "start_at" => [
-         "required" => "Tgl ditugaskan harus diisi.",
-         "valid_date" => "Tgl ditugaskan tidak valid."
+         "required" => "Tgl Ditugaskan harus diisi.",
+         "valid_date" => "Tgl Ditugaskan tidak valid."
       ],
       "due_at" => [
-         "valid_date" => "Tgl berakhir tidak valid."
+         "required" => "Tgl Berakhir harus diisi.",
+         "valid_date" => "Tgl Berakhir tidak valid."
       ]
    ];
 

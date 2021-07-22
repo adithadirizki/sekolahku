@@ -6,10 +6,10 @@
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="row match-height">
-   <div class="col-lg-9">
+   <div class="col-lg-8">
       <div class="card">
          <div class="card-body">
-            <div class="card-title"><?= $data->announcement_title ?></div>
+            <h1 class="h2"><?= $data->announcement_title ?></h1>
             <hr>
             <div class="ql-snow">
                <div class="announcement-text text-wrap ql-editor p-0"><?= html_entity_decode($data->announcement_desc, ENT_QUOTES, 'UTF-8') ?></div>
@@ -18,20 +18,20 @@
          </div>
       </div>
    </div>
-   <div class="col-lg-3">
+   <div class="col-lg-4">
       <div class="card border-primary flex-grow-0">
          <div class="card-body">
             <h4 class="font-weight-bolder">
                Ditujukan untuk :
             </h4>
             <div class="mb-2">
-               <?php 
+               <?php
                if ($data->announcement_for == 'teacher') {
                   echo 'Hanya Guru';
                } elseif ($data->announcement_for == 'student') {
                   echo 'Hanya Siswa';
                } elseif ($data->announcement_for == 'all') {
-                  echo 'Untuk Semua';  
+                  echo 'Untuk Semua';
                }
                ?>
             </div>
@@ -39,13 +39,13 @@
                Diumumkan pada :
             </h4>
             <div class="mb-2">
-               <?= (new DateTime($data->announced_at))->format('d F Y H:i') ?> WIB
+               <?= (new DateTime($data->announced_at))->format('d M Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
                Sampai :
             </h4>
             <div class="mb-2">
-               <?= (new DateTime($data->announced_until))->format('d F Y H:i') ?> WIB
+               <?= (new DateTime($data->announced_until))->format('d M Y H:i') ?> WIB
             </div>
             <h4 class="font-weight-bolder">
                Tahun Ajaran :
@@ -59,8 +59,10 @@
             <div class="mb-2">
                <?= $data->announced ?>
             </div>
-            <a href="<?= base_url('/announcement/' . $data->announcement_id) ?>/edit" class="btn btn-primary btn-block">Edit Pengumuman</a>
-            <button id="delete-announcement" class="btn btn-danger btn-block">Hapus</button>
+            <div class="d-flex justify-content-between flex-wrap-reverse">
+               <button id="delete-announcement" class="btn btn-danger mb-25">Hapus</button>
+               <a href="<?= base_url('/announcement/' . $data->announcement_id) ?>/edit" class="btn btn-primary mb-25">Edit Pengumuman</a>
+            </div>
          </div>
       </div>
    </div>

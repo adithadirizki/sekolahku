@@ -46,7 +46,7 @@ class M_Material extends Model
       $this->orLike('material_title', $keyword);
       $this->orLike('subject_name', $keyword);
       $this->orLike('fullname', $keyword);
-      $this->orLike("DATE_FORMAT(publish_at, '%d %m %Y %H:%i')", $keyword);
+      $this->orLike("DATE_FORMAT(publish_at, '%d %b %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
       return $this->get(1)->getFirstRow('object')->total_nums;
@@ -54,7 +54,7 @@ class M_Material extends Model
    
    public function material_data($where, $keyword, $limit, $offset, $orderby)
    {
-      $this->select("material_id,material_title,material_code,subject_name,fullname created,DATE_FORMAT(publish_at, '%d %m %Y %H:%i') publish_at");
+      $this->select("material_id,material_title,material_code,subject_name,fullname created,publish_at");
       $this->join('tb_user', 'username = created_by');
       $this->join('tb_subject', 'subject_id = subject');
       $this->groupStart();
@@ -62,7 +62,7 @@ class M_Material extends Model
       $this->orLike('material_title', $keyword);
       $this->orLike('subject_name', $keyword);
       $this->orLike('fullname', $keyword);
-      $this->orLike("DATE_FORMAT(publish_at, '%d %m %Y %H:%i')", $keyword);
+      $this->orLike("DATE_FORMAT(publish_at, '%d %b %Y %H:%i')", $keyword);
       $this->groupEnd();
       $this->where($where);
       $this->orderBy($orderby);

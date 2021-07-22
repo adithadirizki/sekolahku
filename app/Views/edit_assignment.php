@@ -40,8 +40,9 @@
                   <div class="invalid-feedback"></div>
                </div>
                <div class="form-group">
-                  <label for="assignment_desc">Deskripsi Tugas</label>
-                  <textarea name="assignment_desc" id="assignment_desc" hidden><?= $data->assignment_desc ?></textarea>
+                  <label for="assignment_desc">Deskripsi Tugas <span class="text-danger font-small-4">*</span></label>
+                  <textarea name="assignment_desc" id="assignment_desc" hidden required><?= $data->assignment_desc ?></textarea>
+                  <div class="invalid-feedback mt-0 mb-50"></div>
                   <div class="all-editor"><?= html_entity_decode($data->assignment_desc, ENT_QUOTES, 'UTF-8') ?></div>
                </div>
                <div class="row">
@@ -348,7 +349,11 @@
                   })
                } else {
                   Object.entries(result.errors).forEach(function(key, value) {
-                     key[0] = key[0].replace('*', '[]');
+                     if (key[0].search('.')) {
+                        key[0] = key[0].split('.');
+                        key[0] = `${key[0][0]}[${key[0][1]}]`;
+                        key[0] = key[0].replace('*', '');
+                     }
                      form.find('[name="' + key[0] + '"]').addClass('is-invalid');
                      form.find('[name="' + key[0] + '"]').closest('.d-flex').addClass('is-invalid');
                      form.find('[name="' + key[0] + '"]').closest('.form-group').find('.invalid-feedback').addClass('d-block').text(key[1]);
