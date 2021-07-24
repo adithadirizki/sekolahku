@@ -7,27 +7,32 @@ use App\Models\M_Major;
 
 class Major extends BaseController
 {
-	protected $m_major;
+   protected $m_major;
    protected $rules = [
       "major_name" => "required",
-      "major_code" => "required"
+      "major_code" => "required|alphanumeric"
    ];
    protected $errors = [
       "major_name" => [
          "required" => "Nama Jurusan harus diisi."
       ],
       "major_code" => [
-         "required" => "Kode Jurusan harus diisi."
+         "required" => "Kode Jurusan harus diisi.",
+         "alphanumeric" => "Kode Jurusan harus terdiri dari huruf atau angka."
       ]
    ];
 
-	public function __construct()
-	{
-		$this->m_major = new M_Major();
-	}
+   public function __construct()
+   {
+      $this->m_major = new M_Major();
+   }
 
    public function create()
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -61,6 +66,10 @@ class Major extends BaseController
 
    public function update($major_id)
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -97,6 +106,10 @@ class Major extends BaseController
 
    public function delete($major_id)
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $where = [
          "major_id" => $major_id
       ];

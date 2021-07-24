@@ -30,8 +30,8 @@ class M_Assignment extends Model
    public function total_assignment($where = [])
    {
       $this->selectCount('assignment_id', 'total_nums');
-      $this->join('tb_user', 'username = assigned_by');
-      $this->join('tb_subject', 'subject_id = subject');
+      // $this->join('tb_user', 'username = assigned_by');
+      // $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
       return $this->get(1)->getFirstRow('object')->total_nums;
    }
@@ -78,21 +78,22 @@ class M_Assignment extends Model
       return $this->get()->getResultObject();
    }
    
-   public function total_assignment_student($username, $where = [])
+   public function total_assignment_student($class, $where = [])
    {
       $this->selectCount('assignment_id', 'total_nums');
-      $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
-      $this->join('tb_assignment_result', 'assignment = assignment_code AND submitted_by = student_username', 'left');
-      $this->join('tb_subject', 'subject_id = subject');
+      // $this->join('tb_student', "JSON_CONTAINS(class_group, JSON_QUOTE('$class'))");
+      // $this->join('tb_assignment_result', 'assignment = assignment_code AND submitted_by = student_username', 'left');
+      // $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
       $this->where('NOW() > start_at');
+      $this->where("JSON_CONTAINS(class_group, JSON_QUOTE('$class'))");
       return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
-   public function assignments_student($username, $where = [], $limit = 0, $offset = 0)
+   public function assignments_student($class, $where = [], $limit = 0, $offset = 0)
    {
       $this->select('assignment_code,assignment_title,start_at,due_at,assignment_result_id,subject_name,subject_code');
-      $this->join('tb_student', "student_username = '$username' AND JSON_CONTAINS(class_group, JSON_QUOTE(curr_class_group))");
+      $this->join('tb_student', "JSON_CONTAINS(class_group, JSON_QUOTE('$class'))");
       $this->join('tb_assignment_result', 'assignment = assignment_code AND submitted_by = student_username', 'left');
       $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
@@ -162,6 +163,14 @@ class M_Assignment extends Model
       $this->select('1');
       $this->where('assignment_code', $assignment_code);
       $this->where('assigned_by', $username);
+      return $this->get(1)->getFirstRow('object');
+   }
+
+   public function have_assignment_student($class, $assignment_code)
+   {
+      $this->select('1');
+      $this->where('assignment_code', $assignment_code);
+      $this->where("JSON_CONTAINS(class_group, JSON_QUOTE('$class'))");
       return $this->get(1)->getFirstRow('object');
    }
 

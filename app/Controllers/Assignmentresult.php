@@ -16,6 +16,10 @@ class Assignmentresult extends BaseController
 
 	public function index()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$data = [
 			"title" => "Assignment",
 			"url_active" => "assignmentresult"
@@ -24,13 +28,15 @@ class Assignmentresult extends BaseController
 			return view('assignment_result_list', $data);
 		} elseif ($this->role == 'teacher') {
 			return view('assignment_result_list', $data);
-		} elseif ($this->role == 'student') {
-			return view('student/assignment_result_list', $data);
 		}
 	}
 
 	public function get_assignment_results()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+		
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
 		$keyword = $_POST['search']['value'];
@@ -43,15 +49,15 @@ class Assignmentresult extends BaseController
 		}
 		$orderby = implode(',', $orderby);
 
-		if ($this->role == 'teacher') {
-			$where[] = "assigned_by = '$this->username'";
-		}
-
 		if ($_POST['value'] == null) {
 		} elseif ($_POST['value'] == 0) {
 			$where[] = "value IS NULL";
 		} elseif ($_POST['value'] == 1) {
 			$where[] = "value IS NOT NULL";
+		}
+
+		if ($this->role == 'teacher') {
+			$where[] = "assigned_by = '$this->username'";
 		}
 		$where = count($where) > 0 ? implode(' AND ', $where) : [];
 
@@ -70,6 +76,10 @@ class Assignmentresult extends BaseController
 
 	public function show($assignment_result_id)
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+		
 		if ($this->role == 'superadmin') {
 			$result = $this->m_assignment_result->detail_assignment_result($assignment_result_id);
 		} elseif ($this->role == 'teacher') {
@@ -87,8 +97,6 @@ class Assignmentresult extends BaseController
 			return view('detail_assignment_result', $data);
 		} elseif ($this->role == 'teacher') {
 			return view('detail_assignment_result', $data);
-		} elseif ($this->role == 'student') {
-			return view('student/detail_assignment_result', $data);
 		}
 	}
 }

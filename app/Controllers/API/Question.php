@@ -30,6 +30,10 @@ class Question extends BaseController
 
    public function create()
    {
+      if ($this->role == 'student') {
+         return $this->failForbidden();
+      }
+      
       parse_str(file_get_contents('php://input'), $input);
       if ($errors = $this->question_validation($input, $this->request)) {
          return $this->respond([
@@ -71,6 +75,16 @@ class Question extends BaseController
 
    public function update($question_id)
    {
+      if ($this->role == 'student') {
+         return $this->failForbidden();
+      }
+
+      if ($this->role == 'teacher') {
+         if (!$this->m_question->have_question($this->username, $question_id)) {
+            return $this->failForbidden();
+         }
+      }
+      
       parse_str(file_get_contents('php://input'), $input);
       if ($errors = $this->question_validation($input, $this->request)) {
          return $this->respond([
@@ -114,6 +128,16 @@ class Question extends BaseController
 
    public function delete($question_id)
    {
+      if ($this->role == 'student') {
+         return $this->failForbidden();
+      }
+
+      if ($this->role == 'teacher') {
+         if (!$this->m_question->have_question($this->username, $question_id)) {
+            return $this->failForbidden();
+         }
+      }
+      
       $where = [
          "question_id" => $question_id
       ];
@@ -135,6 +159,10 @@ class Question extends BaseController
 
    public function question_validation($input, $request)
    {
+      if ($this->role == 'student') {
+         return $this->failForbidden();
+      }
+
       $rules = [
          "question_type" => "required|in_list[mc,essay]",
          "question_text" => "required|striptags"

@@ -28,6 +28,10 @@ class Subject extends BaseController
 
    public function create()
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -61,6 +65,10 @@ class Subject extends BaseController
 
    public function update($subject_id)
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -97,6 +105,10 @@ class Subject extends BaseController
 
    public function delete($subject_id)
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $where = [
          "subject_id" => $subject_id
       ];

@@ -16,6 +16,10 @@ class Question extends BaseController
 
 	public function index()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$data = [
 			"title" => "Soal",
 			"url_active" => "question"
@@ -25,6 +29,10 @@ class Question extends BaseController
 
 	public function get_questions()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
 		$keyword = $_POST['search']['value'];
@@ -52,6 +60,10 @@ class Question extends BaseController
 
 	public function show($question_id)
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$where = [
 			"question_id" => $question_id
 		];
@@ -68,6 +80,10 @@ class Question extends BaseController
 
 	public function new()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$data = [
 			"title" => "Tambah Soal",
 			"url_active" => "question"
@@ -77,6 +93,16 @@ class Question extends BaseController
 
 	public function edit($question_id)
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
+		if ($this->role == 'teacher') {
+			if (!$this->m_question->have_question($this->username, $question_id)) {
+				throw new PageNotFoundException();
+			}
+		}
+
 		$where = [
 			"question_id" => $question_id
 		];

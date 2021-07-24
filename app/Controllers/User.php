@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\M_User;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class User extends BaseController
 {
@@ -15,6 +16,10 @@ class User extends BaseController
 
 	public function index()
 	{
+		if ($this->role != 'superadmin') {
+			throw new PageNotFoundException();
+		}
+		
 		$data = [
 			"title" => "User",
 			"url_active" => "user"
@@ -24,6 +29,10 @@ class User extends BaseController
 
 	public function get_users()
 	{
+		if ($this->role != 'superadmin') {
+			throw new PageNotFoundException();
+		}
+		
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
 		$keyword = $_POST['search']['value'];

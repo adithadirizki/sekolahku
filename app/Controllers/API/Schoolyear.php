@@ -29,6 +29,10 @@ class Schoolyear extends BaseController
 
    public function create()
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -62,6 +66,10 @@ class Schoolyear extends BaseController
 
    public function update($school_year_id)
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -98,6 +106,10 @@ class Schoolyear extends BaseController
 
    public function delete($school_year_id)
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $where = [
          "school_year_id" => $school_year_id
       ];

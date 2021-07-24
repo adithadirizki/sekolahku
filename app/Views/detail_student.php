@@ -1,10 +1,11 @@
 <?= $this->extend('template') ?>
 <?= $this->section('content') ?>
-<div class="row">
-   <div class="col-md-6 col-lg-5 col-xl-4">
+<div class="row match-height">
+   <div class="col-md-6">
       <div class="card">
          <div class="card-body">
-            <div class="card-title">Account</div>
+            <h4>Account</h4>
+            <hr>
             <div class="row">
                <div class="col-12 d-flex flex-column justify-content-between mb-1">
                   <div class="user-avatar-section">
@@ -44,10 +45,11 @@
          </div>
       </div>
    </div>
-   <div class="col-md-6 col-lg-7 col-xl-4">
+   <div class="col-md-6">
       <div class="card">
          <div class="card-body">
-            <div class="card-title">Data Personal</div>
+            <h4>Data Personal</h4>
+            <hr>
             <div class="row">
                <div class="col-12 mb-50">
                   <label>NIS</label>
@@ -82,44 +84,44 @@
          </div>
       </div>
    </div>
-   <div class="col-md-6 col-lg-5 col-xl-4">
-      <div class="card">
-            <div class="card-title px-2 pt-2">Riwayat Kelas</div>
-            <div class="table-responsive">
-               <table class="table text-center">
-                  <thead>
-                     <tr>
-                        <th>KELAS</th>
-                        <th>TAHUN AJARAN</th>
-                        <th>HAPUS</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <tr>
-                        <td><?= $data->class_group_name ?></td>
-                        <td>Sekarang</td>
-                     </tr>
-                     <?php
-                     foreach (json_decode($data->class_history) as $v) :
-                        $class = array_search($v->class, array_column($classgroup_history, 'class_group_code'));
-                        $year = array_search($v->year, array_column($schoolyear_history, 'school_year_id'));
-                     ?>
-                        <tr>
-                           <td><?= $classgroup_history[$class]->class_group_name ?></td>
-                           <td><?= $schoolyear_history[$year]->school_year_title ?></td>
-                           <td>
-                              <button class="btn btn-icon rounded-circle btn-flat-danger"><i data-feather="trash"></i></button>
-                           </td>
-                        </tr>
-                     <?php
-                     endforeach;
-                     ?>
-                  </tbody>
-               </table>
-            </div>
+</div>
+<div class="card">
+   <div class="card-body">
+      <h4>Riwayat Kelas</h4>
+      <hr>
+      <div class="table-responsive">
+         <table class="table text-center">
+            <thead>
+               <tr>
+                  <th>KELAS</th>
+                  <th>TAHUN AJARAN</th>
+                  <th>HAPUS</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td><?= $data->class_group_name ?></td>
+                  <td>Sekarang</td>
+               </tr>
+               <?php
+               foreach (json_decode($data->class_history) as $v) :
+                  $class = array_search($v->class, array_column($classgroup_history, 'class_group_code'));
+                  $year = array_search($v->year, array_column($schoolyear_history, 'school_year_id'));
+               ?>
+                  <tr>
+                     <td><?= $classgroup_history[$class]->class_group_name ?></td>
+                     <td><?= $schoolyear_history[$year]->school_year_title ?></td>
+                     <td>
+                        <button class="btn btn-icon rounded-circle btn-flat-danger delete-class-history"><i data-feather="trash"></i></button>
+                     </td>
+                  </tr>
+               <?php
+               endforeach;
+               ?>
+            </tbody>
+         </table>
       </div>
    </div>
-</div>
 </div>
 <?= $this->endSection() ?>
 <?= $this->section('customJS') ?>

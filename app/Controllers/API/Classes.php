@@ -24,6 +24,10 @@ class Classes extends BaseController
 
    public function create()
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -55,6 +59,10 @@ class Classes extends BaseController
 
    public function update($class_id)
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -89,6 +97,10 @@ class Classes extends BaseController
 
    public function delete($class_id)
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $where = [
          "class_id" => $class_id
       ];

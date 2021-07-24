@@ -21,7 +21,7 @@ class Filters extends BaseConfig
 	public $globals = [
 		'before' => [
 			'cookie',
-			'auth' => ['except' => ['/', 'auth/*', 'api/auth/*']],
+			'auth' => ['except' => ['/', 'auth/*', 'api/*']],
 			//'honeypot'
 			'csrf' => ['except' => ['api/*']],
 		],

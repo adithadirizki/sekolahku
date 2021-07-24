@@ -22,15 +22,27 @@ class Student extends BaseController
 
 	public function index()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$data = [
 			"title" => "Siswa",
 			"url_active" => "student"
 		];
-		return view('student_list', $data);
+		if ($this->role == 'superadmin') {
+			return view('student_list', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('teacher/student_list', $data);
+		}
 	}
 
 	public function get_students()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
 		$keyword = $_POST['search']['value'];
@@ -42,7 +54,17 @@ class Student extends BaseController
 			array_push($orderby, "$field $dir");
 		}
 		$orderby = implode(',', $orderby);
-		$_POST['gender'] <> null ? $where['gender'] = $_POST['gender'] : null;
+
+		empty($_POST['gender']) ? null : $where[] = "gender = '$_POST[gender]'";
+
+		if ($this->role == 'teacher') {
+			$class = json_encode($this->class);
+			$class = substr($class, 1);
+			$class = substr($class, 0, -1);
+			$where[] = "class_group_code IN ($class)";
+		}
+		$where = count($where) > 0 ? implode(' AND ', $where) : [];
+
 		$total_student = $this->m_student->total_student();
 		$total_student_filtered = $this->m_student->total_student_filtered($where, $keyword);
 		$student_data = $this->m_student->student_data($where, $keyword, $limit, $offset, $orderby);
@@ -58,6 +80,10 @@ class Student extends BaseController
 
 	public function new()
 	{
+		if ($this->role != 'superadmin') {
+			throw new PageNotFoundException();
+		}
+
 		$data = [
 			"title" => "Tambah Siswa",
 			"url_active" => "student"
@@ -67,6 +93,10 @@ class Student extends BaseController
 
 	public function show($username)
 	{
+		if ($this->role != 'superadmin') {
+			throw new PageNotFoundException();
+		}
+
 		$result = $this->m_student->student_account($username);
 		if (!$result) {
 			throw new PageNotFoundException();
@@ -96,6 +126,10 @@ class Student extends BaseController
 
 	public function edit($username)
 	{
+		if ($this->role != 'superadmin') {
+			throw new PageNotFoundException();
+		}
+
 		$result = $this->m_student->student_account($username);
 		if (!$result) {
 			throw new PageNotFoundException();

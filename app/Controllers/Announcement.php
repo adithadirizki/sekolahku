@@ -37,6 +37,10 @@ class Announcement extends BaseController
 
 	public function get_announcements()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
 		$keyword = $_POST['search']['value'];
@@ -50,9 +54,7 @@ class Announcement extends BaseController
 		$orderby = implode(',', $orderby);
 
 		if ($this->role == 'teacher') {
-			$where = [
-				"announced_by" => $this->username
-			];
+			$where = "announced_by = '$this->username' OR (announcement_for IN ('all', 'teacher') AND NOW() > announced_at)";
 		}
 
 		$total_announcement = $this->m_announcement->total_announcement($where);
@@ -70,6 +72,10 @@ class Announcement extends BaseController
 
 	public function new()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+		
 		$data = [
 			"title" => "Tambah Pengumuman",
 			"url_active" => "announcement"
@@ -105,6 +111,16 @@ class Announcement extends BaseController
 
 	public function edit($announcement_id)
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
+		if ($this->role == 'teacher') {
+			if (!$this->m_announcement->have_announcement($this->username, $announcement_id)) {
+				throw new PageNotFoundException();
+			}
+		}
+		
 		$result = $this->m_announcement->announcement($announcement_id);
 		if (!$result) {
 			throw new PageNotFoundException();

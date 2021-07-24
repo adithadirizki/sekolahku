@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use CodeIgniter\Config\Services;
 
-class Validation
+class Validation extends BaseController
 {
 	protected $request;
 
@@ -60,10 +60,42 @@ class Validation
 		return true;
 	}
 
+	public function teach_subject($data)
+	{
+		if (!is_numeric($data)) {
+			return false;
+		}
+
+		if (in_array($data, $this->subject)) {
+			return true;
+		}
+		return false;
+	}
+
+	public function teach_class($data)
+	{
+		if (!is_array($data)) {
+			return false;
+		}
+
+      $diff = array_diff($data, $this->class);
+
+		if (count($diff) > 0) {
+			return false;
+		}
+		return true;
+	}
+
 	public function multiple_majors($data)
 	{
 		$m_majors = new \App\Models\M_Major();
 		return $m_majors->validation_multiple_majors($data);
+	}
+
+	public function multiple_subject($data)
+	{
+		$m_class = new \App\Models\M_Subject();
+		return $m_class->validation_multiple_subjects($data);
 	}
 
 	public function multiple_class_group($data)

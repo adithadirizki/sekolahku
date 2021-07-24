@@ -1,4 +1,4 @@
-<?= $this->extend('template') ?>
+<?= $this->extend('teacher/template') ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/katex.min.css') ?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/monokai-sublime.min.css') ?>">
@@ -9,7 +9,7 @@
    <div class="col-lg-9">
       <div class="card">
          <div class="card-body">
-            <div class="card-title"><?= $data->announcement_title ?></div>
+            <h1 class="h2"><?= $data->announcement_title ?></h1>
             <hr>
             <div class="ql-snow">
                <div class="announcement-text text-wrap ql-editor p-0"><?= html_entity_decode($data->announcement_desc, ENT_QUOTES, 'UTF-8') ?></div>
@@ -25,13 +25,13 @@
                Ditujukan untuk :
             </h4>
             <div class="mb-2">
-               <?php 
+               <?php
                if ($data->announcement_for == 'teacher') {
                   echo 'Hanya Guru';
                } elseif ($data->announcement_for == 'student') {
                   echo 'Hanya Siswa';
                } elseif ($data->announcement_for == 'all') {
-                  echo 'Untuk Semua';  
+                  echo 'Untuk Semua';
                }
                ?>
             </div>
@@ -50,11 +50,17 @@
             <h4 class="font-weight-bolder">
                Tahun Ajaran :
             </h4>
-            <div class="mb-2">
+            <div>
                <?= $data->school_year_title ?>
             </div>
-            <a href="<?= base_url('/announcement/' . $data->announcement_id) ?>/edit" class="btn btn-primary btn-block">Edit Pengumuman</a>
-            <button id="delete-announcement" class="btn btn-danger btn-block">Hapus</button>
+
+            <?php if ($data->announced_by == session()->username) { ?>
+               <div class="d-flex justify-content-between flex-wrap-reverse mt-2">
+                  <button id="delete-announcement" class="btn btn-danger mb-25">Hapus</button>
+                  <a href="<?= base_url('/announcement/' . $data->announcement_id) ?>/edit" class="btn btn-primary mb-25">Edit Pengumuman</a>
+               </div>
+            <?php } ?>
+
          </div>
       </div>
    </div>

@@ -1,4 +1,8 @@
-<?= $this->extend('template') ?>
+<?php if (session()->role == 'superadmin') {
+   echo $this->extend('template');
+} elseif (session()->role == 'teacher') {
+   echo $this->extend('teacher/template');
+} ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/forms/select/select2.min.css') ?>">
 <?= $this->endSection() ?>
@@ -234,6 +238,11 @@
                   })
                } else {
                   Object.entries(result.errors).forEach(function(key, value) {
+                     if (key[0].search('.')) {
+                        key[0] = key[0].split('.');
+                        key[0] = `${key[0][0]}[${key[0][1]}]`;
+                        key[0] = key[0].replace('*', '');
+                     }
                      key[0] = key[0].replace('*', '[]');
                      form.find('[name="' + key[0] + '"]').addClass('is-invalid');
                      form.find('[name="' + key[0] + '"]').closest('.d-flex').addClass('is-invalid');

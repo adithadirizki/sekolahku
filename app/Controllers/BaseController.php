@@ -33,8 +33,8 @@ class BaseController extends Controller
 	public $jwt;
 	public $username;
 	public $role;
-	public $class;
-	public $subject;
+	public $class = [];
+	public $subject = [];
 
 	/**
 	 * Constructor.
@@ -49,7 +49,6 @@ class BaseController extends Controller
 		//--------------------------------------------------------------------
 		// E.g.:
 		// $this->session = \Config\Services::session();
-		
 		$this->jwt = new \Firebase\JWT\JWT;
 		if ($request->uri->getSegment(1) === 'api') {
 			try {

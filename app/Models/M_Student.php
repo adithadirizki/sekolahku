@@ -10,14 +10,15 @@ class M_Student extends Model
 	protected $primaryKey = 'student_id';
    protected $allowedFields = ['student_username', 'nis', 'dob', 'pob', 'gender', 'religion', 'address', 'phone', 'curr_class_group', 'class_history'];
    
-   public function total_student()
+   public function total_student($where = [])
    {
       $this->selectCount('student_id', 'total_nums');
-      $this->join('tb_user', 'username = student_username');
-      $this->join('tb_class_group', 'class_group_code = curr_class_group');
-      $this->join('tb_class', 'class_id = class');
-      $this->join('tb_major', 'major_id = major');
-      return $this->get()->getFirstRow('object')->total_nums;
+      // $this->join('tb_user', 'username = student_username');
+      // $this->join('tb_class_group', 'class_group_code = curr_class_group');
+      // $this->join('tb_class', 'class_id = class');
+      // $this->join('tb_major', 'major_id = major');
+      $this->where($where);
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function total_student_filtered($where, $keyword)
@@ -31,11 +32,12 @@ class M_Student extends Model
       $this->like('username', $keyword);
       $this->orLike('fullname', $keyword);
       $this->orLike('nis', $keyword);
+      $this->orLike("CONCAT_WS(' ',class_name,major_code,unit_major)", $keyword);
       $this->orLike('religion', $keyword);
       $this->orLike('phone', $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function student_data($where, $keyword, $limit, $offset, $orderby)
@@ -49,6 +51,7 @@ class M_Student extends Model
       $this->like('username', $keyword);
       $this->orLike('fullname', $keyword);
       $this->orLike('nis', $keyword);
+      $this->orLike("CONCAT_WS(' ',class_name,major_code,unit_major)", $keyword);
       $this->orLike('religion', $keyword);
       $this->orLike('phone', $keyword);
       $this->groupEnd();
@@ -61,7 +64,7 @@ class M_Student extends Model
    public function student($username)
    {
       $this->where('student_username', $username);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function student_account($username)
@@ -72,7 +75,7 @@ class M_Student extends Model
       $this->join('tb_class', 'class_id = class');
       $this->join('tb_major', 'major_id = major');
       $this->where('student_username', $username);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function create_student($data)

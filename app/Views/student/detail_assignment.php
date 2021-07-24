@@ -115,7 +115,6 @@
                </div>
                <form id="add-assignment-result" enctype="multipart/form-data" onsubmit="return false;">
                   <div class="form-group">
-                     <input type="hidden" name="assignment_code" value="<?= $data->assignment_code ?>">
                      <textarea name="answer" id="answer" hidden></textarea>
                      <div class="all-editor"></div>
                   </div>
@@ -271,7 +270,7 @@
          var form = $(this);
          var data = $(this).serialize();
          $.ajax({
-            url: "<?= base_url('api/assignment/result') ?>",
+            url: "<?= base_url('api/assignment/' . $data->assignment_code . '/complete') ?>",
             type: "post",
             dataType: "json",
             data: data,

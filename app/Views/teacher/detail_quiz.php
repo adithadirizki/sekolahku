@@ -1,4 +1,4 @@
-<?= $this->extend('template') ?>
+<?= $this->extend('teacher/template') ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/katex.min.css') ?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/monokai-sublime.min.css') ?>">
@@ -25,8 +25,14 @@
             <h4 class="font-weight-bolder">
                Kelas :
             </h4>
+            <div class="mb-2">
+               <?= $data->class_group_name ?>
+            </div>
+            <h4 class="font-weight-bolder">
+               Tahun Ajaran :
+            </h4>
             <div>
-               <?= $data->class_group_name ?> (<?= $data->school_year_title ?>)
+               <?= $data->school_year_title ?>
             </div>
          </div>
       </div>
@@ -125,7 +131,7 @@
                </button>
             </div>
             <div class="text-right mt-1">
-               <a href="<?= base_url('quizresult?quiz='.$data->quiz_code) ?>" class="btn btn-info">Lihat hasil Quiz</a>
+               <a href="<?= base_url('quizresult?quiz=' . $data->quiz_code) ?>" class="btn btn-info">Lihat hasil Quiz</a>
             </div>
          </div>
       </div>
@@ -221,6 +227,12 @@
                   $('#question').find('.question-type').text(q_type[data.question_type]);
                   $('#question').find('.question-text').html($.parseHTML(data.question_text)[0].data);
                   $('#question').find('.edit-question').attr('href', '<?= base_url('question') ?>/' + question_id + '/edit');
+
+                  if (data.created_by != "<?= session()->username ?>") {
+                     $('#question').find('.edit-question').attr('hidden', true);
+                     $('#question').find('.delete-question').attr('hidden', true);
+                  }
+
                   data.choices.forEach(function(obj, i) {
                      var tmp_choice = $('#tmp-choice').clone();
                      tmp_choice.find('strong').text(abcde[i]);

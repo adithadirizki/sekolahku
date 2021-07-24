@@ -8,12 +8,12 @@ class M_Teacher extends Model
 {
    protected $table = 'tb_teacher';
 	protected $primaryKey = 'teacher_id';
-   protected $allowedFields = ['teacher_username', 'nip', 'dob', 'pob', 'gender', 'religion', 'address', 'phone'];
+   protected $allowedFields = ['teacher_username', 'nip', 'dob', 'pob', 'gender', 'religion', 'address', 'phone', 'teaching_class', 'teaching_subject'];
    
    public function total_teacher()
    {
       $this->selectCount('teacher_id', 'total_nums');
-      $this->join('tb_user', 'username = teacher_username');
+      // $this->join('tb_user', 'username = teacher_username');
       return $this->get(1)->getFirstRow('object')->total_nums;
    }
    

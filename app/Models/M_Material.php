@@ -30,8 +30,8 @@ class M_Material extends Model
    public function total_material($where = [])
    {
       $this->selectCount('material_id', 'total_nums');
-      $this->join('tb_user', 'username = created_by');
-      $this->join('tb_subject', 'subject_id = subject');
+      // $this->join('tb_user', 'username = created_by');
+      // $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
       return $this->get(1)->getFirstRow('object')->total_nums;
    }
@@ -73,7 +73,7 @@ class M_Material extends Model
    public function total_material_student($class, $where = [])
    {
       $this->selectCount('material_id', 'total_nums');
-      $this->join('tb_subject', 'subject_id = subject');
+      // $this->join('tb_subject', 'subject_id = subject');
       $this->where($where);
       $this->where('NOW() > publish_at');
       $this->where("JSON_CONTAINS(class_group, JSON_QUOTE('$class'))");
@@ -135,14 +135,14 @@ class M_Material extends Model
       return $this->get(1)->getFirstRow('object');
    }
 
-   public function detail_material_student($class_group, $material_code)
+   public function detail_material_student($class, $material_code)
    {
       $this->select("material_code,material_title,material_desc,created_by,fullname created,publish_at,subject_code,subject_name");
       $this->join('tb_user', 'username = created_by');
       $this->join('tb_subject', 'subject_id = subject');
       $this->where('material_code', $material_code);
       $this->where('NOW() > publish_at');
-      $this->where("JSON_CONTAINS(class_group, JSON_QUOTE('$class_group'))");
+      $this->where("JSON_CONTAINS(class_group, JSON_QUOTE('$class'))");
       $this->groupBy('material_code');
       return $this->get(1)->getFirstRow('object');
    }

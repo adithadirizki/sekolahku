@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\M_School_Year;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Schoolyear extends BaseController
 {
@@ -15,6 +16,10 @@ class Schoolyear extends BaseController
 
 	public function index()
 	{
+		if ($this->role != 'superadmin') {
+			throw new PageNotFoundException();
+		}
+
 		$data = [
 			"title" => "Tahun Pelajaran",
 			"url_active" => "schoolyear"
@@ -24,6 +29,10 @@ class Schoolyear extends BaseController
 
 	public function get_school_years()
 	{
+		if ($this->role != 'superadmin') {
+			throw new PageNotFoundException();
+		}
+		
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
 		$keyword = $_POST['search']['value'];

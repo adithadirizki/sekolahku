@@ -1,4 +1,8 @@
-<?= $this->extend('template') ?>
+<?php if (session()->role == 'superadmin') {
+   echo $this->extend('template');
+} elseif (session()->role == 'teacher') {
+   echo $this->extend('teacher/template');
+} ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" href="<?= base_url('app-assets/vendors/css/tables/datatable/datatables.min.css') ?>">
 <link rel="stylesheet" href="<?= base_url('app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css') ?>">
@@ -88,15 +92,19 @@
             {
                "data": "announcement_id",
                "mRender": function(announcement_id, row, data) {
-                  return '<div class="dropdown" data-announcement_id="' + announcement_id + '"><button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">' + feather.icons['more-vertical'].toSvg({
-                     class: 'font-medium-2'
-                  }) + '</button><div class="dropdown-menu"><a class="dropdown-item show-announcement text-primary" href="<?= base_url('announcement') ?>/' + announcement_id + '">' + feather.icons['search'].toSvg({
-                     class: 'font-medium-2'
-                  }) + ' <span>Lihat</span></a><a class="dropdown-item edit-announcement text-info" href="<?= base_url('announcement') ?>/' + announcement_id + '/edit">' + feather.icons['edit'].toSvg({
-                     class: 'font-medium-2'
-                  }) + ' <span>Edit</span></a><a class="dropdown-item delete-announcement text-danger" href="javascript:void(0);">' + feather.icons['trash'].toSvg({
-                     class: 'font-medium-2'
-                  }) + ' <span>Hapus</span></a></div></div>';
+                  if (data.announced_by == "<?= session()->username ?>") {
+                     return '<div class="dropdown" data-announcement_id="' + announcement_id + '"><button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">' + feather.icons['more-vertical'].toSvg({
+                        class: 'font-medium-2'
+                     }) + '</button><div class="dropdown-menu"><a class="dropdown-item show-announcement text-primary" href="<?= base_url('announcement') ?>/' + announcement_id + '">' + feather.icons['search'].toSvg({
+                        class: 'font-medium-2'
+                     }) + ' <span>Lihat</span></a><a class="dropdown-item edit-announcement text-info" href="<?= base_url('announcement') ?>/' + announcement_id + '/edit">' + feather.icons['edit'].toSvg({
+                        class: 'font-medium-2'
+                     }) + ' <span>Edit</span></a><a class="dropdown-item delete-announcement text-danger" href="javascript:void(0);">' + feather.icons['trash'].toSvg({
+                        class: 'font-medium-2'
+                     }) + ' <span>Hapus</span></a></div></div>';
+                  } else {
+                     return '<a class="btn btn-sm btn-outline-primary round show-announcement text-nowrap font-weight-bolder" href="<?= base_url('announcement') ?>/' + announcement_id + '">' + feather.icons['search'].toSvg() + ' <span>Lihat</span></a>';
+                  }
                },
                "className": "text-center",
                "orderable": false

@@ -20,7 +20,7 @@ class M_Class_Group extends Model
          }
          $this->selectCount('class_group_id', 'total_nums');
          $this->where(['class_group_code' => $class_group_code]);
-         if ($this->get()->getFirstRow('object')->total_nums == 0) {
+         if ($this->get(1)->getFirstRow('object')->total_nums == 0) {
             break;
          }
       }
@@ -30,9 +30,9 @@ class M_Class_Group extends Model
    public function total_class_group()
    {
       $this->selectCount('class_group_id', 'total_nums');
-      $this->join('tb_class', 'class_id = class');
-      $this->join('tb_major', 'major_id = major');
-      return $this->get()->getFirstRow('object')->total_nums;
+      // $this->join('tb_class', 'class_id = class');
+      // $this->join('tb_major', 'major_id = major');
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function total_class_group_filtered($where, $keyword)
@@ -45,7 +45,7 @@ class M_Class_Group extends Model
       $this->orLike("CONCAT_WS(' ',class_name,major_code,unit_major)", $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function class_group_data($where, $keyword, $limit, $offset, $orderby)
@@ -79,7 +79,7 @@ class M_Class_Group extends Model
       $this->join('tb_class', 'class_id = class');
       $this->join('tb_major', 'major_id = major');
       $this->where($where);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function create_class_group($data)

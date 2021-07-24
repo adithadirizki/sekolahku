@@ -1,4 +1,4 @@
-<?= $this->extend('template') ?>
+<?= $this->extend('teacher/template') ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/katex.min.css') ?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/monokai-sublime.min.css') ?>">
@@ -38,7 +38,13 @@
                Kelas :
             </h4>
             <div class="mb-2">
-               <?= $data->class_group_name ?> (<?= $data->school_year_title ?>)
+               <?= $data->class_group_name ?>
+            </div>
+            <h4 class="font-weight-bolder">
+               Tahun Ajaran :
+            </h4>
+            <div class="mb-2">
+               <?= $data->school_year_title ?>
             </div>
             <h4 class="font-weight-bolder">
                Dibuat pada :

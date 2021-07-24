@@ -13,7 +13,7 @@ class M_Class extends Model
    public function total_class()
    {
       $this->selectCount('class_id', 'total_nums');
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
 
    public function total_class_filtered($where, $keyword)
@@ -23,7 +23,7 @@ class M_Class extends Model
       $this->like('class_name', $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
 
    public function class_data($where, $keyword, $limit, $offset, $orderby)

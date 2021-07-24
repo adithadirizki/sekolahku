@@ -246,6 +246,7 @@
                         key[0] = `${key[0][0]}[${key[0][1]}]`;
                         key[0] = key[0].replace('*', '');
                      }
+                     key[0] = key[0].replace('*', '[]');
                      form.find('[name="' + key[0] + '"]').addClass('is-invalid');
                      form.find('[name="' + key[0] + '"]').closest('.d-flex').addClass('is-invalid');
                      form.find('[name="' + key[0] + '"]').closest('.form-group').find('.invalid-feedback').addClass('d-block').text(key[1]);

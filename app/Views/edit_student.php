@@ -24,144 +24,110 @@
       <form id="edit-user" enctype="multipart/form-data" onsubmit="return false;">
          <div class="row">
             <div class="col-md-6 mb-2">
-               <div class="row">
-                  <div class="col-12">
-                     <h4 class="mb-1">
-                        <i class="font-medium-3 mr-50" data-feather="user"></i>
-                        <span class="align-middle">Account</span>
-                     </h4>
-                  </div>
-                  <div class="col-12 text-center">
-                     <label for="photo">
-                        <img src="<?= base_url('assets/upload/' . $data->photo) ?>" class="img-fluid user-avatar rounded" alt="Photo" width="120" height="120">
-                        <input type="file" name="photo" id="photo" hidden accept="image/jpeg,image/png">
-                     </label>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" class="form-control" value="<?= $data->student_username ?>" placeholder="Username" disabled>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="fullname">Nama Lengkap <span class="text-danger font-small-4">*</span></label>
-                        <input type="text" id="fullname" class="form-control" name="fullname" value="<?= $data->fullname ?>" placeholder="Nama Lengkap" required>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="email">E-mail <span class="text-danger font-small-4">*</span></label>
-                        <input type="email" id="email" class="form-control" name="email" value="<?= $data->email ?>" placeholder="E-mail" required>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="text" id="password" class="form-control" name="password" minlength="6" placeholder="Password">
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="is_active">Status <span class="text-danger font-small-4">*</span></label>
-                        <select name="is_active" id="is_active" class="form-control" required>
-                           <option value="" selected disabled> -- Pilih Status -- </option>
-                           <option value="0">Menunggu Konfirmasi</option>
-                           <option value="1">Aktif</option>
-                           <option value="2">Nonaktif</option>
-                        </select>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
+               <h4 class="mb-1">
+                  <i class="font-medium-3 mr-50" data-feather="user"></i>
+                  <span class="align-middle">Account</span>
+               </h4>
+               <div class="text-center">
+                  <label for="photo">
+                     <img src="<?= base_url('assets/upload/' . $data->photo) ?>" class="img-fluid user-avatar rounded" alt="Photo" width="120" height="120">
+                     <input type="file" name="photo" id="photo" hidden accept="image/jpeg,image/png">
+                  </label>
+               </div>
+               <div class="form-group">
+                  <label for="username">Username</label>
+                  <input type="text" id="username" class="form-control" value="<?= $data->student_username ?>" placeholder="Username" disabled>
+                  <div class="invalid-feedback"></div>
+               </div>
+               <div class="form-group">
+                  <label for="fullname">Nama Lengkap <span class="text-danger font-small-4">*</span></label>
+                  <input type="text" id="fullname" class="form-control" name="fullname" value="<?= $data->fullname ?>" placeholder="Nama Lengkap" required>
+                  <div class="invalid-feedback"></div>
+               </div>
+               <div class="form-group">
+                  <label for="email">E-mail <span class="text-danger font-small-4">*</span></label>
+                  <input type="email" id="email" class="form-control" name="email" value="<?= $data->email ?>" placeholder="E-mail" required>
+                  <div class="invalid-feedback"></div>
+               </div>
+               <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="text" id="password" class="form-control" name="password" minlength="6" placeholder="Password">
+                  <div class="invalid-feedback"></div>
+               </div>
+               <div class="form-group">
+                  <label for="is_active">Status <span class="text-danger font-small-4">*</span></label>
+                  <select name="is_active" id="is_active" class="form-control" required>
+                     <option value="" selected disabled> -- Pilih Status -- </option>
+                     <option value="0">Menunggu Konfirmasi</option>
+                     <option value="1">Aktif</option>
+                     <option value="2">Nonaktif</option>
+                  </select>
+                  <div class="invalid-feedback"></div>
                </div>
             </div>
             <div class="col-md-6">
-               <div class="row">
-                  <div class="col-12">
-                     <h4 class="mb-1">
-                        <i class="font-medium-3 mr-50" data-feather="info"></i>
-                        <span class="align-middle">Data Personal</span>
-                     </h4>
+               <h4 class="mb-1">
+                  <i class="font-medium-3 mr-50" data-feather="info"></i>
+                  <span class="align-middle">Data Personal</span>
+               </h4>
+               <div class="form-group">
+                  <label for="nis">NIS <span class="text-danger font-small-4">*</span></label>
+                  <input type="text" id="nis" class="form-control" name="nis" placeholder="NIS" value="<?= $data->nis ?>" required>
+                  <div class="invalid-feedback"></div>
+               </div>
+               <div class="form-group">
+                  <label for="pob">Tempat Lahir</label>
+                  <input type="text" id="pob" class="form-control" name="pob" value="<?= $data->pob ?>" placeholder="Tempat Lahir">
+                  <div class="invalid-feedback"></div>
+               </div>
+               <div class="form-group">
+                  <label for="dob">Tanggal Lahir</label>
+                  <input type="date" id="dob" class="form-control" name="dob" value="<?= $data->dob ?>" placeholder="Tanggal Lahir">
+                  <div class="invalid-feedback"></div>
+               </div>
+               <div class="form-group">
+                  <label for="religion">Agama</label>
+                  <select id="religion" class="form-control text-capitalize" name="religion">
+                     <option value="" selected> -- Pilih Agama -- </option>
+                     <option value="islam">islam</option>
+                     <option value="protestan">protestan</option>
+                     <option value="khatolik">khatolik</option>
+                     <option value="hindu">hindu</option>
+                     <option value="budha">budha</option>
+                     <option value="khonghucu">khonghucu</option>
+                  </select>
+                  <div class="invalid-feedback"></div>
+               </div>
+               <div class="form-group">
+                  <label class="d-block">Jenis Kelamin <span class="text-danger font-small-4">*</span></label>
+                  <div class="custom-control custom-radio custom-control-inline">
+                     <input type="radio" id="male" name="gender" class="custom-control-input" value="male" <?= $data->gender == 'male' ? 'checked' : null ?> required>
+                     <label class="custom-control-label" for="male">Laki - laki</label>
                   </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="nis">NIS <span class="text-danger font-small-4">*</span></label>
-                        <input type="text" id="nis" class="form-control" name="nis" placeholder="NIS" value="<?= $data->nis ?>" required>
-                        <div class="invalid-feedback"></div>
-                     </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                     <input type="radio" id="female" name="gender" class="custom-control-input" value="female" <?= $data->gender == 'female' ? 'checked' : null ?>>
+                     <label class="custom-control-label" for="female">Perempuan</label>
                   </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="pob">Tempat Lahir</label>
-                        <input type="text" id="pob" class="form-control" name="pob" value="<?= $data->pob ?>" placeholder="Tempat Lahir">
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="dob">Tanggal Lahir</label>
-                        <input type="date" id="dob" class="form-control" name="dob" value="<?= $data->dob ?>" placeholder="Tanggal Lahir">
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="religion">Agama</label>
-                        <select id="religion" class="form-control text-capitalize" name="religion">
-                           <option value="" selected> -- Pilih Agama -- </option>
-                           <option value="islam">islam</option>
-                           <option value="protestan">protestan</option>
-                           <option value="khatolik">khatolik</option>
-                           <option value="hindu">hindu</option>
-                           <option value="budha">budha</option>
-                           <option value="khonghucu">khonghucu</option>
-                        </select>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label class="d-block">Jenis Kelamin <span class="text-danger font-small-4">*</span></label>
-                        <div class="custom-control custom-radio custom-control-inline">
-                           <input type="radio" id="male" name="gender" class="custom-control-input" value="male" <?= $data->gender == 'male' ? 'checked' : null ?> required>
-                           <label class="custom-control-label" for="male">Laki - laki</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                           <input type="radio" id="female" name="gender" class="custom-control-input" value="female" <?= $data->gender == 'female' ? 'checked' : null ?>>
-                           <label class="custom-control-label" for="female">Perempuan</label>
-                        </div>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="phone">No Telp</label>
-                        <input id="phone" type="number" name="phone" class="form-control" value="<?= $data->phone ?>" placeholder="No Telp">
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="address-1">Alamat</label>
-                        <textarea class="form-control" name="address" id="address" cols="10" rows="4" value="<?= $data->address ?>" placeholder="Alamat"></textarea>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
-                  <div class="col-12">
-                     <div class="form-group">
-                        <label for="curr_class_group">Kelas <span class="text-danger font-small-4">*</span></label>
-                        <select name="curr_class_group" id="curr_class_group" class="form-control" required>
-                           <?php foreach ($class_group as $v) { ?>
-                              <option value="<?= $v->class_group_code ?>" selected><?= $v->class_group_name ?></option>
-                           <?php } ?>
-                        </select>
-                        <div class="invalid-feedback"></div>
-                     </div>
-                  </div>
+                  <div class="invalid-feedback"></div>
+               </div>
+               <div class="form-group">
+                  <label for="phone">No Telp</label>
+                  <input id="phone" type="number" name="phone" class="form-control" value="<?= $data->phone ?>" placeholder="No Telp">
+                  <div class="invalid-feedback"></div>
+               </div>
+               <div class="form-group">
+                  <label for="address-1">Alamat</label>
+                  <textarea class="form-control" name="address" id="address" cols="10" rows="4" value="<?= $data->address ?>" placeholder="Alamat"></textarea>
+                  <div class="invalid-feedback"></div>
+               </div>
+               <div class="form-group">
+                  <label for="curr_class_group">Kelas <span class="text-danger font-small-4">*</span></label>
+                  <select name="curr_class_group" id="curr_class_group" class="form-control" required>
+                     <?php foreach ($class_group as $v) { ?>
+                        <option value="<?= $v->class_group_code ?>" selected><?= $v->class_group_name ?></option>
+                     <?php } ?>
+                  </select>
+                  <div class="invalid-feedback"></div>
                </div>
                <button type="submit" class="btn btn-primary float-right">Simpan Perubahan</button>
             </div>

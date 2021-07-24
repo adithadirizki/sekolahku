@@ -1,4 +1,8 @@
-<?= $this->extend('template') ?>
+<?php if (session()->role == 'superadmin') {
+   echo $this->extend('template');
+} elseif (session()->role == 'teacher') {
+   echo $this->extend('teacher/template');
+} ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" href="<?= base_url('app-assets/vendors/css/tables/datatable/datatables.min.css') ?>">
 <link rel="stylesheet" href="<?= base_url('app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css') ?>">
@@ -18,7 +22,9 @@
                <th>Judul Quiz</th>
                <th>Jumlah Soal</th>
                <th>Mata Pelajaran</th>
-               <th>Ditugaskan Oleh</th>
+               <?php if (session()->role == 'superadmin') { ?>
+                  <th>Ditugaskan Oleh</th>
+               <?php } ?>
                <th>Ditugaskan Pada</th>
                <th>Aksi</th>
             </tr>
@@ -90,10 +96,12 @@
                "data": "subject_name",
                "className": "text-center"
             },
-            {
-               "data": "created"
-            },
-            {
+
+            <?php if (session()->role == 'superadmin') { ?> {
+                  "data": "assigned"
+               },
+            <?php } ?> {
+
                "data": "start_at",
                "mRender": function(start_at) {
                   return toDateTime(start_at);

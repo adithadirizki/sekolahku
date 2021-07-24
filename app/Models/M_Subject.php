@@ -13,7 +13,7 @@ class M_Subject extends Model
    public function total_subject()
    {
       $this->selectCount('subject_id', 'total_nums');
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function total_subject_filtered($where, $keyword)
@@ -24,7 +24,7 @@ class M_Subject extends Model
       $this->orLike('subject_code', $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function subject_data($where, $keyword, $limit, $offset, $orderby)
@@ -64,5 +64,14 @@ class M_Subject extends Model
    {
       $this->where($where);
       return $this->delete();
+   }
+
+   public function validation_multiple_subjects($whereIn)
+   {
+      $this->whereIn('subject_id', $whereIn);
+      if ($this->countAllResults() != count($whereIn)) {
+         return false;
+      }
+      return true;
    }
 }

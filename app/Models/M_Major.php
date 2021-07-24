@@ -13,7 +13,7 @@ class M_Major extends Model
    public function total_major()
    {
       $this->selectCount('major_id', 'total_nums');
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function total_major_filtered($where, $keyword)
@@ -24,7 +24,7 @@ class M_Major extends Model
       $this->orLike('major_code', $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function major_data($where, $keyword, $limit, $offset, $orderby)

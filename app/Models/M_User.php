@@ -10,10 +10,11 @@ class M_User extends Model
 	protected $primaryKey = 'user_id';
    protected $allowedFields = ['username', 'photo', 'fullname', 'email', 'password', 'role', 'activation_code', 'token', 'token_expired', 'is_active', 'registered_at'];
    
-   public function total_user()
+   public function total_user($where = [])
    {
       $this->selectCount('user_id', 'total_nums');
-      return $this->get()->getFirstRow('object')->total_nums;
+      $this->where($where);
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function total_user_filtered($where, $keyword)
@@ -26,7 +27,7 @@ class M_User extends Model
       $this->orLike('registered_at', $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function user_data($where, $keyword, $limit, $offset, $orderby)
@@ -47,7 +48,7 @@ class M_User extends Model
    public function user($where)
    {
       $this->where($where);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function create_user($data)

@@ -78,10 +78,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 	$routes->delete('bankquestion/(:num)/question/(:num)', 'Bankquestion::delete_question/$1/$2');
 	$routes->resource('bankquestion');
 
-	$routes->resource('assignment/result', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:num)', 'controller' => 'Assignmentresult']);
-
 	$routes->post('assignment/getAll', 'Assignment::getAll');
 	$routes->post('assignment/(:alphanum)/copy', 'Assignment::copy/$1');
+	$routes->post('assignment/(:alphanum)/complete', 'Assignment::complete/$1');
 	$routes->resource('assignment', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);
 
 	$routes->resource('assignmentresult', ['only' => ['update', 'delete'], 'placeholder' => '(:num)']);
@@ -99,9 +98,11 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function ($routes)
 
 	$routes->resource('quizresult', ['only' => ['update', 'delete'], 'placeholder' => '(:num)']);
 
+	$routes->post('material/getAll', 'Material::getAll');
 	$routes->post('material/(:alphanum)/copy', 'Material::copy/$1');
 	$routes->resource('material', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:alphanum)']);
 	
+	$routes->post('announcement/getAll', 'Announcement::getAll');
 	$routes->resource('announcement', ['only' => ['create', 'update', 'delete'], 'placeholder' => '(:num)']);
 });
 // $routes->resource('api/classes', ['controller' => 'API\Classes']);

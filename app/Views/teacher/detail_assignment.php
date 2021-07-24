@@ -1,4 +1,4 @@
-<?= $this->extend('template') ?>
+<?= $this->extend('teacher/template') ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/katex.min.css') ?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/monokai-sublime.min.css') ?>">
@@ -9,7 +9,7 @@
    <div class="col-md-8">
       <div class="card">
          <div class="card-body">
-            <div class="card-title"><?= $data->assignment_title ?></div>
+            <h1 class="h2"><?= $data->assignment_title ?></h1>
             <hr>
             <div class="ql-snow">
                <div class="assignment-text text-wrap ql-editor p-0"><?= html_entity_decode($data->assignment_desc, ENT_QUOTES, 'UTF-8') ?></div>
@@ -37,8 +37,14 @@
             <h4 class="font-weight-bolder">
                Kelas :
             </h4>
+            <div class="mb-2">
+               <?= $data->class_group_name ?>
+            </div>
+            <h4 class="font-weight-bolder">
+               Tahun Ajaran :
+            </h4>
             <div>
-               <?= $data->class_group_name ?> (<?= $data->school_year_title ?>)
+               <?= $data->school_year_title ?>
             </div>
          </div>
       </div>

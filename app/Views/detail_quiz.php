@@ -172,7 +172,7 @@
                Ditugaskan oleh :
             </h4>
             <div class="mb-2">
-               <?= $data->created ?>
+               <?= $data->assigned ?>
             </div>
             <div class="d-flex justify-content-between flex-wrap-reverse">
                <button id="delete-quiz" class="btn btn-danger mb-25">Hapus</button>

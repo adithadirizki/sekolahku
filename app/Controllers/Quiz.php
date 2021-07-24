@@ -43,6 +43,10 @@ class Quiz extends BaseController
 
 	public function get_quizzes()
 	{
+      if ($this->role == 'student') {
+			throw new PageNotFoundException();
+      }
+
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
 		$keyword = $_POST['search']['value'];
@@ -57,7 +61,7 @@ class Quiz extends BaseController
 
 		if ($this->role == 'teacher') {
 			$where = [
-				"created_by" => $this->username
+				"assigned_by" => $this->username
 			];
 		}
 
@@ -76,6 +80,10 @@ class Quiz extends BaseController
 
 	public function new()
 	{
+      if ($this->role == 'student') {
+			throw new PageNotFoundException();
+      }
+
 		$subject = [];
 		if ($this->role == 'teacher') {
 			foreach ($this->subject as $v) {
@@ -109,7 +117,7 @@ class Quiz extends BaseController
 			if (in_array($result->status, [1, 2])) {
 				$whereIn = str_replace('[', '(', $result->questions);
 				$whereIn = str_replace(']', ')', $whereIn);
-				$questions = $this->m_question->questions("question_id IN $whereIn");
+				$questions = $this->m_question->questions("question_id IN $whereIn", true);
 			}
 		}
 		$data = [
@@ -129,6 +137,10 @@ class Quiz extends BaseController
 
 	public function edit($quiz_code)
 	{
+      if ($this->role == 'student') {
+			throw new PageNotFoundException();
+      }
+
 		if ($this->role == 'superadmin') {
 			$result = $this->m_quiz->detail_quiz($quiz_code);
 		} elseif ($this->role == 'teacher') {
@@ -163,6 +175,10 @@ class Quiz extends BaseController
 
 	public function do_quiz($quiz_code)
 	{
+      if ($this->role != 'student') {
+			throw new PageNotFoundException();
+      }
+
 		if (!$result = $this->m_quiz_result->quiz_result_student($this->username, $quiz_code)) {
 			throw new PageNotFoundException();
 		}
@@ -182,6 +198,16 @@ class Quiz extends BaseController
 
 	public function add_question($quiz_code)
 	{
+      if ($this->role == 'student') {
+			throw new PageNotFoundException();
+      }
+
+		if ($this->role == 'teacher') {
+			if (!$this->m_quiz->have_quiz($this->username, $quiz_code)) {
+				throw new PageNotFoundException();
+			}
+		}
+
 		$questions = $this->m_quiz->questions($quiz_code);
 		$data = [
 			"title" => "Tambah Soal",
@@ -196,6 +222,16 @@ class Quiz extends BaseController
 
 	public function new_question($quiz_code)
 	{
+      if ($this->role == 'student') {
+			throw new PageNotFoundException();
+      }
+
+		if ($this->role == 'teacher') {
+			if (!$this->m_quiz->have_quiz($this->username, $quiz_code)) {
+				throw new PageNotFoundException();
+			}
+		}
+
 		$data = [
 			"title" => "Tambah Soal",
 			"url_active" => "question",

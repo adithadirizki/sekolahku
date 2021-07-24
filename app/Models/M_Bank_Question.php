@@ -13,8 +13,8 @@ class M_Bank_Question extends Model
    public function total_bank_question()
    {
       $this->selectCount('bank_question_id', 'total_nums');
-      $this->join('tb_user', 'username = created_by');
-      return $this->get()->getFirstRow('object')->total_nums;
+      // $this->join('tb_user', 'username = created_by');
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
 
    public function total_bank_question_filtered($where, $keyword)
@@ -27,12 +27,12 @@ class M_Bank_Question extends Model
       $this->orLike('fullname', $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
 
    public function bank_question_data($where, $keyword, $limit, $offset, $orderby)
    {
-      $this->select("bank_question_id,bank_question_title,questions,JSON_LENGTH(questions) total_question,fullname created");
+      $this->select("bank_question_id,bank_question_title,questions,JSON_LENGTH(questions) total_question,fullname created,created_by");
       $this->join('tb_user', 'username = created_by');
       $this->groupStart();
       $this->like('bank_question_title', $keyword);
@@ -56,7 +56,15 @@ class M_Bank_Question extends Model
    public function bank_question($where)
    {
       $this->where($where);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
+   }
+
+   public function have_bank_question($username, $bank_question_id)
+   {
+      $this->select('1');
+      $this->where('bank_question_id', $bank_question_id);
+      $this->where('created_by', $username);
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function create_bank_question($data)
@@ -81,7 +89,7 @@ class M_Bank_Question extends Model
    {
       $this->select("questions");
       $this->where('bank_question_id', $bank_question_id);
-      return $this->get()->getFirstRow('object')->questions;
+      return $this->get(1)->getFirstRow('object')->questions;
    }
 
    public function get_question($bank_question_id, $number_question)
@@ -89,7 +97,7 @@ class M_Bank_Question extends Model
       $this->select("tb_question.*");
       $this->join('tb_question', "question_id = JSON_EXTRACT(questions, '$[$number_question]')");
       $this->where('bank_question_id', $bank_question_id);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
 
    public function update_question($bank_question_id, $question_id)

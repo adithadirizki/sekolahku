@@ -37,6 +37,10 @@ class Material extends BaseController
 
 	public function get_materials()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
 		$keyword = $_POST['search']['value'];
@@ -70,6 +74,10 @@ class Material extends BaseController
 
 	public function new()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$subject = [];
 		if ($this->role == 'teacher') {
 			foreach ($this->subject as $v) {
@@ -114,6 +122,10 @@ class Material extends BaseController
 
 	public function edit($material_code)
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		if ($this->role == 'superadmin') {
 			$result = $this->m_material->detail_material($material_code);
 		} elseif ($this->role == 'teacher') {

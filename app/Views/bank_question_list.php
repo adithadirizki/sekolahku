@@ -1,4 +1,8 @@
-<?= $this->extend('template') ?>
+<?php if (session()->role == 'superadmin') {
+   echo $this->extend('template');
+} elseif (session()->role == 'teacher') {
+   echo $this->extend('teacher/template');
+} ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" href="<?= base_url('app-assets/vendors/css/tables/datatable/datatables.min.css') ?>">
 <link rel="stylesheet" href="<?= base_url('app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css') ?>">
@@ -127,15 +131,20 @@
             {
                "data": "bank_question_id",
                "mRender": function(bank_question_id, row, data) {
-                  return '<div class="dropdown" data-bank_question_id="' + bank_question_id + '"><button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">' + feather.icons['more-vertical'].toSvg({
-                     class: 'font-medium-2'
-                  }) + '</button><div class="dropdown-menu"><a class="dropdown-item show-bank-question text-primary" href="<?= base_url('bankquestion') ?>/' + bank_question_id + '">' + feather.icons['search'].toSvg({
-                     class: 'font-medium-2'
-                  }) + ' <span>Lihat</span></a><a class="dropdown-item edit-bank-question text-info" data-toggle="modal" data-target="#modal-edit-bank-question">' + feather.icons['edit'].toSvg({
-                     class: 'font-medium-2'
-                  }) + ' <span>Edit</span></a><a class="dropdown-item delete-bank-question text-danger" href="javascript:void(0);">' + feather.icons['trash'].toSvg({
-                     class: 'font-medium-2'
-                  }) + ' <span>Hapus</span></a></div></div>';
+                  if (data.created_by == "<?= session()->username ?>") {
+                     return '<div class="dropdown" data-bank_question_id="' + bank_question_id + '"><button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">' + feather.icons['more-vertical'].toSvg({
+                        class: 'font-medium-2'
+                     }) + '</button><div class="dropdown-menu"><a class="dropdown-item show-bank-question text-primary" href="<?= base_url('bankquestion') ?>/' + bank_question_id + '">' + feather.icons['search'].toSvg({
+                        class: 'font-medium-2'
+                     }) + ' <span>Lihat</span></a><a class="dropdown-item edit-bank-question text-info" data-toggle="modal" data-target="#modal-edit-bank-question">' + feather.icons['edit'].toSvg({
+                        class: 'font-medium-2'
+                     }) + ' <span>Edit</span></a><a class="dropdown-item delete-bank-question text-danger" href="javascript:void(0);">' + feather.icons['trash'].toSvg({
+                        class: 'font-medium-2'
+                     }) + ' <span>Hapus</span></a></div></div>';
+
+                  } else {
+                     return '<a class="btn btn-sm btn-outline-primary round show-bank-question text-nowrap font-weight-bolder" href="<?= base_url('bankquestion') ?>/' + bank_question_id + '">' + feather.icons['search'].toSvg() + ' <span>Lihat</span></a>';
+                  }
                },
                "className": "text-center",
                "orderable": false

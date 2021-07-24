@@ -22,6 +22,10 @@ class User extends BaseController
 
 	public function create_teacher()
 	{
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
 		$validation = \Config\Services::validation();
 		$validation->setRules(
 			[
@@ -36,7 +40,9 @@ class User extends BaseController
 				"dob" => "permit_empty|valid_date[Y-m-d]",
 				"religion" => "permit_empty|in_list[islam,protestan,khatolik,hindu,budha,khonghucu]",
 				"gender" => "required|in_list[male,female]",
-				"phone" => "permit_empty|numeric"
+				"phone" => "permit_empty|numeric",
+				"teaching_class*" => "permit_empty|multiple_class_group",
+				"teaching_subject*" => "permit_empty|multiple_subject"
 			],
 			[
 				"username" => [
@@ -82,6 +88,12 @@ class User extends BaseController
 				],
 				"phone" => [
 					"numeric" => "No Telp harus terdiri dari angka."
+				],
+				"teaching_class*" => [
+					"multiple_class_group" => "Kelas tidak valid."
+				],
+				"teaching_subject*" => [
+					"multiple_subject" => "Mata Pelajaran tidak valid."
 				]
 			]
 		);
@@ -93,18 +105,24 @@ class User extends BaseController
 			]);
 		}
 		$file = $this->request->getFile('photo');
-		foreach ($_POST as $key => $value) {
-			$data1[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-			$data2["teacher_$key"] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-			if (in_array($key, ['fullname', 'email', 'password', 'is_active'])) {
-				$data1[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-				if ($key == 'password' && $value != null) {
-					$data1[$key] = password_hash($value, PASSWORD_BCRYPT);
-				}
-			} else {
-				$data2[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-			}
-		}
+
+		$data1['username'] = htmlentities($_POST['username'], ENT_QUOTES, 'UTF-8');
+		$data1['fullname'] = htmlentities($_POST['fullname'], ENT_QUOTES, 'UTF-8');
+		$data1['email'] = htmlentities($_POST['email'], ENT_QUOTES, 'UTF-8');
+		$data1['is_active'] = htmlentities($_POST['is_active'], ENT_QUOTES, 'UTF-8');
+		$data1['password'] = password_hash($_POST['password'], PASSWORD_BCRYPT);
+		$data1['role'] = 'teacher';
+		
+		$data2['teacher_username'] = htmlentities($_POST['username'], ENT_QUOTES, 'UTF-8');
+		$data2['nip'] = htmlentities($_POST['nip'], ENT_QUOTES, 'UTF-8');
+		$data2['pob'] = empty($_POST['pob']) ? null : htmlentities($_POST['pob'], ENT_QUOTES, 'UTF-8');
+		$data2['dob'] = empty($_POST['dob']) ? null : htmlentities($_POST['dob'], ENT_QUOTES, 'UTF-8');
+		$data2['religion'] = empty($_POST['religion']) ? null : htmlentities($_POST['religion'], ENT_QUOTES, 'UTF-8');
+		$data2['gender'] = htmlentities($_POST['gender'], ENT_QUOTES, 'UTF-8');
+		$data2['phone'] = empty($_POST['phone']) ? null : htmlentities($_POST['phone'], ENT_QUOTES, 'UTF-8');
+		$data2['address'] = empty($_POST['address']) ? null : htmlentities($_POST['address'], ENT_QUOTES, 'UTF-8');
+		$data2['teaching_class'] = empty($_POST['teaching_class']) ? json_encode([]) : json_encode($_POST['teaching_class']);
+		$data2['teaching_subject'] = empty($_POST['teaching_subject']) ? json_encode([]) : json_encode($_POST['teaching_subject'], JSON_NUMERIC_CHECK);
 
 		$isValid = $file->isValid();
 		$filename = $file->getRandomName();
@@ -127,7 +145,7 @@ class User extends BaseController
 					"error" => true
 				]);
 			}
-			$data['photo'] = $filename;
+			$data1['photo'] = $filename;
 		}
 
 		$result1 = $this->m_user->create_user($data1);
@@ -149,6 +167,10 @@ class User extends BaseController
 
 	public function create_student()
 	{
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
 		$validation = \Config\Services::validation();
 		$validation->setRules(
 			[
@@ -225,18 +247,23 @@ class User extends BaseController
 			]);
 		}
 		$file = $this->request->getFile('photo');
-		foreach ($_POST as $key => $value) {
-			$data1[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-			$data2["student_$key"] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-			if (in_array($key, ['fullname', 'email', 'password', 'is_active'])) {
-				$data1[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-				if ($key == 'password' && $value != null) {
-					$data1[$key] = password_hash($value, PASSWORD_BCRYPT);
-				}
-			} else {
-				$data2[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-			}
-		}
+
+		$data1['username'] = htmlentities($_POST['username'], ENT_QUOTES, 'UTF-8');
+		$data1['fullname'] = htmlentities($_POST['fullname'], ENT_QUOTES, 'UTF-8');
+		$data1['email'] = htmlentities($_POST['email'], ENT_QUOTES, 'UTF-8');
+		$data1['is_active'] = htmlentities($_POST['is_active'], ENT_QUOTES, 'UTF-8');
+		$data1['password'] = password_hash($_POST['password'], PASSWORD_BCRYPT);
+		$data1['role'] = 'student';
+		
+		$data2['student_username'] = htmlentities($_POST['username'], ENT_QUOTES, 'UTF-8');
+		$data2['nis'] = htmlentities($_POST['nis'], ENT_QUOTES, 'UTF-8');
+		$data2['pob'] = empty($_POST['pob']) ? null : htmlentities($_POST['pob'], ENT_QUOTES, 'UTF-8');
+		$data2['dob'] = empty($_POST['dob']) ? null : htmlentities($_POST['dob'], ENT_QUOTES, 'UTF-8');
+		$data2['religion'] = empty($_POST['religion']) ? null : htmlentities($_POST['religion'], ENT_QUOTES, 'UTF-8');
+		$data2['gender'] = htmlentities($_POST['gender'], ENT_QUOTES, 'UTF-8');
+		$data2['phone'] = empty($_POST['phone']) ? null : htmlentities($_POST['phone'], ENT_QUOTES, 'UTF-8');
+		$data2['address'] = empty($_POST['address']) ? null : htmlentities($_POST['address'], ENT_QUOTES, 'UTF-8');
+		$data2['curr_class_group'] = htmlentities($_POST['curr_class_group'], ENT_QUOTES, 'UTF-8');
 
 		$isValid = $file->isValid();
 		$filename = $file->getRandomName();
@@ -259,7 +286,7 @@ class User extends BaseController
 					"error" => true
 				]);
 			}
-			$data['photo'] = $filename;
+			$data1['photo'] = $filename;
 		}
 
 		$result1 = $this->m_user->create_user($data1);
@@ -281,6 +308,10 @@ class User extends BaseController
 
 	public function update_teacher($username)
 	{
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
 		$validation = \Config\Services::validation();
 		$validation->setRules(
 			[
@@ -294,7 +325,9 @@ class User extends BaseController
 				"dob" => "permit_empty|valid_date[Y-m-d]",
 				"religion" => "permit_empty|in_list[islam,protestan,khatolik,hindu,budha,khonghucu]",
 				"gender" => "required|in_list[male,female]",
-				"phone" => "permit_empty|numeric"
+				"phone" => "permit_empty|numeric",
+				"teaching_class*" => "permit_empty|multiple_class_group",
+				"teaching_subject*" => "permit_empty|multiple_subject"
 			],
 			[
 				"photo" => [
@@ -335,27 +368,38 @@ class User extends BaseController
 				],
 				"phone" => [
 					"numeric" => "No Telp harus terdiri dari angka."
+				],
+				"teaching_class*" => [
+					"multiple_class_group" => "Kelas tidak valid."
+				],
+				"teaching_subject*" => [
+					"multiple_subject" => "Mata Pelajaran tidak valid."
 				]
 			]
 		);
 		if ($validation->withRequest($this->request)->run() == false) {
 			return $this->respond([
-				"message" => "Failed to added.",
+				"message" => "Failed to save changes.",
 				"status" => 400,
 				"errors" => $validation->getErrors()
 			]);
 		}
 		$file = $this->request->getFile('photo');
-		foreach ($_POST as $key => $value) {
-			if (in_array($key, ['fullname', 'email', 'password', 'is_active'])) {
-				$data1[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-				if ($key == 'password' && $value != null) {
-					$data1[$key] = password_hash($value, PASSWORD_BCRYPT);
-				}
-			} else {
-				$data2[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-			}
-		}
+
+		$data1['fullname'] = htmlentities($_POST['fullname'], ENT_QUOTES, 'UTF-8');
+		$data1['email'] = htmlentities($_POST['email'], ENT_QUOTES, 'UTF-8');
+		$data1['is_active'] = htmlentities($_POST['is_active'], ENT_QUOTES, 'UTF-8');
+		empty($_POST['password']) ? null : $data1['password'] = password_hash($_POST['password'], PASSWORD_BCRYPT);
+		
+		$data2['nip'] = htmlentities($_POST['nip'], ENT_QUOTES, 'UTF-8');
+		$data2['pob'] = empty($_POST['pob']) ? null : htmlentities($_POST['pob'], ENT_QUOTES, 'UTF-8');
+		$data2['dob'] = empty($_POST['dob']) ? null : htmlentities($_POST['dob'], ENT_QUOTES, 'UTF-8');
+		$data2['religion'] = empty($_POST['religion']) ? null : htmlentities($_POST['religion'], ENT_QUOTES, 'UTF-8');
+		$data2['gender'] = htmlentities($_POST['gender'], ENT_QUOTES, 'UTF-8');
+		$data2['phone'] = empty($_POST['phone']) ? null : htmlentities($_POST['phone'], ENT_QUOTES, 'UTF-8');
+		$data2['address'] = empty($_POST['address']) ? null : htmlentities($_POST['address'], ENT_QUOTES, 'UTF-8');
+		$data2['teaching_class'] = empty($_POST['teaching_class']) ? json_encode([]) : json_encode($_POST['teaching_class']);
+		$data2['teaching_subject'] = empty($_POST['teaching_subject']) ? json_encode([]) : json_encode($_POST['teaching_subject'], JSON_NUMERIC_CHECK);
 
 		$isValid = $file->isValid();
 		$filename = $file->getRandomName();
@@ -378,7 +422,7 @@ class User extends BaseController
 					"error" => true
 				]);
 			}
-			$data['photo'] = $filename;
+			$data1['photo'] = $filename;
 		}
 
 		$where1 = [
@@ -407,6 +451,10 @@ class User extends BaseController
 
 	public function update_student($username)
 	{
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
 		$validation = \Config\Services::validation();
 		$validation->setRules(
 			[
@@ -471,22 +519,26 @@ class User extends BaseController
 		);
 		if ($validation->withRequest($this->request)->run() == false) {
 			return $this->respond([
-				"message" => "Failed to added.",
+				"message" => "Failed to save changes.",
 				"status" => 400,
 				"errors" => $validation->getErrors()
 			]);
 		}
 		$file = $this->request->getFile('photo');
-		foreach ($_POST as $key => $value) {
-			if (in_array($key, ['fullname', 'email', 'password', 'is_active'])) {
-				$data1[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-				if ($key == 'password' && $value != null) {
-					$data1[$key] = password_hash($value, PASSWORD_BCRYPT);
-				}
-			} else {
-				$data2[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-			}
-		}
+
+		$data1['fullname'] = htmlentities($_POST['fullname'], ENT_QUOTES, 'UTF-8');
+		$data1['email'] = htmlentities($_POST['email'], ENT_QUOTES, 'UTF-8');
+		$data1['is_active'] = htmlentities($_POST['is_active'], ENT_QUOTES, 'UTF-8');
+		empty($_POST['password']) ? null : $data1['password'] = password_hash($_POST['password'], PASSWORD_BCRYPT);
+		
+		$data2['nis'] = htmlentities($_POST['nis'], ENT_QUOTES, 'UTF-8');
+		$data2['pob'] = empty($_POST['pob']) ? null : htmlentities($_POST['pob'], ENT_QUOTES, 'UTF-8');
+		$data2['dob'] = empty($_POST['dob']) ? null : htmlentities($_POST['dob'], ENT_QUOTES, 'UTF-8');
+		$data2['religion'] = empty($_POST['religion']) ? null : htmlentities($_POST['religion'], ENT_QUOTES, 'UTF-8');
+		$data2['gender'] = htmlentities($_POST['gender'], ENT_QUOTES, 'UTF-8');
+		$data2['phone'] = empty($_POST['phone']) ? null : htmlentities($_POST['phone'], ENT_QUOTES, 'UTF-8');
+		$data2['address'] = empty($_POST['address']) ? null : htmlentities($_POST['address'], ENT_QUOTES, 'UTF-8');
+		$data2['curr_class_group'] = htmlentities($_POST['curr_class_group'], ENT_QUOTES, 'UTF-8');
 
 		$isValid = $file->isValid();
 		$filename = $file->getRandomName();
@@ -538,6 +590,10 @@ class User extends BaseController
 
 	public function delete($username)
 	{
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
 		$where = [
 			"username" => $username
 		];

@@ -13,13 +13,13 @@ class M_School_Year extends Model
    public function school_year_now()
    {
       $this->where('school_year_status', 1);
-      return $this->get()->getFirstRow('object');
+      return $this->get(1)->getFirstRow('object');
    }
    
    public function total_school_year()
    {
       $this->selectCount('school_year_id', 'total_nums');
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function total_school_year_filtered($where, $keyword)
@@ -30,7 +30,7 @@ class M_School_Year extends Model
       $this->orLike('school_year_status', $keyword);
       $this->groupEnd();
       $this->where($where);
-      return $this->get()->getFirstRow('object')->total_nums;
+      return $this->get(1)->getFirstRow('object')->total_nums;
    }
    
    public function school_year_data($where, $keyword, $limit, $offset, $orderby)

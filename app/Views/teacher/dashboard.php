@@ -1,4 +1,4 @@
-<?= $this->extend('student/template') ?>
+<?= $this->extend('teacher/template') ?>
 <?= $this->section('content') ?>
 <div class="row match-height">
 	<!-- Greetings Card starts -->
@@ -28,21 +28,21 @@
 						<i data-feather="users" class="font-medium-5"></i>
 					</div>
 				</div>
-				<h2 class="font-weight-bolder"><?= $statistic->total_assignment_completed ?></h2>
-				<p class="card-text">Tugas Selesai</p>
+				<h2 class="font-weight-bolder"><?= $statistic->total_student ?></h2>
+				<p class="card-text">Siswa</p>
 			</div>
 		</div>
 	</div>
 	<div class="col-xl-2 col-6">
 		<div class="card text-center">
 			<div class="card-body">
-				<div class="avatar bg-light-success p-50 mb-1">
+				<div class="avatar bg-light-danger p-50 mb-1">
 					<div class="avatar-content">
-						<i data-feather="user-check" class="font-medium-5"></i>
+						<i data-feather="trello" class="font-medium-5"></i>
 					</div>
 				</div>
-				<h2 class="font-weight-bolder"><?= $statistic->total_quiz_completed ?></h2>
-				<p class="card-text">Quiz Selesai</p>
+				<h2 class="font-weight-bolder"><?= $statistic->total_class ?></h2>
+				<p class="card-text">Kelas</p>
 			</div>
 		</div>
 	</div>
@@ -58,6 +58,19 @@
 						<div class="media">
 							<div class="avatar bg-light-primary mr-2">
 								<div class="avatar-content">
+									<i class="avatar-icon" data-feather="book-open"></i>
+								</div>
+							</div>
+							<div class="media-body my-auto">
+								<h4 class="font-weight-bolder mb-0"><?= $statistic->total_subject ?></h4>
+								<p class="card-text font-small-3 mb-0">Mapel</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
+						<div class="media">
+							<div class="avatar bg-light-info mr-2">
+								<div class="avatar-content">
 									<i class="avatar-icon" data-feather="file-text"></i>
 								</div>
 							</div>
@@ -67,9 +80,9 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
+					<div class="col-xl-3 col-sm-6 col-12 mb-2 mb-sm-0">
 						<div class="media">
-							<div class="avatar bg-light-info mr-2">
+							<div class="avatar bg-light-warning mr-2">
 								<div class="avatar-content">
 									<i class="avatar-icon" data-feather="message-circle"></i>
 								</div>
@@ -80,9 +93,9 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-xl-3 col-sm-6 col-12 mb-2 mb-sm-0">
+					<div class="col-xl-3 col-sm-6 col-12">
 						<div class="media">
-							<div class="avatar bg-light-danger mr-2">
+							<div class="avatar bg-light-success mr-2">
 								<div class="avatar-content">
 									<i class="avatar-icon" data-feather="book"></i>
 								</div>
@@ -90,19 +103,6 @@
 							<div class="media-body my-auto">
 								<h4 class="font-weight-bolder mb-0"><?= $statistic->total_material ?></h4>
 								<p class="card-text font-small-3 mb-0">Materi</p>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-3 col-sm-6 col-12">
-						<div class="media">
-							<div class="avatar bg-light-success mr-2">
-								<div class="avatar-content">
-									<i class="avatar-icon" data-feather="info"></i>
-								</div>
-							</div>
-							<div class="media-body my-auto">
-								<h4 class="font-weight-bolder mb-0"><?= $statistic->total_announcement ?></h4>
-								<p class="card-text font-small-3 mb-0">Pengumuman</p>
 							</div>
 						</div>
 					</div>

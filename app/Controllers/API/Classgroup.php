@@ -11,7 +11,7 @@ class Classgroup extends BaseController
    protected $rules = [
       "class" => "required|is_not_unique[tb_class.class_id]",
       "major" => "required|is_not_unique[tb_major.major_id]",
-      "unit_major" => "required"
+      "unit_major" => "required|alphanumeric"
    ];
    protected $errors = [
       "class" => [
@@ -23,7 +23,8 @@ class Classgroup extends BaseController
          "is_not_unique" => "Jurusan tidak valid."
       ],
       "unit_major" => [
-         "required" => "Unit Jurusan harus diisi."
+         "required" => "Unit Jurusan harus diisi.",
+         "alphanumeric" => "Unit Jurusan harus terdiri dari hufuf atau angka."
       ]
    ];
 
@@ -34,6 +35,10 @@ class Classgroup extends BaseController
 
    public function show($class_group_code)
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $result = $this->m_class_group->class_group(['class_group_code' => $class_group_code]);
       if (!$result) {
          return $this->respond([
@@ -53,6 +58,10 @@ class Classgroup extends BaseController
 
    public function create()
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -64,9 +73,9 @@ class Classgroup extends BaseController
       }
       parse_str(file_get_contents('php://input'), $input);
       $class_group_code = $this->m_class_group->new_class_group_code();
-      $class = htmlentities($input['class'], ENT_QUOTES, 'UTF-8');
-      $major = htmlentities($input['major'], ENT_QUOTES, 'UTF-8');
-      $unit_major = htmlentities($input['unit_major'], ENT_QUOTES, 'UTF-8');
+      $class = $input['class'];
+      $major = $input['major'];
+      $unit_major = $input['unit_major'];
       $data = [
          "class_group_code" => $class_group_code,
          "class" => $class,
@@ -90,6 +99,10 @@ class Classgroup extends BaseController
 
    public function update($class_group_code)
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -100,9 +113,9 @@ class Classgroup extends BaseController
          ]);
       }
       parse_str(file_get_contents('php://input'), $input);
-      $class = htmlentities($input['class'], ENT_QUOTES, 'UTF-8');
-      $major = htmlentities($input['major'], ENT_QUOTES, 'UTF-8');
-      $unit_major = htmlentities($input['unit_major'], ENT_QUOTES, 'UTF-8');
+      $class = $input['class'];
+      $major = $input['major'];
+      $unit_major = $input['unit_major'];
       $data = [
          "class" => $class,
          "major" => $major,
@@ -128,6 +141,10 @@ class Classgroup extends BaseController
 
    public function delete($class_group_code)
    {
+      if ($this->role != 'superadmin') {
+         return $this->failForbidden();
+      }
+      
       $where = [
          "class_group_code" => $class_group_code
       ];

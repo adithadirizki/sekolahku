@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\M_Major;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Major extends BaseController
 {
@@ -15,6 +16,10 @@ class Major extends BaseController
 
 	public function index()
 	{
+		if ($this->role != 'superadmin') {
+			throw new PageNotFoundException();
+		}
+		
 		$data = [
 			"title" => "Jurusan",
 			"url_active" => "major"
@@ -24,6 +29,10 @@ class Major extends BaseController
 
 	public function get_majors()
 	{
+		if ($this->role != 'superadmin') {
+			throw new PageNotFoundException();
+		}
+
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
 		$keyword = $_POST['search']['value'];

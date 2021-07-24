@@ -47,6 +47,10 @@ class Announcement extends BaseController
 
    public function getAll()
    {
+      if ($this->role != 'student') {
+         return $this->failForbidden();
+      }
+
       $validation = \Config\Services::validation();
       $validation->setRules(
          [
@@ -68,21 +72,9 @@ class Announcement extends BaseController
       }
       $limit = 10;
       $offset = ($_POST['page'] - 1) * $limit;
-      if ($this->role == 'superadmin') {
-         $where = [];
-         $result = $this->m_announcement->announcements($where, $limit, $offset);
-         $total_nums = $this->m_announcement->total_announcement($where);
-      } elseif ($this->role == 'teacher') {
-         $where = [
-            "announced_by" => $this->username
-         ];
-         $result = $this->m_announcement->announcements($where, $limit, $offset);
-         $total_nums = $this->m_announcement->total_announcement($where);
-      } elseif ($this->role == 'student') {
-         $where = [];
-         $result = $this->m_announcement->announcements_student($where, $limit, $offset);
-         $total_nums = $this->m_announcement->total_announcement_student($where);
-      }
+      $where = [];
+      $result = $this->m_announcement->announcements_student($where, $limit, $offset);
+      $total_nums = $this->m_announcement->total_announcement_student($where);
       return $this->respond([
          "message" => "OK",
          "status" => 200,
@@ -94,6 +86,10 @@ class Announcement extends BaseController
 
    public function create()
    {
+      if ($this->role == 'student') {
+         return $this->failForbidden();
+      }
+
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -104,13 +100,11 @@ class Announcement extends BaseController
          ]);
       }
       parse_str(file_get_contents('php://input'), $input);
-      foreach ($input as $key => $value) {
-         if (is_array($value)) {
-            $data[$key] = json_encode(array_map('htmlentities', $value));
-         } else {
-            $data[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-         }
-      }
+      $data['announcement_title'] = htmlentities($input['announcement_title'], ENT_QUOTES, 'UTF-8');
+      $data['announcement_desc'] = htmlentities($input['announcement_desc'], ENT_QUOTES, 'UTF-8');
+      $data['announcement_for'] = $input['announcement_for'];
+      $data['announced_at'] = $input['announced_at'];
+      $data['announced_until'] = $input['announced_until'];
       $data['announced_by'] = $this->username;
       $data['at_school_year'] = $this->m_school_year->school_year_now()->school_year_id;
       $result = $this->m_announcement->create_announcement($data);
@@ -130,11 +124,16 @@ class Announcement extends BaseController
 
    public function update($announcement_id)
    {
+      if ($this->role == 'student') {
+         return $this->failForbidden();
+      }
+
       if ($this->role == 'teacher') {
          if (!$this->m_announcement->have_announcement($this->username, $announcement_id)) {
             return $this->failForbidden();
          }
       }
+
       $validation = \Config\Services::validation();
       $validation->setRules($this->rules, $this->errors);
       if ($validation->withRequest($this->request)->run() == false) {
@@ -145,13 +144,11 @@ class Announcement extends BaseController
          ]);
       }
       parse_str(file_get_contents('php://input'), $input);
-      foreach ($input as $key => $value) {
-         if (is_array($value)) {
-            $data[$key] = json_encode(array_map('htmlentities', $value));
-         } else {
-            $data[$key] = $value == null ? null : htmlentities($value, ENT_QUOTES, 'UTF-8');
-         }
-      }
+      $data['announcement_title'] = htmlentities($input['announcement_title'], ENT_QUOTES, 'UTF-8');
+      $data['announcement_desc'] = htmlentities($input['announcement_desc'], ENT_QUOTES, 'UTF-8');
+      $data['announcement_for'] = $input['announcement_for'];
+      $data['announced_at'] = $input['announced_at'];
+      $data['announced_until'] = $input['announced_until'];
       $where = [
          "announcement_id" => $announcement_id
       ];
@@ -172,6 +169,10 @@ class Announcement extends BaseController
 
    public function delete($announcement_id)
    {
+      if ($this->role == 'student') {
+         return $this->failForbidden();
+      }
+
       if ($this->role == 'teacher') {
          if (!$this->m_announcement->have_announcement($this->username, $announcement_id)) {
             return $this->failForbidden();

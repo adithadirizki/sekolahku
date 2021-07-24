@@ -1,4 +1,8 @@
-<?= $this->extend('template') ?>
+<?php if (session()->role == 'superadmin') {
+   echo $this->extend('template');
+} elseif (session()->role == 'teacher') {
+   echo $this->extend('teacher/template');
+} ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/katex.min.css') ?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/monokai-sublime.min.css') ?>">
@@ -347,6 +351,7 @@
                         key[0] = `${key[0][0]}[${key[0][1]}]`;
                         key[0] = key[0].replace('*', '');
                      }
+                     key[0] = key[0].replace('*', '[]');
                      form.find('[name="' + key[0] + '"]').addClass('is-invalid');
                      form.find('[name="' + key[0] + '"]').closest('.d-flex').addClass('is-invalid');
                      form.find('[name="' + key[0] + '"]').closest('.form-group').find('.invalid-feedback').addClass('d-block').text(key[1]);

@@ -16,6 +16,10 @@ class Bankquestion extends BaseController
 
 	public function index()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$data = [
 			"title" => "Bank Soal",
 			"url_active" => "bankquestion"
@@ -25,6 +29,10 @@ class Bankquestion extends BaseController
 
 	public function get_bank_questions()
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
 		$keyword = $_POST['search']['value'];
@@ -51,6 +59,10 @@ class Bankquestion extends BaseController
 
 	public function show($bank_question_id)
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+		
 		$where = [
 			"bank_question_id" => $bank_question_id
 		];
@@ -62,36 +74,25 @@ class Bankquestion extends BaseController
 			"url_active" => "bankquestion",
 			"data" => $result
 		];
-		return view('detail_bank_question', $data);
-	}
-
-	public function new()
-	{
-		$data = [
-			"title" => "Tambah Bank Soal",
-			"url_active" => "bank_question"
-		];
-		return view('add_bank_question', $data);
-	}
-
-	public function edit($bank_question_id)
-	{
-		$where = [
-			"bank_question_id" => $bank_question_id
-		];
-		if (!$result = $this->m_bank_question->bank_question($where)) {
-			throw new PageNotFoundException();
+		if ($this->role == 'superadmin') {
+			return view('detail_bank_question', $data);
+		} elseif ($this->role == 'teacher') {
+			return view('teacher/detail_bank_question', $data);
 		}
-		$data = [
-			"title" => "Edit Bank Soal",
-			"url_active" => "bank_question",
-			"data" => $result
-		];
-		return view('edit_bank_question', $data);
 	}
 
 	public function add_question($bank_question_id)
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+		
+		if ($this->role == 'teacher') {
+			if (!$this->m_bank_question->have_bank_question($this->username, $bank_question_id)) {
+				throw new PageNotFoundException();
+			}
+		}
+		
 		$questions = $this->m_bank_question->questions($bank_question_id);
 		$data = [
 			"title" => "Tambah Soal",
@@ -106,6 +107,16 @@ class Bankquestion extends BaseController
 
 	public function new_question($bank_question_id)
 	{
+		if ($this->role == 'student') {
+			throw new PageNotFoundException();
+		}
+		
+		if ($this->role == 'teacher') {
+			if (!$this->m_bank_question->have_bank_question($this->username, $bank_question_id)) {
+				throw new PageNotFoundException();
+			}
+		}
+
 		$data = [
 			"title" => "Tambah Soal",
 			"url_active" => "question",

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\M_Class;
 use App\Models\M_Class_Group;
 use App\Models\M_Major;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Classes extends BaseController
 {
@@ -21,6 +22,10 @@ class Classes extends BaseController
 
 	public function index()
 	{
+		if ($this->role != 'superadmin') {
+			throw new PageNotFoundException();
+		}
+		
 		$data = [
 			"title" => "Kelas",
 			"url_active" => "classes",
@@ -32,6 +37,10 @@ class Classes extends BaseController
 
 	public function get_classes()
 	{
+		if ($this->role != 'superadmin') {
+			throw new PageNotFoundException();
+		}
+		
 		$limit = $_POST['length'];
 		$offset = $_POST['start'];
 		$keyword = $_POST['search']['value'];

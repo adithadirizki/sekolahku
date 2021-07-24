@@ -13,8 +13,8 @@ class M_Assignmentresult extends Model
    public function total_assignment_result($where = [])
    {
       $this->selectCount('assignment_result_id', 'total_nums');
-      $this->join('tb_assignment', 'assignment_code = assignment');
-      $this->join('tb_user', 'username = submitted_by');
+      // $this->join('tb_assignment', 'assignment_code = assignment');
+      // $this->join('tb_user', 'username = submitted_by');
       $this->where($where);
       return $this->get(1)->getFirstRow('object')->total_nums;
    }
@@ -79,7 +79,7 @@ class M_Assignmentresult extends Model
       return $this->get(1)->getFirstRow('object');
    }
 
-   public function has_submitted($username, $assignment_code)
+   public function have_submitted($username, $assignment_code)
    {
       $this->select('1');
       $this->where('assignment', $assignment_code);

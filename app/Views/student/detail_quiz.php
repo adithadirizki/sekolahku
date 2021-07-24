@@ -76,7 +76,7 @@
                Ditugaskan oleh :
             </h4>
             <div>
-               <?= $data->created ?>
+               <?= $data->assigned ?>
             </div>
             <?php if (strtotime('now') < strtotime($data->due_at)) { ?>
                <?php if ($data->quiz_result_id === null) { ?>
@@ -110,6 +110,7 @@
             </thead>
             <tbody>
                <?php
+               // dd($questions);
                $abcde = range('A', 'E');
                $mc_score = 0;
                $answers = json_decode($data->answer, true);
@@ -122,7 +123,28 @@
                foreach ($questions as $k => $v) { ?>
                   <tr>
                      <td class="text-center"><?= ($k + 1) ?></td>
-                     <td><?= html_entity_decode($v->question_text, ENT_QUOTES, 'UTF-8') ?></td>
+                     <td>
+                        <div id="headingCollapse<?= $k + 1 ?>" data-toggle="collapse" role="button" data-target="#collapse<?= $k + 1 ?>" aria-expanded="false" aria-controls="collapse<?= $k + 1 ?>">
+                           <?= html_entity_decode($v->question_text, ENT_QUOTES, 'UTF-8') ?>
+                           <div class="text-right">
+                              <i data-feather="chevron-down"></i>
+                           </div>
+                        </div>
+                        <div id="collapse<?= $k + 1 ?>" role="tabpanel" aria-labelledby="headingCollapse<?= $k + 1 ?>" class="collapse">
+                           <?php
+                           $abcde = range('A', 'E');
+                           $choices = json_decode($v->choice);
+                           foreach ($choices as $key => $value) { ?>
+                              <div class="d-flex mb-50">
+                                 <h5 class="mr-75"><strong><?= $abcde[$key] ?></strong>.</h5>
+                                 <div class="ql-snow">
+                                    <div class="choice-text ql-editor p-0"><?= html_entity_decode($value, ENT_QUOTES, 'UTF-8') ?></div>
+                                 </div>
+                              </div>
+                           <?php }
+                           ?>
+                        </div>
+                     </td>
                      <td>
                         <?php
                         if ($v->question_type == 'mc') {

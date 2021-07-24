@@ -1,4 +1,8 @@
-<?= $this->extend('template') ?>
+<?php if (session()->role == 'superadmin') {
+   echo $this->extend('template');
+} elseif (session()->role == 'teacher') {
+   echo $this->extend('teacher/template');
+} ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" href="<?= base_url('app-assets/vendors/css/tables/datatable/datatables.min.css') ?>">
 <link rel="stylesheet" href="<?= base_url('app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css') ?>">
@@ -17,7 +21,9 @@
                <th>Kode Materi</th>
                <th>Judul Materi</th>
                <th>Mata Pelajaran</th>
-               <th>Dibuat Oleh</th>
+               <?php if (session()->role == 'superadmin') { ?>
+                  <th>Dibuat Oleh</th>
+               <?php } ?>
                <th>Diterbitkan Pada</th>
                <th>Aksi</th>
             </tr>
@@ -85,10 +91,12 @@
                "data": "subject_name",
                "className": "text-center"
             },
-            {
-               "data": "created"
-            },
-            {
+
+            <?php if (session()->role == 'superadmin') { ?> {
+                  "data": "created"
+               },
+            <?php } ?> {
+
                "data": "publish_at",
                "mRender": function(publish_at) {
                   return toDateTime(publish_at)

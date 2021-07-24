@@ -1,4 +1,8 @@
-<?= $this->extend('template') ?>
+<?php if (session()->role == 'superadmin') {
+   echo $this->extend('template');
+} elseif (session()->role == 'teacher') {
+   echo $this->extend('teacher/template');
+} ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/katex.min.css') ?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/monokai-sublime.min.css') ?>">
@@ -55,7 +59,7 @@
    <div class="col-xl-9">
       <div class="card">
          <div class="card-body ql-snow">
-            <div class="card-title font-weight-bold m-0">JAWABAN</div>
+            <h1 class="h3 m-0">Jawaban</h1>
             <hr>
             <div class="card-text ql-editor p-0"><?= html_entity_decode($data->answer, ENT_QUOTES, 'UTF-8') ?></div>
          </div>

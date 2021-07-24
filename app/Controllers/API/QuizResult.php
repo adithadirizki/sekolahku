@@ -16,11 +16,16 @@ class Quizresult extends BaseController
 
    public function update($quiz_result_id)
    {
+      if ($this->role == 'student') {
+         return $this->failForbidden();
+      }
+
       if ($this->role == 'teacher') {
          if (!$this->m_quiz_result->have_quiz($this->username, $quiz_result_id)) {
             return $this->failForbidden();
          }
       }
+
       parse_str(file_get_contents('php://input'), $input);
       $validation = \Config\Services::validation();
       $validation->setRules(
@@ -50,7 +55,7 @@ class Quizresult extends BaseController
             "errors" => $validation->getErrors()
          ]);
       }
-      $data['value'] = htmlentities($input['value'], ENT_QUOTES, 'UTF-8');
+      $data['value'] = $input['value'];
       $where = [
          "quiz_result_id" => $quiz_result_id
       ];
@@ -71,6 +76,10 @@ class Quizresult extends BaseController
 
    public function delete($quiz_result_id)
    {
+      if ($this->role == 'student') {
+         return $this->failForbidden();
+      }
+
       if ($this->role == 'teacher') {
          if (!$this->m_quiz_result->have_quiz($this->username, $quiz_result_id)) {
             return $this->failForbidden();

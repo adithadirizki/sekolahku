@@ -9,15 +9,16 @@ class M_Quizresult extends Model
    protected $table = 'tb_quiz_result';
    protected $primaryKey = 'quiz_result_id';
    protected $allowedFields = ['quiz', 'answer', 'essay_score', 'value', 'status', 'submitted_by', 'submitted_at', 'at_class_group', 'at_school_year'];
-   
-   public function total_quiz_result()
+
+   public function total_quiz_result($where = [])
    {
       $this->selectCount('quiz_result_id', 'total_nums');
-      $this->join('tb_quiz', 'quiz_code = quiz');
-      $this->join('tb_user', 'username = submitted_by');
+      // $this->join('tb_quiz', 'quiz_code = quiz');
+      // $this->join('tb_user', 'username = submitted_by');
+      $this->where($where);
       return $this->get(1)->getFirstRow('object')->total_nums;
    }
-   
+
    public function total_quiz_result_filtered($where, $keyword)
    {
       $this->selectCount('quiz_result_id', 'total_nums');
@@ -33,7 +34,7 @@ class M_Quizresult extends Model
       $this->where($where);
       return $this->get(1)->getFirstRow('object')->total_nums;
    }
-   
+
    public function quiz_result_data($where, $keyword, $limit, $offset, $orderby)
    {
       $this->select("quiz_result_id,quiz quiz_code,quiz_title,value,status,fullname created,DATE_FORMAT(submitted_at, '%d/%m/%Y %H:%i') submitted_at");
@@ -88,8 +89,18 @@ class M_Quizresult extends Model
    public function have_quiz($username, $quiz_result_id)
    {
       $this->select('1');
-      $this->join('tb_quiz', "quiz_code = quiz AND created_by = '$username'");
+      $this->join('tb_quiz', "quiz_code = quiz AND assigned_by = '$username'");
       $this->where('quiz_result_id', $quiz_result_id);
+      return $this->get(1)->getFirstRow('object');
+   }
+
+   public function have_submitted($username, $quiz_code)
+   {
+      $this->select('1');
+      $this->where('quiz', $quiz_code);
+      $this->whereIn('status', [1, 2]);
+      $this->where('submitted_at IS NOT NULL');
+      $this->where('submitted_by', $username);
       return $this->get(1)->getFirstRow('object');
    }
 
@@ -111,24 +122,22 @@ class M_Quizresult extends Model
       return $this->delete();
    }
 
-   public function is_timeout($username, $quiz_code)
+   public function is_timeout($quiz_code)
    {
       $this->select('1');
-      $this->join('tb_quiz', "quiz_code = quiz");
+      $this->join('tb_quiz', 'quiz_code = quiz');
       $this->groupStart();
       $this->where('NOW() > created_at + INTERVAL time MINUTE');
       $this->orWhere('NOW() > due_at');
       $this->groupEnd();
-      $this->where('quiz_code', $quiz_code);
-      $this->where('submitted_by', $username);
+      $this->where('quiz', $quiz_code);
       return $this->get(1)->getFirstRow('object');
    }
 
-   public function answers($username, $quiz_code)
+   public function answers($quiz_code)
    {
       $this->select("answer");
       $this->where('quiz', $quiz_code);
-      $this->where('submitted_by', $username);
       return $this->get(1)->getFirstRow('object')->answer;
    }
 
