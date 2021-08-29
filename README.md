@@ -1,5 +1,15 @@
 # CodeIgniter 4 Framework
 
+## Live demo on
+
+[SEKOLAHKU](https://icreativedevs.xyz/public/auth/login) - *please don't destroy this website or existing data for the convenience of other visitors*
+
+username | password | role
+-------- | -------- | ----
+superadmin | 123456 | admin
+siswanto   | 123456 | teacher
+adisaputra | 123456 | student
+
 ## What is CodeIgniter?
 
 CodeIgniter is a PHP full-stack web framework that is light, fast, flexible, and secure. 
