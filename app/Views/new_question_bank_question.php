@@ -1,4 +1,8 @@
-<?= $this->extend('template') ?>
+<?php if (session()->role == 'superadmin') {
+   echo $this->extend('template');
+} elseif (session()->role == 'teacher') {
+   echo $this->extend('teacher/template');
+} ?>
 <?= $this->section('vendorCSS') ?>
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/katex.min.css') ?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('app-assets/vendors/css/editors/quill/monokai-sublime.min.css') ?>">

@@ -1,4 +1,8 @@
-<?= $this->extend('template') ?>
+<?php if (session()->role == 'superadmin') {
+   echo $this->extend('template');
+} elseif (session()->role == 'teacher') {
+   echo $this->extend('teacher/template');
+} ?>
 <?= $this->section('content') ?>
 <div class="row">
    <div class="col-lg-3">

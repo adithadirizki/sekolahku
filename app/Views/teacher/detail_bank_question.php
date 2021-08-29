@@ -26,7 +26,7 @@
             <div class="btn btn-sm btn-outline-primary question-type">Tipe Soal</div>
             <div class="btn btn-sm btn-primary font-weight-bold">No. <span class="number-question"></span></div>
 
-            <?php if ($data->created_by == session()->created_by) { ?>
+            <?php if ($data->created_by == session()->username) { ?>
                <a href="javascript:void(0)" class="btn btn-sm btn-info edit-question" title="Edit">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -77,7 +77,7 @@
       <div class="card">
          <div class="card-body">
 
-            <?php if ($data->created_by == session()->created_by) { ?>
+            <?php if ($data->created_by == session()->username) { ?>
                <div class="btn-group">
                   <button class="btn btn-primary dropdown-toggle mb-1" type="button" id="add-question" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                      Tambah Soal
@@ -214,7 +214,7 @@
          get_question(number_question - 1);
       })
 
-      <?php if ($data->created_by == session()->created_by) { ?>
+      <?php if ($data->created_by == session()->username) { ?>
          $(document).on('click', '.delete-question', function() {
             var number_question = $('#question').data('number_question');
             Swal.fire({

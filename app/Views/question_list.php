@@ -102,7 +102,7 @@
                         class: 'font-medium-2'
                      }) + '</button><div class="dropdown-menu"><a class="dropdown-item show-question text-primary" href="<?= base_url('question') ?>/' + question_id + '">' + feather.icons['search'].toSvg({
                         class: 'font-medium-2'
-                     }) + ' <span>Lihat</span></a><a class="dropdown-item edit-question text-info" data-toggle="modal" data-target="#modal-edit-question">' + feather.icons['edit'].toSvg({
+                     }) + ' <span>Lihat</span></a><a class="dropdown-item edit-question text-info" href="<?= base_url('question') ?>/' + question_id + '/edit">' + feather.icons['edit'].toSvg({
                         class: 'font-medium-2'
                      }) + ' <span>Edit</span></a><a class="dropdown-item delete-question text-danger" href="javascript:void(0);">' + feather.icons['trash'].toSvg({
                         class: 'font-medium-2'

@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 4.9.7
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Waktu pembuatan: 29 Agu 2021 pada 06.51
--- Versi server: 10.4.11-MariaDB
--- Versi PHP: 7.4.4
+-- Host: localhost:3306
+-- Waktu pembuatan: 29 Agu 2021 pada 17.35
+-- Versi server: 10.3.29-MariaDB-cll-lve
+-- Versi PHP: 7.3.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -18,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_simskul`
+-- Database: `u6469799_simskul`
 --
 
 -- --------------------------------------------------------
@@ -149,7 +150,7 @@ CREATE TABLE `tb_assignment_result` (
 --
 
 INSERT INTO `tb_assignment_result` (`assignment_result_id`, `assignment`, `answer`, `value`, `submitted_by`, `submitted_at`, `at_school_year`) VALUES
-(22, 'UIW2IX', '&lt;p&gt;&lt;span style=&quot;background-color: rgb(246, 246, 249); color: rgb(0, 0, 0);&quot;&gt;Zaman pengembangan dan penyusunan falsafah agama, yaitu zaman orang berfilsafat atas dasar Weda&lt;/span&gt;&lt;/p&gt;', 99, 'alfazrihadirizki', '2021-07-22 18:05:04', 0);
+(22, 'UIW2IX', '&lt;p&gt;&lt;span style=&quot;background-color: rgb(246, 246, 249); color: rgb(0, 0, 0);&quot;&gt;Zaman pengembangan dan penyusunan falsafah agama, yaitu zaman orang berfilsafat atas dasar Weda&lt;/span&gt;&lt;/p&gt;', 99, 'adisaputra', '2021-07-22 18:05:04', 0);
 
 -- --------------------------------------------------------
 
@@ -470,7 +471,7 @@ CREATE TABLE `tb_quiz_result` (
 --
 
 INSERT INTO `tb_quiz_result` (`quiz_result_id`, `quiz`, `answer`, `essay_score`, `value`, `status`, `submitted_by`, `created_at`, `submitted_at`, `at_school_year`) VALUES
-(18, '6CW931', '{\"122\": \"4\", \"124\": \"1\", \"125\": \"0\", \"120\": \"0\", \"123\": \"3\", \"119\": \"3\", \"118\": \"0\", \"121\": \"4\", \"126\": \"0\", \"117\": \"4\"}', '[]', 70, 1, 'alfazrihadirizki', '2021-07-24 10:10:01', '2021-07-24 10:19:00', 6);
+(18, '6CW931', '{\"122\": \"4\", \"124\": \"1\", \"125\": \"0\", \"120\": \"0\", \"123\": \"3\", \"119\": \"3\", \"118\": \"0\", \"121\": \"4\", \"126\": \"0\", \"117\": \"4\"}', '[]', 70, 1, 'adisaputra', '2021-07-24 10:10:01', '2021-07-24 10:19:00', 6);
 
 -- --------------------------------------------------------
 
@@ -520,13 +521,7 @@ CREATE TABLE `tb_student` (
 --
 
 INSERT INTO `tb_student` (`student_id`, `student_username`, `nis`, `pob`, `dob`, `gender`, `religion`, `address`, `phone`, `curr_class_group`, `class_history`) VALUES
-(1, 'alfazrihadirizki', '14697', 'Palembang', '2004-01-14', 'male', 'islam', NULL, '0831212121352', '9K825R', '[{\"class\": \"FAC1VB\", \"year\": 3},{\"class\": \"9K825R\", \"year\": 4}]'),
-(4, 'agielherlianto', '14798', NULL, NULL, 'male', 'islam', NULL, '0831212121352', '9K825R', '[{\"class\": \"FAC1VB\", \"year\": 3},{\"class\": \"9K825R\", \"year\": 4}]'),
-(8, 'agussetiawan', '14682', 'Jambi', '2003-08-01', 'male', 'islam', NULL, NULL, '9K825R', '{}'),
-(9, 'abimanyukuncorowahyu', '14666', 'Jambi', '2003-01-05', 'male', 'islam', NULL, NULL, '9K825R', '{}'),
-(10, 'denisyahrawan', '14784', 'Jambi', '2003-06-10', 'male', 'islam', NULL, '16612393659', '9K825R', '{}'),
-(12, 'dilajunitasari', '14785', 'Jambi', '2001-01-01', 'female', 'islam', NULL, NULL, '9K825R', '{}'),
-(14, 'adisaputra', '14673', 'Palembang', '2003-03-29', 'male', 'islam', NULL, NULL, '2IPKF1', '{}'),
+(14, 'adisaputra', '14673', 'Palembang', '2003-03-29', 'male', 'islam', NULL, NULL, '9K825R', '{}'),
 (15, 'ahmadrifai', '14686', 'Palembang', '2002-09-28', 'male', 'islam', NULL, NULL, '2IPKF1', '{}'),
 (16, 'ahmadtubagusriana', '14688', 'Palembang', '2003-07-09', 'male', 'islam', NULL, NULL, '2IPKF1', '{}');
 
@@ -587,9 +582,6 @@ INSERT INTO `tb_teacher` (`teacher_id`, `teacher_username`, `nip`, `pob`, `dob`,
 (1, 'budiyanto', '0030134778', 'Palembang', '1980-01-20', 'male', 'islam', NULL, '088276605782', '[\"2IPKF1\",\"LEL6XZ\",\"QPTMAT\",\"7AOKWH\",\"GIHW33\",\"9KJ6BN\",\"AVLRIK\"]', '[2,4]'),
 (3, 'siswanti', '0020134778', 'Jambi', '1970-05-13', 'female', 'islam', 'Jl. Darma Pala Rt.02 Kel. Kebon IX Kab. Muaro Jambi', '088276605782', '[]', '[]'),
 (5, 'siswanto', '0020134778', 'Papua', '1995-08-19', 'male', 'islam', NULL, '088276605782', '[\"QPTMAT\",\"9K825R\",\"IBFPU0\",\"7M761A\",\"ZRF01F\"]', '[6]'),
-(9, 'imelda', '19900131202011998', 'Jambi', '2021-12-31', 'female', 'islam', NULL, '087799104638', '[]', '[]'),
-(10, 'nuraini', '19900131202011999', 'Jambi', NULL, 'female', 'islam', NULL, NULL, '[]', '[]'),
-(11, 'ariyandi', '19900131202011999', 'Jambi', '1981-01-01', 'male', 'islam', NULL, NULL, '[\"GTR0AZ\"]', '[2]'),
 (12, 'Natalia', '19900131202011990', 'Jambi', '1981-01-01', 'female', 'islam', NULL, NULL, '[\"GTR0AZ\",\"4J2A0J\",\"SIGUWC\",\"Z2R61A\",\"8G7P2A\"]', '[]');
 
 -- --------------------------------------------------------
@@ -619,18 +611,9 @@ CREATE TABLE `tb_user` (
 
 INSERT INTO `tb_user` (`user_id`, `username`, `photo`, `fullname`, `email`, `password`, `role`, `activation_code`, `token`, `token_expired`, `is_active`, `registered_at`) VALUES
 (1, 'superadmin', 'avatar-s-1.jpg', 'Administrator', 'admin@admin.com', '$2y$10$CErM.PEjf8Hls1tM8xwDWeqDW6n6ns1amQbophNjjs8KbUDlauKSa', 'superadmin', NULL, 'LjijkCiK70B2rIU9', '2021-07-16 00:23:43', 1, '2021-02-20 14:20:46'),
-(2, 'alfazrihadirizki', 'avatar-s-2.jpg', 'Alfazri Hadi RIzki', 'alfazrihadirizki@gmail.com', '$2y$10$CErM.PEjf8Hls1tM8xwDWeqDW6n6ns1amQbophNjjs8KbUDlauKSa', 'student', '2004', 'y6ySzUrN5NCPL6tk', '2021-07-16 03:29:00', 1, '2021-02-20 14:31:29'),
-(3, 'budiyanto', 'avatar-s-3.jpg', 'Budiyanto s.Pd', 'budiyanto@gmail.com', '', 'teacher', '2000', 'gMLhadUCyANsY6CK', '2021-06-20 17:18:15', 1, '2021-02-20 14:31:29'),
+(3, 'budiyanto', 'avatar-s-3.jpg', 'Budiyanto s.Pd', 'budiyanto@gmail.com', '$2y$10$CErM.PEjf8Hls1tM8xwDWeqDW6n6ns1amQbophNjjs8KbUDlauKSa', 'teacher', '2000', 'gMLhadUCyANsY6CK', '2021-06-20 17:18:15', 1, '2021-02-20 14:31:29'),
 (10, 'siswanto', 'avatar-s-4.jpg', 'Siswanto', 'siswanto@gmail.com', '$2y$10$CErM.PEjf8Hls1tM8xwDWeqDW6n6ns1amQbophNjjs8KbUDlauKSa', 'teacher', '2000', '8Ph1Uhuf6vzgqV6M', '2021-06-27 06:50:02', 1, '2021-02-20 14:31:29'),
 (17, 'siswanti', '1623733812_0ea4abbbc1daabbd8072.jpg', 'Siswanti', 'siswanti@gmail.com', '$2y$10$5E0TBF1dKmhzAHPqK1gnq.ySUJvg.XH95YctndhFup.hMPILAQ4ym', 'teacher', '2000', '', '2021-03-06 17:27:40', 1, '2021-02-20 14:31:29'),
-(18, 'agielherlianto', '1623815983_466b0a2a37837a3c663c.jpg', 'Agiel Herlianto', 'agielherlianto@gmail.com', '', 'student', '2004', '', '2021-06-21 10:29:04', 1, '2021-02-20 14:31:29'),
-(24, 'imelda', '1623825500_a2aba1f8da75413f161f.jpg', 'Imelda', 'imelda@gmail.com', '', 'teacher', NULL, NULL, NULL, 1, '2021-06-16 13:38:20'),
-(38, 'agussetiawan', 'avatar-default.jpg', 'Agus Setiawan', 'agussetiawan@gmail.com', '$2y$10$pXmOEVF151eG/luuVaRtb.33ycWlq13sIYy4SVEDxd1tooTOhkapK', 'student', NULL, NULL, NULL, 0, '2021-06-16 16:09:44'),
-(39, 'abimanyukuncorowahyu', 'avatar-default.jpg', 'Abimanyu Kuncoro Wahyu', 'abimanyukuncorowahyu@gmail.com', '$2y$10$cVNq.dNE51uOWdgdPGV1ZOEVG0ZPEZ9uuPxn3HiEwyXnbUvBZyFFu', 'student', NULL, NULL, NULL, 0, '2021-06-16 16:10:57'),
-(40, 'denisyahrawan', 'avatar-default.jpg', 'Deni Syahrawan', 'denisyahrawan@gmail.com', '', 'student', NULL, NULL, NULL, 0, '2021-06-16 16:14:27'),
-(42, 'dilajunitasari', 'avatar-default.jpg', 'Dila Junita Sari', 'dilajunitasari@gmail.com', '$2y$10$P5/c51dn4qoNx4ls3yqGeuPlsnQJ.SuW2t8re7ckTRqN9So4N/4Ni', 'student', NULL, NULL, NULL, 1, '2021-07-13 14:38:25'),
-(43, 'nuraini', 'avatar-default.jpg', 'Nuraini', 'nuraini@gmail.com', '$2y$10$4e7SYg5qzzbGCVYPhO4LOOeMNG5M8ZdQUP2.xunVKRpWqUxNqgX9m', 'teacher', NULL, NULL, NULL, 0, '2021-07-13 14:44:54'),
-(47, 'ariyandi', 'avatar-default.jpg', 'Ariyandi s.Pd', 'ariyandi@gmail.com', '$2y$10$8dRPlwUIGeiSQNbwsM2BDetotLeYJ5X/pulFTAevjhg0wY5hqVXCe', 'teacher', NULL, NULL, NULL, 1, '2021-07-23 13:37:19'),
 (48, 'Natalia', 'avatar-default.jpg', 'Natalia s.Pd', 'natalia@gmail.com', '$2y$10$iCcBoFdcNPy9b5papQZz2O5I4yvQGUv/X5gPg9Svn.xkrur8gbx/K', 'teacher', NULL, NULL, NULL, 1, '2021-07-23 13:38:05'),
 (49, 'adisaputra', 'avatar-default.jpg', 'Adi Saputra', 'adisaputra@gmail.com', '$2y$10$f5aGyCoDhx5IS55WCJYg2uNlHjXNrFqaATfjKMRYxPA5EhVxsmKKq', 'student', NULL, NULL, NULL, 1, '2021-07-23 13:53:23'),
 (50, 'ahmadrifai', 'avatar-default.jpg', 'Ahmad Rifa&#039;i', 'ahmadrifai@gmail.com', '$2y$10$DrxcMgUY9zis1qDxn1ZyFuY2X5m4ncQhYBLnkK3qsVQWza4.ajpyO', 'student', NULL, NULL, NULL, 1, '2021-07-23 13:54:52'),
@@ -849,7 +832,7 @@ ALTER TABLE `tb_school_year`
 -- AUTO_INCREMENT untuk tabel `tb_student`
 --
 ALTER TABLE `tb_student`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_subject`
