@@ -67,10 +67,14 @@ class Dashboard extends BaseController
 			];
 			return view('dashboard', $data);
 		} elseif ($this->role == 'teacher') {
+			if (count($this->class) > 0) {
 			$class = json_encode($this->class);
 			$class = substr($class, 1);
 			$class = substr($class, 0, -1);
 			$total_student = $this->m_student->total_student("curr_class_group IN ($class)");
+			} else {
+				$total_student = 0;
+			}
 			$total_class = count($this->class);
 			$total_subject = count($this->subject);
 			$total_assignment = $this->m_assignment->total_assignment(['assigned_by' => $this->username]);

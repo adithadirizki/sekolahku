@@ -58,14 +58,19 @@ class Student extends BaseController
 		empty($_POST['gender']) ? null : $where[] = "gender = '$_POST[gender]'";
 
 		if ($this->role == 'teacher') {
+			if (count($this->class) > 0) {
 			$class = json_encode($this->class);
 			$class = substr($class, 1);
 			$class = substr($class, 0, -1);
-			$where[] = "class_group_code IN ($class)";
+			$where[] = "curr_class_group IN ($class)";
+				
+			} else {
+				$where[] = "curr_class_group = NULL";
+			}
 		}
 		$where = count($where) > 0 ? implode(' AND ', $where) : [];
 
-		$total_student = $this->m_student->total_student();
+		$total_student = $this->m_student->total_student($where);
 		$total_student_filtered = $this->m_student->total_student_filtered($where, $keyword);
 		$student_data = $this->m_student->student_data($where, $keyword, $limit, $offset, $orderby);
 		$csrf_name = csrf_token();

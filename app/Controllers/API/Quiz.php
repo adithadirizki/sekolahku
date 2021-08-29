@@ -458,10 +458,15 @@ class Quiz extends BaseController
 
       $answers = $this->m_quiz_result->answers($quiz_code);
       $answers = json_decode($answers, true);
+      if (count(array_keys($answers)) > 0) {
       $questions = json_encode(array_keys($answers));
       $questions = substr($questions, 1); // remove '['
       $questions = substr($questions, 0, -1); // remove ']'
-      $questions = $this->m_question->questions("question_id IN ($questions)");
+         
+         $questions = $this->m_question->questions("question_id IN ($questions)");
+      } else {
+         $questions = [];
+      }
       $total_mc = 0;
       $total_essay = 0;
       $mc_score = 0;
