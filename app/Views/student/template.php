@@ -52,9 +52,6 @@
             <li class="nav-item">
                <a class="nav-link" id="logout" href="<?= base_url('logout') ?>" title="Logout"><i class="ficon text-danger" data-feather="power"></i></a>
             </li>
-            <li class="nav-item">
-               <a class="nav-link" id="profile" href="<?= base_url('profile') ?>" title="Profile"><i class="ficon text-primary" data-feather="user"></i></a>
-            </li>
             <li class="nav-item dropdown dropdown-user">
                <a class="nav-link dropdown-user-link" href="javascript:void(0);">
                   <div class="user-nav d-sm-flex d-none">
@@ -78,7 +75,7 @@
       <div class="navbar-header">
          <ul class="nav navbar-nav flex-row">
             <li class="nav-item mr-auto">
-               <a class="navbar-brand" href="<?= base_url('html/ltr/vertical-menu-template/index.html') ?>">
+               <a class="navbar-brand" href="<?= base_url() ?>">
                   <span class="brand-logo">
                      <svg viewbox="0 0 139 95" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="24">
                         <defs>
@@ -113,8 +110,7 @@
       <div class="shadow-bottom"></div>
       <div class="main-menu-content">
          <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-            <li class=" navigation-header"><span data-i18n="Apps &amp; Pages">Apps &amp; Pages</span><i data-feather="more-horizontal"></i>
-            </li>
+            <div class="mb-2"></div>
             <li class="<?= $url_active == 'dashboard' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('dashboard') ?>"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboard">Dashboard</span></a>
             </li>
             <li class="<?= $url_active == 'assignment' ? 'active' : null ?> nav-item"><a class="d-flex align-items-center" href="<?= base_url('assignment') ?>"><i data-feather="file-text"></i><span class="menu-title text-truncate" data-i18n="Tugas">Tugas</span></a>
@@ -151,7 +147,7 @@
 
    <!-- BEGIN: Footer-->
    <footer class="footer footer-static footer-light">
-      <p class="clearfix mb-0"><span class="float-md-left d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2021<a class="ml-25" href="https://1.envato.market/pixinvent_portfolio" target="_blank">Pixinvent</a><span class="d-none d-sm-inline-block">, All rights Reserved</span></span><span class="float-md-right d-none d-md-block">Hand-crafted & Made with<i data-feather="heart"></i></span></p>
+      <p class="clearfix mb-0"><span class="float-md-left d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2021<a class="ml-25" href="https://github.com/adithadirizki" target="_blank">Adit Hadi Rizki</a><span class="d-none d-sm-inline-block">, All rights Reserved</span></span></p>
    </footer>
    <button class="btn btn-primary btn-icon scroll-top" type="button"><i data-feather="arrow-up"></i></button>
    <!-- END: Footer-->

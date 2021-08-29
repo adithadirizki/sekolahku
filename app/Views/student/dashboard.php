@@ -23,9 +23,9 @@
 	<div class="col-xl-2 col-6">
 		<div class="card text-center">
 			<div class="card-body">
-				<div class="avatar bg-light-primary p-50 mb-1">
+				<div class="avatar bg-light-success p-50 mb-1">
 					<div class="avatar-content">
-						<i data-feather="users" class="font-medium-5"></i>
+						<i data-feather="file-text" class="font-medium-5"></i>
 					</div>
 				</div>
 				<h2 class="font-weight-bolder"><?= $statistic->total_assignment_completed ?></h2>
@@ -36,9 +36,9 @@
 	<div class="col-xl-2 col-6">
 		<div class="card text-center">
 			<div class="card-body">
-				<div class="avatar bg-light-success p-50 mb-1">
+				<div class="avatar bg-light-warning p-50 mb-1">
 					<div class="avatar-content">
-						<i data-feather="user-check" class="font-medium-5"></i>
+						<i data-feather="message-circle" class="font-medium-5"></i>
 					</div>
 				</div>
 				<h2 class="font-weight-bolder"><?= $statistic->total_quiz_completed ?></h2>
