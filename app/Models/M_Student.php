@@ -17,6 +17,7 @@ class M_Student extends Model
       // $this->join('tb_class_group', 'class_group_code = curr_class_group');
       // $this->join('tb_class', 'class_id = class');
       // $this->join('tb_major', 'major_id = major');
+      dd($where);
       $this->where($where);
       return $this->get(1)->getFirstRow('object')->total_nums;
    }
